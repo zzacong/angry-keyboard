@@ -65,6 +65,36 @@ macOS sometimes holds a new Input Monitoring grant until the app restarts. If
 the switch in System Settings will not turn on, remove AngryKeyboard from the
 list with the minus button, then re-add it from the app.
 
+## Stored settings
+
+The app stores three preferences in UserDefaults under the bundle ID
+`com.zzacong.AngryKeyboard`, which on a normal install is
+`~/Library/Preferences/com.zzacong.AngryKeyboard.plist`:
+
+- `volume`, a number from `0` to `1`, default `0.6`
+- `muted`, a boolean, default off
+- `playbackMode`, the string `retrigger` or `overlap`, default `retrigger`
+
+You can read or change them with the `defaults` command:
+
+```
+defaults read com.zzacong.AngryKeyboard
+defaults write com.zzacong.AngryKeyboard volume -float 0.4
+defaults write com.zzacong.AngryKeyboard muted -bool true
+defaults write com.zzacong.AngryKeyboard playbackMode -string overlap
+defaults delete com.zzacong.AngryKeyboard volume
+```
+
+Always pass the type flag (`-float`, `-bool`, `-string`). Without one,
+`defaults write` stores a string, and the volume read expects a number.
+
+Quit the app before you write. The app reads these once at launch and macOS
+caches them, so a write made while it runs can be overwritten when the app
+flushes its own values. Quit, write, relaunch.
+
+Launch at Login is not stored here. The app reads it from the system, so System
+Settings > General > Login Items is the source of truth.
+
 ## Manual verification
 
 Check these by hand after a build.

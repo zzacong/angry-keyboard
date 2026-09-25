@@ -44,3 +44,10 @@ Verified:
 
 Nothing here needs a unit test, so the two-axis code review was not run. The
 README was checked against the four acceptance criteria directly.
+
+**2026-09-25 — follow-up: document the stored settings CLI.**
+
+The README gains a Stored settings section: the three UserDefaults keys with
+their types and defaults, the `defaults` read, write, and delete commands, the
+type-flag requirement, the quit, write, relaunch rule for the cfprefsd cache,
+and a note that Launch at Login is not stored because the system owns it.
