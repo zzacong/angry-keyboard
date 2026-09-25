@@ -7,22 +7,34 @@ private nonisolated struct SoundSamples {
 }
 
 private nonisolated extension SoundSamples {
-    /// Copies a decoded buffer into channel arrays and fades both ends, so a
-    /// voice can start or stop on any frame without a step.
+    /// Copies a decoded buffer into channel arrays, drops any leading silence
+    /// so the sound starts on the key, and fades both ends so a voice can start
+    /// or stop on any frame without a step.
     init(buffer: AVAudioPCMBuffer) throws {
         guard let channelData = buffer.floatChannelData else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        let frameCount = Int(buffer.frameLength)
-        guard frameCount > 0 else { throw CocoaError(.fileReadCorruptFile) }
+        let decodedFrames = Int(buffer.frameLength)
+        guard decodedFrames > 0 else { throw CocoaError(.fileReadCorruptFile) }
 
         var channels: [[Float]] = []
         channels.reserveCapacity(Int(buffer.format.channelCount))
         for channel in 0..<Int(buffer.format.channelCount) {
-            channels.append(Array(UnsafeBufferPointer(start: channelData[channel], count: frameCount)))
+            channels.append(
+                Array(UnsafeBufferPointer(start: channelData[channel], count: decodedFrames))
+            )
         }
 
         let sampleRate = buffer.format.sampleRate
+        let onset = SoundOnset.frame(of: channels, sampleRate: sampleRate)
+        if onset > 0 {
+            channels = channels.map { Array($0.dropFirst(onset)) }
+        }
+
+        guard let frameCount = channels.first?.count, frameCount > 0 else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+
         let fadeIn = min(Int(0.003 * sampleRate), frameCount / 2)
         let fadeOut = min(Int(0.008 * sampleRate), frameCount / 2)
         for channel in channels.indices {

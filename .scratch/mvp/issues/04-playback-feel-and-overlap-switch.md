@@ -49,3 +49,16 @@ code-side checks above cover them, but "no audible clicks, pops, or clipping"
 is a judgement only an ear can make. The spec already puts the real audio path
 on a manual checklist: type fast in both modes and listen. Check the box once
 that listen has happened.
+
+**2026-09-25 — follow-up: trim leading silence.**
+
+The special-key sounds were authored with dead air at the head (explosion
+~312 ms, blast ~300 ms, whoosh ~106 ms; the shotgun only ~16 ms), so Enter,
+Backspace, and Esc felt late, and holding them gave no row because each
+key-repeat restarted the sound inside its silence. `SoundOnset` is a pure scan
+in core that finds the first audible window, and `SoundSamples` trims to it
+before applying the end fades, so every bundled sound, present or future, starts
+on the key. The spec's "trim windows" exclusion is about shortening a tail; this
+removes dead air at the head and leaves the tail alone. Covered by
+`SoundOnsetTests`.
+
