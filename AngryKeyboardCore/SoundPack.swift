@@ -96,4 +96,8 @@ nonisolated extension SoundPack {
         catchAll: .shotgun,
         catchAllVoiceCount: 4
     )
+
+    /// Every pack the app can offer. v1 ships one; the menu hides the picker
+    /// until a second pack makes the choice meaningful.
+    static let available: [SoundPack] = [.shipped]
 }

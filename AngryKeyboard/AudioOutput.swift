@@ -128,6 +128,10 @@ final nonisolated class AudioOutput: @unchecked Sendable {
     private var voices: [Voice] = []
     private var limiter = Limiter()
     private var samples: [Sound: SoundSamples] = [:]
+    /// The master level and mute, written by the menu and read on the audio
+    /// queue. Both live under `lock`, so a change takes effect on the next hit.
+    private var volume: Double = Settings.defaultVolume
+    private var isMuted = false
 
     /// Decodes every bundled sound into memory and starts the engine. A sound
     /// that fails to load is logged and skipped rather than crashing the app.
@@ -189,6 +193,7 @@ final nonisolated class AudioOutput: @unchecked Sendable {
 
             lock.lock()
             defer { lock.unlock() }
+            guard !isMuted else { return }
             let held = voices.filter { $0.sound == sound && !$0.releasing }
             if held.count >= limit,
                let oldest = voices.firstIndex(where: { $0.sound == sound && !$0.releasing }) {
@@ -196,6 +201,25 @@ final nonisolated class AudioOutput: @unchecked Sendable {
             }
             voices.append(voice)
         }
+    }
+
+    /// Sets the output volume, `0...1`. Applied to the mix on the next render,
+    /// so moving the slider changes a sound that is already playing.
+    func setVolume(_ volume: Double) {
+        lock.lock()
+        self.volume = Settings.clamped(volume)
+        lock.unlock()
+    }
+
+    /// Silences new keystrokes and drops the voices in flight, so unmuting
+    /// starts clean instead of replaying the tail of a sound that was already
+    /// partway through. The tap keeps running while muted, so no new keystroke
+    /// is missed.
+    func setMuted(_ muted: Bool) {
+        lock.lock()
+        isMuted = muted
+        if muted { voices.removeAll() }
+        lock.unlock()
     }
 
     /// Mixes every active voice into the output buffer. Called on the audio
@@ -210,6 +234,7 @@ final nonisolated class AudioOutput: @unchecked Sendable {
         lock.lock()
         defer { lock.unlock() }
 
+        let level = Float(volume)
         for frame in 0..<frames {
             var left: Float = 0
             var right: Float = 0
@@ -222,8 +247,8 @@ final nonisolated class AudioOutput: @unchecked Sendable {
                 }
             }
             limiter.process(&left, &right)
-            leftData[frame] = left
-            rightData[frame] = right
+            leftData[frame] = left * level
+            rightData[frame] = right * level
         }
     }
 
