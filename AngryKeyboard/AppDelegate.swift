@@ -34,13 +34,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             ?? ProcessInfo.processInfo.processName
     }
 
-    /// Whether the first-run explainer has already been shown. Stored so the
-    /// explanation appears once, not on every launch without permission.
-    private var hasShownExplainer: Bool {
-        get { UserDefaults.standard.bool(forKey: "hasShownInputMonitoringExplainer") }
-        set { UserDefaults.standard.set(newValue, forKey: "hasShownInputMonitoringExplainer") }
-    }
-
     func applicationDidFinishLaunching(_ notification: Notification) {
         eventTap.onKeystroke = { [audio] _ in audio.play(.shotgun) }
 
@@ -138,10 +131,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     /// Explains why Input Monitoring is needed before macOS asks, then offers
-    /// the exact System Settings pane. Shown only on the first run.
+    /// the exact System Settings pane. Shown on every launch while access is
+    /// missing, so dismissing it once cannot hide the guided path for good.
     private func presentExplainerIfNeeded() {
-        guard !InputMonitoring.isGranted, !hasShownExplainer else { return }
-        hasShownExplainer = true
+        guard !InputMonitoring.isGranted else { return }
 
         NSApp.activate()
         let alert = NSAlert()
