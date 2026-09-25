@@ -3,9 +3,29 @@ import AppKit
 /// Owns the app's lifetime and its only visible surface, the menu bar status
 /// item. AngryKeyboard is a background agent: it has no window and no Dock
 /// icon, so the status item is created here rather than declared as a scene.
+///
+/// This is also where the three pieces of the keystroke path meet: the
+/// permission check, the event tap, and the audio output.
 @main
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+    /// AppKit's default `main()` calls `NSApplicationMain`, which expects the
+    /// delegate to come from a main nib. AngryKeyboard has no nib, so this sets
+    /// the delegate itself and runs the app.
+    static func main() {
+        let app = NSApplication.shared
+        let delegate = AppDelegate()
+        app.setActivationPolicy(.accessory)
+        app.delegate = delegate
+        app.run()
+    }
+
     private var statusItem: NSStatusItem?
+    private var permissionStatusItem: NSMenuItem?
+    private var openSettingsItem: NSMenuItem?
+    private var permissionTimer: Timer?
+
+    private let audio = AudioOutput()
+    private let eventTap = KeystrokeEventTap()
 
     /// The name shown to the user, read from the bundle so the menu and the
     /// accessibility label stay in step with the app's display name.
@@ -14,11 +34,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ?? ProcessInfo.processInfo.processName
     }
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        installStatusItem()
+    /// Whether the first-run explainer has already been shown. Stored so the
+    /// explanation appears once, not on every launch without permission.
+    private var hasShownExplainer: Bool {
+        get { UserDefaults.standard.bool(forKey: "hasShownInputMonitoringExplainer") }
+        set { UserDefaults.standard.set(newValue, forKey: "hasShownInputMonitoringExplainer") }
     }
 
-    /// Adds the status item to the system menu bar and gives it its menu.
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        eventTap.onKeystroke = { [audio] _ in audio.play(.shotgun) }
+
+        installStatusItem()
+        presentExplainerIfNeeded()
+
+        if InputMonitoring.isGranted {
+            applyPermission(granted: true)
+            eventTap.start()
+        } else {
+            applyPermission(granted: false)
+            startPermissionPolling()
+        }
+    }
+
+    // MARK: - Menu bar
+
+    /// Adds the status item to the system menu bar and builds its menu. The
+    /// menu shows permission state and, while access is missing, a way to open
+    /// the right System Settings pane.
     private func installStatusItem() {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
@@ -28,13 +70,103 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.toolTip = displayName
 
         let menu = NSMenu()
+        menu.delegate = self
+
+        let permissionStatusItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+        permissionStatusItem.isEnabled = false
+        menu.addItem(permissionStatusItem)
+        self.permissionStatusItem = permissionStatusItem
+
+        let openSettingsItem = NSMenuItem(
+            title: "Open Input Monitoring Settings…",
+            action: #selector(openInputMonitoringSettings),
+            keyEquivalent: ""
+        )
+        openSettingsItem.target = self
+        menu.addItem(openSettingsItem)
+        self.openSettingsItem = openSettingsItem
+
+        menu.addItem(.separator())
         menu.addItem(
             withTitle: "Quit \(displayName)",
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )
-        statusItem.menu = menu
 
+        statusItem.menu = menu
         self.statusItem = statusItem
+    }
+
+    /// Refreshes permission state just before the menu appears, so the menu is
+    /// never stale when the user looks at it.
+    func menuWillOpen(_ menu: NSMenu) {
+        refreshPermission()
+    }
+
+    // MARK: - Permission
+
+    /// Reads permission from the system and reflects it in the menu. While
+    /// access is missing it also keeps polling, so a grant made in System
+    /// Settings starts the tap without a relaunch.
+    private func refreshPermission() {
+        let granted = InputMonitoring.isGranted
+        applyPermission(granted: granted)
+
+        guard granted else {
+            startPermissionPolling()
+            return
+        }
+        permissionTimer?.invalidate()
+        permissionTimer = nil
+        eventTap.start()
+    }
+
+    private func applyPermission(granted: Bool) {
+        permissionStatusItem?.title = granted
+            ? "Input Monitoring: Granted"
+            : "Input Monitoring: Not Granted"
+        openSettingsItem?.isHidden = granted
+    }
+
+    /// Polls until permission is granted. The interval is short enough that the
+    /// app starts firing soon after the switch is flipped, and the timer stops
+    /// itself once access is granted.
+    private func startPermissionPolling() {
+        guard permissionTimer == nil else { return }
+        let timer = Timer(timeInterval: 2, repeats: true) { [weak self] _ in
+            self?.refreshPermission()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        permissionTimer = timer
+    }
+
+    /// Explains why Input Monitoring is needed before macOS asks, then offers
+    /// the exact System Settings pane. Shown only on the first run.
+    private func presentExplainerIfNeeded() {
+        guard !InputMonitoring.isGranted, !hasShownExplainer else { return }
+        hasShownExplainer = true
+
+        NSApp.activate()
+        let alert = NSAlert()
+        alert.messageText = "\(displayName) needs Input Monitoring"
+        alert.informativeText = """
+            \(displayName) plays a sound on every keystroke, so it has to hear \
+            your keyboard system wide. macOS calls this Input Monitoring.
+            It only listens. It never records, stores, or sends what you type.
+            """
+        alert.addButton(withTitle: "Open System Settings")
+        alert.addButton(withTitle: "Not Now")
+
+        if alert.runModal() == .alertFirstButtonReturn {
+            openInputMonitoringSettings()
+        }
+    }
+
+    /// Asks the system to list the app for Input Monitoring and opens the pane
+    /// where the user flips the switch.
+    @objc private func openInputMonitoringSettings() {
+        InputMonitoring.request()
+        InputMonitoring.openSettings()
+        refreshPermission()
     }
 }
