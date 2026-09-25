@@ -154,7 +154,9 @@ final nonisolated class AudioOutput: @unchecked Sendable {
     ///
     /// A limit of one retriggers: the copy already playing fades out as the new
     /// one fades in. A higher limit overlaps copies, stealing the oldest once
-    /// the limit is reached, so overlap can never run away and clip.
+    /// the limit is reached. A voice that is already fading out no longer
+    /// counts, so the limit caps the copies at full level and not the brief
+    /// crossfades.
     func play(_ sound: Sound, maxVoices: Int) {
         queue.async { [self] in
             guard let samples = samples[sound] else { return }
@@ -166,7 +168,7 @@ final nonisolated class AudioOutput: @unchecked Sendable {
                 samples: samples,
                 position: 0,
                 rate: 1 + Double.random(in: -Self.pitchSpread...Self.pitchSpread),
-                gain: Self.hitGain * Float.random(in: (1 - Self.gainSpread)...1),
+                gain: Self.hitGain * Float.random(in: (1 - Self.gainSpread)...(1 + Self.gainSpread)),
                 envelope: 0,
                 releasing: false,
                 attackStep: Float(1 / (Self.attackSeconds * outputRate)),
@@ -188,11 +190,10 @@ final nonisolated class AudioOutput: @unchecked Sendable {
     /// thread by the source node, once per buffer.
     private func render(frames: Int, into audioBufferList: UnsafeMutablePointer<AudioBufferList>) {
         let buffers = UnsafeMutableAudioBufferListPointer(audioBufferList)
-        guard frames > 0, let first = buffers.first,
-              let leftData = first.mData?.assumingMemoryBound(to: Float.self) else { return }
-        let rightData = buffers.count > 1
-            ? buffers[1].mData?.assumingMemoryBound(to: Float.self)
-            : leftData
+        guard frames > 0, buffers.count >= 2,
+              let leftData = buffers[0].mData?.assumingMemoryBound(to: Float.self),
+              let rightData = buffers[1].mData?.assumingMemoryBound(to: Float.self)
+        else { return }
 
         lock.lock()
         defer { lock.unlock() }
@@ -210,7 +211,7 @@ final nonisolated class AudioOutput: @unchecked Sendable {
             }
             limiter.process(&left, &right)
             leftData[frame] = left
-            rightData?[frame] = right
+            rightData[frame] = right
         }
     }
 

@@ -111,7 +111,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// never stale when the user looks at it.
     func menuWillOpen(_ menu: NSMenu) {
         refreshPermission()
-        overlapItem?.state = modeLock.withLock { $0 == .overlap ? .on : .off }
+        syncOverlapItem()
     }
 
     /// Flips between retrigger and overlap. The event-tap callback reads the
@@ -120,6 +120,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         modeLock.withLock { mode in
             mode = mode == .retrigger ? .overlap : .retrigger
         }
+        syncOverlapItem()
+    }
+
+    /// Points the checkbox at the mode the engine is actually reading.
+    private func syncOverlapItem() {
         overlapItem?.state = modeLock.withLock { $0 == .overlap ? .on : .off }
     }
 
