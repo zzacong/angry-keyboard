@@ -1,6 +1,7 @@
 import Foundation
 
-/// The preferences that must survive a relaunch: playback volume and mute.
+/// The preferences that must survive a relaunch: playback volume, mute, and the
+/// playback mode.
 ///
 /// Backed by `UserDefaults`, which is injected so tests can use their own suite
 /// and never touch the real app's domain. Reads clamp to the valid range, so a
@@ -13,6 +14,7 @@ nonisolated struct Settings {
     private enum Key {
         static let volume = "volume"
         static let muted = "muted"
+        static let playbackMode = "playbackMode"
     }
 
     private let defaults: UserDefaults
@@ -39,6 +41,21 @@ nonisolated struct Settings {
     var isMuted: Bool {
         get { defaults.bool(forKey: Key.muted) }
         nonmutating set { defaults.set(newValue, forKey: Key.muted) }
+    }
+
+    /// How a binding behaves when its key is hit again. Defaults to retrigger on
+    /// a fresh install, and to retrigger again if the stored value is not a mode
+    /// this build knows.
+    var playbackMode: PlaybackMode {
+        get {
+            guard let raw = defaults.string(forKey: Key.playbackMode),
+                  let mode = PlaybackMode(rawValue: raw)
+            else { return .retrigger }
+            return mode
+        }
+        nonmutating set {
+            defaults.set(newValue.rawValue, forKey: Key.playbackMode)
+        }
     }
 
     /// Pins a volume to `0...1`. Shared with the audio output so a stray value

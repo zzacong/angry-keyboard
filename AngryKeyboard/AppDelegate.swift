@@ -67,11 +67,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         refreshPermission()
     }
 
-    /// Pushes the persisted volume and mute into the engine before the tap can
-    /// fire, so a muted relaunch never makes a sound on the way up.
+    /// Pushes the persisted settings into the engine and the routing before the
+    /// tap can fire, so a muted relaunch never makes a sound on the way up and
+    /// the overlap choice is in force from the first key.
     private func applyStoredSettings() {
         audio.setVolume(settings.volume)
         audio.setMuted(settings.isMuted)
+        let mode = settings.playbackMode
+        routingLock.withLock { $0.mode = mode }
     }
 
     // MARK: - Menu bar
@@ -186,12 +189,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: - Playback controls
 
-    /// Flips between retrigger and overlap. The event-tap callback reads the
-    /// mode per keystroke, so the change takes effect on the next key.
+    /// Flips between retrigger and overlap and stores the choice. The event-tap
+    /// callback reads the mode per keystroke, so the change takes effect on the
+    /// next key.
     @objc private func toggleOverlapSounds() {
-        routingLock.withLock { routing in
-            routing.mode = routing.mode == .retrigger ? .overlap : .retrigger
-        }
+        let mode: PlaybackMode = settings.playbackMode == .retrigger ? .overlap : .retrigger
+        settings.playbackMode = mode
+        routingLock.withLock { $0.mode = mode }
         syncPlaybackItems()
     }
 

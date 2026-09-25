@@ -4,7 +4,7 @@
 /// keeps fast typing from turning into mud. `overlap` lets a binding use its
 /// own voice count so several copies can stack. The menu toggle exists so the
 /// two feels can be judged by ear rather than by argument.
-nonisolated enum PlaybackMode: Sendable, CaseIterable {
+nonisolated enum PlaybackMode: String, Sendable, CaseIterable {
     case retrigger
     case overlap
 }

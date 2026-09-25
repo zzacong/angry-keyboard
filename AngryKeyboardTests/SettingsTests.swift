@@ -28,6 +28,22 @@ final class SettingsTests: XCTestCase {
         XCTAssertFalse(settings.isMuted)
     }
 
+    func testAFreshInstallUsesRetrigger() {
+        XCTAssertEqual(settings.playbackMode, .retrigger)
+    }
+
+    func testPlaybackModeSurvivesARelaunch() {
+        settings.playbackMode = .overlap
+
+        XCTAssertEqual(Settings(defaults: defaults).playbackMode, .overlap)
+    }
+
+    func testAnUnknownStoredPlaybackModeFallsBackToRetrigger() {
+        defaults.set("nonsense", forKey: "playbackMode")
+
+        XCTAssertEqual(settings.playbackMode, .retrigger)
+    }
+
     func testVolumeSurvivesARelaunch() {
         settings.volume = 0.25
 
