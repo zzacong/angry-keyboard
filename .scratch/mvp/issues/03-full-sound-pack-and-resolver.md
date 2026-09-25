@@ -4,7 +4,7 @@
 
 **Blocked by:** 02.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Enter plays the explosion, Esc the whoosh, Backspace the blast, and Spacebar the cocking sound.
 - [x] Every other key, including letters, numbers, arrows, and function keys, plays the shotgun sound.

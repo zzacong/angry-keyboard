@@ -4,7 +4,7 @@
 
 **Blocked by:** 01.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] On first launch the app explains why it needs Input Monitoring and opens the Input Monitoring pane when asked.
 - [x] The menu shows whether Input Monitoring is granted and updates when it changes.

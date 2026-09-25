@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Launching the app shows a status item in the menu bar.
 - [x] Clicking the status item shows a menu containing Quit.
