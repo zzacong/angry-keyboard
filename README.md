@@ -154,6 +154,18 @@ Check these by hand after a build.
   Debug build can change identity between builds, so the old grant no longer
   matches. Grant it again, or keep one build for everyday use.
 
+## Logs
+
+The app uses `NSLog` for audio load failures and audio engine failures. To
+watch them while the app runs:
+
+```
+/usr/bin/log stream --predicate 'process == "AngryKeyboard"' --level debug
+```
+
+The full path matters. In zsh, the default shell on macOS, `log` is a shell
+builtin and the bare command fails. Stop the stream with Ctrl-C.
+
 ## Learn more
 
 - `CONTEXT.md` defines the vocabulary: keystroke, sound pack, binding, catch-all,

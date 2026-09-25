@@ -45,6 +45,13 @@ Verified:
 Nothing here needs a unit test, so the two-axis code review was not run. The
 README was checked against the four acceptance criteria directly.
 
+**2026-09-25 — follow-up: document `log stream`.**
+
+Added a Logs section with
+`/usr/bin/log stream --predicate 'process == "AngryKeyboard"' --level debug` for
+watching the app's `NSLog` output (audio load and engine failures). The full path
+is required: in zsh, `log` is a shell builtin and the bare command fails.
+
 **2026-09-25 — follow-up: document the stored settings CLI.**
 
 The README gains a Stored settings section: the three UserDefaults keys with
