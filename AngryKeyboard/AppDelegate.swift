@@ -26,6 +26,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private let audio = AudioOutput()
     private let eventTap = KeystrokeEventTap()
+    private let pack = SoundPack.shipped
 
     /// The name shown to the user, read from the bundle so the menu and the
     /// accessibility label stay in step with the app's display name.
@@ -35,7 +36,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        eventTap.onKeystroke = { [audio] _ in audio.play(.shotgun) }
+        eventTap.onKeystroke = { [audio, pack] keystroke in
+            guard let binding = pack.binding(for: keystroke) else { return }
+            audio.play(binding.sound)
+        }
 
         installStatusItem()
         presentExplainerIfNeeded()

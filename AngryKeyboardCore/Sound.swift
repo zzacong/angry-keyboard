@@ -1,8 +1,8 @@
 /// A sound bundled with the app, named after the MP3 file it loads from.
 ///
-/// Ticket 03's sound pack points its bindings at these cases; today the app
-/// plays `shotgun` for every keystroke.
-enum Sound: String, CaseIterable, Sendable {
+/// A `SoundPack` points its bindings at these cases; the app decodes each one
+/// into memory at launch.
+nonisolated enum Sound: String, CaseIterable, Sendable {
     case explodeRock = "explode-rock"
     case rocketWhoosh = "rocket-whoosh"
     case shotgunBlast = "shotgun-blast"

@@ -16,7 +16,7 @@ import Foundation
 final nonisolated class KeystrokeEventTap: @unchecked Sendable {
     /// Called on the tap thread for every key-down event, including the repeats
     /// macOS generates while a key is held. Set this before calling `start()`.
-    var onKeystroke: (@Sendable (CGKeyCode) -> Void)?
+    var onKeystroke: (@Sendable (Keystroke) -> Void)?
 
     private let lock = NSLock()
     private var port: CFMachPort?
@@ -115,7 +115,7 @@ final nonisolated class KeystrokeEventTap: @unchecked Sendable {
             tap.reenable()
         } else if type == .keyDown {
             let keyCode = CGKeyCode(event.getIntegerValueField(.keyboardEventKeycode))
-            tap.onKeystroke?(keyCode)
+            tap.onKeystroke?(Keystroke(keyCode: keyCode, modifiers: event.flags))
         }
         return Unmanaged.passUnretained(event)
     }

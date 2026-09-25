@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		CA8DEE2130661FAB00E5FED8 /* AngryKeyboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AngryKeyboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA0000000000000000000002 /* AngryKeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AngryKeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +17,25 @@
 			path = AngryKeyboard;
 			sourceTree = "<group>";
 		};
+		FA000000000000000000000A /* AngryKeyboardCore */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AngryKeyboardCore;
+			sourceTree = "<group>";
+		};
+		FA0000000000000000000006 /* AngryKeyboardTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AngryKeyboardTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		CA8DEE1E30661FAB00E5FED8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		FA0000000000000000000004 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
 			);
@@ -31,6 +47,8 @@
 			isa = PBXGroup;
 			children = (
 				CA8DEE2330661FAB00E5FED8 /* AngryKeyboard */,
+				FA000000000000000000000A /* AngryKeyboardCore */,
+				FA0000000000000000000006 /* AngryKeyboardTests */,
 				CA8DEE2230661FAB00E5FED8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -39,6 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				CA8DEE2130661FAB00E5FED8 /* AngryKeyboard.app */,
+				FA0000000000000000000002 /* AngryKeyboardTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,11 +77,33 @@
 			);
 			fileSystemSynchronizedGroups = (
 				CA8DEE2330661FAB00E5FED8 /* AngryKeyboard */,
+				FA000000000000000000000A /* AngryKeyboardCore */,
 			);
 			name = AngryKeyboard;
 			productName = AngryKeyboard;
 			productReference = CA8DEE2130661FAB00E5FED8 /* AngryKeyboard.app */;
 			productType = "com.apple.product-type.application";
+		};
+		FA0000000000000000000001 /* AngryKeyboardTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA0000000000000000000007 /* Build configuration list for PBXNativeTarget "AngryKeyboardTests" */;
+			buildPhases = (
+				FA0000000000000000000003 /* Sources */,
+				FA0000000000000000000004 /* Frameworks */,
+				FA0000000000000000000005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				FA000000000000000000000A /* AngryKeyboardCore */,
+				FA0000000000000000000006 /* AngryKeyboardTests */,
+			);
+			name = AngryKeyboardTests;
+			productName = AngryKeyboardTests;
+			productReference = FA0000000000000000000002 /* AngryKeyboardTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -75,6 +116,9 @@
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					CA8DEE2030661FAB00E5FED8 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					FA0000000000000000000001 = {
 						CreatedOnToolsVersion = 27.0;
 					};
 				};
@@ -94,6 +138,7 @@
 			projectRoot = "";
 			targets = (
 				CA8DEE2030661FAB00E5FED8 /* AngryKeyboard */,
+				FA0000000000000000000001 /* AngryKeyboardTests */,
 			);
 		};
 /* End PBXProject section */
@@ -104,10 +149,20 @@
 			files = (
 			);
 		};
+		FA0000000000000000000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CA8DEE1D30661FAB00E5FED8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		FA0000000000000000000003 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
 			);
@@ -295,6 +350,46 @@
 			};
 			name = Release;
 		};
+		FA0000000000000000000008 /* Debug configuration for PBXNativeTarget "AngryKeyboardTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zzacong.AngryKeyboardTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FA0000000000000000000009 /* Release configuration for PBXNativeTarget "AngryKeyboardTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zzacong.AngryKeyboardTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -311,6 +406,14 @@
 			buildConfigurations = (
 				CA8DEE2D30661FAC00E5FED8 /* Debug configuration for PBXNativeTarget "AngryKeyboard" */,
 				CA8DEE2E30661FAC00E5FED8 /* Release configuration for PBXNativeTarget "AngryKeyboard" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		FA0000000000000000000007 /* Build configuration list for PBXNativeTarget "AngryKeyboardTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA0000000000000000000008 /* Debug configuration for PBXNativeTarget "AngryKeyboardTests" */,
+				FA0000000000000000000009 /* Release configuration for PBXNativeTarget "AngryKeyboardTests" */,
 			);
 			defaultConfigurationName = Release;
 		};
