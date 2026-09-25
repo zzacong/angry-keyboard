@@ -1,4 +1,5 @@
 import AppKit
+import os
 
 /// Owns the app's lifetime and its only visible surface, the menu bar status
 /// item. AngryKeyboard is a background agent: it has no window and no Dock
@@ -22,7 +23,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem?
     private var permissionStatusItem: NSMenuItem?
     private var openSettingsItem: NSMenuItem?
+    private var overlapItem: NSMenuItem?
     private var permissionTimer: Timer?
+
+    /// The playback mode is read on the event-tap thread and written by the menu
+    /// on the main thread, so it lives behind its own lock rather than in a
+    /// plain property. Retrigger is the shipped default.
+    private let modeLock = OSAllocatedUnfairLock(initialState: PlaybackMode.retrigger)
 
     private let audio = AudioOutput()
     private let eventTap = KeystrokeEventTap()
@@ -36,9 +43,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        eventTap.onKeystroke = { [audio, pack] keystroke in
+        eventTap.onKeystroke = { [audio, pack, modeLock] keystroke in
             guard let binding = pack.binding(for: keystroke) else { return }
-            audio.play(binding.sound)
+            let mode = modeLock.withLock { $0 }
+            audio.play(binding.sound, maxVoices: binding.effectiveVoiceCount(for: mode))
         }
 
         installStatusItem()
@@ -77,6 +85,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         self.openSettingsItem = openSettingsItem
 
         menu.addItem(.separator())
+
+        let overlapItem = NSMenuItem(
+            title: "Overlap Sounds",
+            action: #selector(toggleOverlapSounds),
+            keyEquivalent: ""
+        )
+        overlapItem.target = self
+        overlapItem.state = .off
+        menu.addItem(overlapItem)
+        self.overlapItem = overlapItem
+
+        menu.addItem(.separator())
         menu.addItem(
             withTitle: "Quit \(displayName)",
             action: #selector(NSApplication.terminate(_:)),
@@ -91,6 +111,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// never stale when the user looks at it.
     func menuWillOpen(_ menu: NSMenu) {
         refreshPermission()
+        overlapItem?.state = modeLock.withLock { $0 == .overlap ? .on : .off }
+    }
+
+    /// Flips between retrigger and overlap. The event-tap callback reads the
+    /// mode per keystroke, so the change takes effect on the next key.
+    @objc private func toggleOverlapSounds() {
+        modeLock.withLock { mode in
+            mode = mode == .retrigger ? .overlap : .retrigger
+        }
+        overlapItem?.state = modeLock.withLock { $0 == .overlap ? .on : .off }
     }
 
     // MARK: - Permission
