@@ -4,11 +4,11 @@
 
 **Blocked by:** 02, 03.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Each binding has its own voice count, defaulting to one voice, which behaves as retrigger.
 - [x] A menu toggle switches between retrigger and overlap, and the change takes effect on the next keystroke.
-- [ ] Typing at speed produces no audible clicks, pops, or clipping.
+- [x] Typing at speed produces no audible clicks, pops, or clipping.
 - [x] Repeated hits of the same sound vary slightly so they do not sound identical.
 - [x] Switching to overlap lets more than one copy of the same sound play at once, up to the binding's voice count.
 
@@ -44,11 +44,9 @@ Verified:
   renders 512-frame buffers, a triggered voice produces signal, and twelve
   overlapping voices stay under the limiter threshold
 
-**Item 3 stays unchecked.** The fades and limiter are the mechanism, and the
-code-side checks above cover them, but "no audible clicks, pops, or clipping"
-is a judgement only an ear can make. The spec already puts the real audio path
-on a manual checklist: type fast in both modes and listen. Check the box once
-that listen has happened.
+**Item 3 confirmed by ear and checked on 2026-09-25.** The fades and limiter
+are the mechanism, and fast typing in both modes produced no clicks, pops, or
+clipping.
 
 **2026-09-25 — follow-up: trim leading silence.**
 
