@@ -46,14 +46,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         installStatusItem()
         presentExplainerIfNeeded()
-
-        if InputMonitoring.isGranted {
-            applyPermission(granted: true)
-            eventTap.start()
-        } else {
-            applyPermission(granted: false)
-            startPermissionPolling()
-        }
+        refreshPermission()
     }
 
     // MARK: - Menu bar
@@ -105,20 +98,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: - Permission
 
-    /// Reads permission from the system and reflects it in the menu. While
-    /// access is missing it also keeps polling, so a grant made in System
-    /// Settings starts the tap without a relaunch.
+    /// Reads permission from the system, reflects it in the menu, and starts the
+    /// tap once access is granted. Polling continues until the tap is actually
+    /// running, so a grant that fails to install a tap is retried instead of
+    /// leaving the menu reading "Granted" over a dead tap.
     private func refreshPermission() {
         let granted = InputMonitoring.isGranted
         applyPermission(granted: granted)
 
-        guard granted else {
-            startPermissionPolling()
-            return
+        if granted {
+            eventTap.start()
         }
-        permissionTimer?.invalidate()
-        permissionTimer = nil
-        eventTap.start()
+
+        if granted && eventTap.isRunning {
+            permissionTimer?.invalidate()
+            permissionTimer = nil
+        } else {
+            startPermissionPolling()
+        }
     }
 
     private func applyPermission(granted: Bool) {
@@ -128,9 +125,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         openSettingsItem?.isHidden = granted
     }
 
-    /// Polls until permission is granted. The interval is short enough that the
-    /// app starts firing soon after the switch is flipped, and the timer stops
-    /// itself once access is granted.
+    /// Polls until the tap is running. The interval is short enough that the app
+    /// starts firing soon after the switch is flipped, and the timer stops
+    /// itself once the tap is up.
     private func startPermissionPolling() {
         guard permissionTimer == nil else { return }
         let timer = Timer(timeInterval: 2, repeats: true) { [weak self] _ in

@@ -22,11 +22,31 @@ final nonisolated class KeystrokeEventTap: @unchecked Sendable {
     private var port: CFMachPort?
     private var thread: Thread?
 
-    /// Installs the tap on a fresh thread. Does nothing when already running,
-    /// so callers can treat it as idempotent and retry it after granting
-    /// permission.
+    /// Whether the tap is installed and enabled. A port that macOS disabled, or
+    /// one that died, reads as not running so callers keep retrying.
+    var isRunning: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let port else { return false }
+        return CFMachPortIsValid(port) && CGEvent.tapIsEnabled(tap: port)
+    }
+
+    /// Installs the tap if needed and enables it. Safe to call on a timer: a
+    /// disabled tap is re-enabled, and a tap that failed to install is retried.
+    /// A denied permission makes the install fail quietly, which is what keeps
+    /// the app silent until the user grants access.
     func start() {
         lock.lock()
+        if let port, CFMachPortIsValid(port) {
+            lock.unlock()
+            CGEvent.tapEnable(tap: port, enable: true)
+            return
+        }
+        if port != nil {
+            // The port died; drop it so a fresh tap can be built.
+            port = nil
+            thread = nil
+        }
         guard thread == nil else {
             lock.unlock()
             return
