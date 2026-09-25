@@ -34,3 +34,9 @@ Verified:
 - A launch with `muted = true` and `volume = 0.25` persisted starts clean and stays alive; the defaults were restored after
 
 The menu bar is a manual check because the tooling cannot capture the screen. Slider feel, the icon swap by eye, and the launch-at-login checkbox against System Settings still need a human pass.
+
+**2026-09-25 — follow-up: persist the overlap mode.**
+
+The overlap toggle was in-memory, so a relaunch reset it to retrigger. `PlaybackMode` is now `String`-raw so `Settings.playbackMode` can store it, defaulting to retrigger. `applyStoredSettings` seeds the live routing from the stored mode, and `toggleOverlapSounds` writes the flip back. Three `SettingsTests` cover the fresh default, the round trip, and the fallback when the stored value is not a mode this build knows.
+
+Verified: 35 tests, 0 failures, and the Debug build has no warnings.
