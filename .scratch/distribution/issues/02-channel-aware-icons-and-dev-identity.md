@@ -21,8 +21,8 @@ Channel plumbing is in place.
 
 - `AppDelegate.applicationIcon` reads `CFBundleIconName`, and
   `refreshStatusIcon` reads `AKMenuBarGlyph` / `AKMenuBarGlyphMuted`, both through
-  `AngryKeyboardCore/ChannelAssets.swift`. Four tests pin the production
-  fallbacks.
+  `AngryKeyboardCore/ChannelAssets.swift`. Two tests pin the production
+  fallbacks and two pin the override path.
 - Custom `INFOPLIST_KEY_` keys are dropped by Xcode 27, as ticket 01 found. The
   two glyph keys now come from `Config/Info.plist`, merged with the generated
   plist, with `$(AK_MENU_BAR_GLYPH)` values set in the xcconfig files. The spec
@@ -38,8 +38,9 @@ Channel plumbing is in place.
 
 Waiting on Zac for the pick. Reply with an app icon letter and a glyph number,
 for example "icon C, glyph 3". Then the chosen master rasterizes into
-`AppIconDev.appiconset` and the two `AK_MENU_BAR_GLYPH` lines in
-`Config/Debug.xcconfig` are repointed. Production keys and artwork do not change.
+`AppIconDev.appiconset`, the chosen glyph gets its own imageset with a muted
+variant, and `Config/Debug.xcconfig` names that glyph. Production keys and
+artwork do not change.
 
 Note: Xcode is open on the project and rewrote `project.pbxproj` mid-session
 (product reference renamed to `AngryKeyboardDev.app`, groups reordered). That

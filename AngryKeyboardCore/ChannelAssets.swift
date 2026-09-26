@@ -2,9 +2,10 @@
 ///
 /// The two channels ship different app icons and menu bar glyphs, and the bundle
 /// is the only thing that differs at runtime. Production sets the standard
-/// `CFBundleIconName` and omits the custom glyph keys; dev may override either.
-/// The fallbacks are the production names, so a bundle without the keys keeps
-/// the shipped artwork.
+/// `CFBundleIconName` and points both custom glyph keys at the production
+/// glyphs. Dev overrides the icon and, once a dev glyph exists, the glyph keys.
+/// The fallbacks are the production names, so a bundle without the glyph keys
+/// keeps the shipped artwork.
 nonisolated enum ChannelAssets {
     static let defaultAppIcon = "AppIcon"
     static let defaultMenuBarGlyph = "MenuBarGlyph"

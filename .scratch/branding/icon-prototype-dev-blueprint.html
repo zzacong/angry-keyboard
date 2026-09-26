@@ -185,7 +185,7 @@
     <h3>After the pick</h3>
     <ul>
       <li>The chosen master rasterizes with <code>./make-app-icon.sh app-icon-blueprint-&lt;x&gt;.svg AppIconDev</code>, and Debug already points at <code>AppIconDev</code>.</li>
-      <li>The chosen glyph is copied over <code>menu-bar-glyph-dev.svg</code>, and the two <code>AK_MENU_BAR_GLYPH</code> lines in <code>Config/Debug.xcconfig</code> are repointed. Production&rsquo;s keys and artwork stay as they are.</li>
+      <li>The chosen glyph gets its own imageset, with a muted variant, and <code>Config/Debug.xcconfig</code> names it. Production&rsquo;s keys and artwork stay as they are.</li>
       <li>Tell me the app icon letter and the glyph number. For example, &ldquo;icon C, glyph 3&rdquo;.</li>
     </ul>
   </div>
