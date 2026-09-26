@@ -28,10 +28,11 @@ macOS; Xcode is not a runtime dependency.
 
 ```
 xcodebuild -scheme AngryKeyboard -configuration Debug -derivedDataPath build build
-open build/Build/Products/Debug/AngryKeyboard.app
+open build/Build/Products/Debug/AngryKeyboardDev.app
 ```
 
-The app is built at `build/Build/Products/Debug/AngryKeyboard.app`.
+The app is built at `build/Build/Products/Debug/AngryKeyboardDev.app`. Debug is
+the dev channel, which runs beside the production app that Release builds.
 
 ### Tests
 

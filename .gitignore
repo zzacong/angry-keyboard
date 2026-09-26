@@ -88,3 +88,9 @@ iOSInjectionProject/
 # macOS
 .DS_Store
 
+# Distribution
+#
+# Local signing identities override the ad-hoc default in Config/*.xcconfig.
+# They stay out of the repository so a clone never depends on a keychain.
+Config/*.local.xcconfig
+

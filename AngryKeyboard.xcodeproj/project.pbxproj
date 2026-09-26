@@ -8,6 +8,8 @@
 
 /* Begin PBXFileReference section */
 		CA8DEE2130661FAB00E5FED8 /* AngryKeyboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AngryKeyboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA8DEE3030661FAC00E5FED8 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		CA8DEE3130661FAC00E5FED8 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		FA0000000000000000000002 /* AngryKeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AngryKeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -49,8 +51,18 @@
 				CA8DEE2330661FAB00E5FED8 /* AngryKeyboard */,
 				FA000000000000000000000A /* AngryKeyboardCore */,
 				FA0000000000000000000006 /* AngryKeyboardTests */,
+				CA8DEE2F30661FAC00E5FED8 /* Config */,
 				CA8DEE2230661FAB00E5FED8 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		CA8DEE2F30661FAC00E5FED8 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				CA8DEE3030661FAC00E5FED8 /* Debug.xcconfig */,
+				CA8DEE3130661FAC00E5FED8 /* Release.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		CA8DEE2230661FAB00E5FED8 /* Products */ = {
@@ -288,17 +300,14 @@
 		};
 		CA8DEE2D30661FAC00E5FED8 /* Debug configuration for PBXNativeTarget "AngryKeyboard" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA8DEE3030661FAC00E5FED8 /* Debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "AngryKeyboard Local";
-				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Angry Keyboard";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -306,8 +315,6 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.zzacong.AngryKeyboard;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -320,17 +327,14 @@
 		};
 		CA8DEE2E30661FAC00E5FED8 /* Release configuration for PBXNativeTarget "AngryKeyboard" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA8DEE3130661FAC00E5FED8 /* Release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "AngryKeyboard Local";
-				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Angry Keyboard";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -338,8 +342,6 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.zzacong.AngryKeyboard;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
