@@ -54,6 +54,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             ?? ProcessInfo.processInfo.processName
     }
 
+    /// The app icon from the asset catalog. An agent app has no Dock tile, so
+    /// AppKit never loads the bundle icon into `NSApplication.applicationIconImage`.
+    /// The places that would otherwise draw it, the About panel and an alert, are
+    /// handed it by hand.
+    private var applicationIcon: NSImage? {
+        NSImage(named: "AppIcon")
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         eventTap.onKeystroke = { [audio, routingLock] keystroke in
             let routing = routingLock.withLock { $0 }
@@ -297,18 +305,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// so there is nowhere for the usual About item to live and the panel is
     /// asked for by hand. Activation comes first, because an accessory app's
     /// windows otherwise open behind the active app. The panel reads version and
-    /// build from the bundle; the display name and icon are the two overrides.
-    ///
-    /// The name default is the bundle's unspaced `CFBundleName`. The icon default
-    /// is the placeholder, because AppKit fills `applicationIconImage` from the
-    /// Dock tile and an agent app has none. The asset catalog icon is supplied by
-    /// hand to replace it.
+    /// build from the bundle; the display name and icon are the two overrides,
+    /// since the defaults are the bundle's unspaced `CFBundleName` and the
+    /// placeholder.
     @objc private func showAboutPanel() {
         NSApp.activate()
         var options: [NSApplication.AboutPanelOptionKey: Any] = [
             .applicationName: displayName
         ]
-        if let icon = NSImage(named: "AppIcon") {
+        if let icon = applicationIcon {
             options[.applicationIcon] = icon
         }
         NSApp.orderFrontStandardAboutPanel(options: options)
@@ -363,6 +368,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         NSApp.activate()
         let alert = NSAlert()
+        alert.icon = applicationIcon
         alert.messageText = "\(displayName) needs Input Monitoring"
         alert.informativeText = """
             \(displayName) plays a sound on every keystroke, so it has to hear \
