@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs>
+<clipPath id="art-c"><path d="M 608.8200 100.0000 c 121.3788 0 182.0682 0 226.6512 27.3205 a 185.4000 185.4000 0 0 1 61.2083 61.2083 c 27.3205 44.5830 27.3205 105.2724 27.3205 226.6512 L 924.0000 608.8200 c 0 121.3788 0 182.0682 -27.3205 226.6512 a 185.4000 185.4000 0 0 1 -61.2083 61.2083 c -44.5830 27.3205 -105.2724 27.3205 -226.6512 27.3205 L 415.1800 924.0000 c -121.3788 0 -182.0682 0 -226.6512 -27.3205 a 185.4000 185.4000 0 0 1 -61.2083 -61.2083 c -27.3205 -44.5830 -27.3205 -105.2724 -27.3205 -226.6512 L 100.0000 415.1800 c 0 -121.3788 0 -182.0682 27.3205 -226.6512 a 185.4000 185.4000 0 0 1 61.2083 -61.2083 c 44.5830 -27.3205 105.2724 -27.3205 226.6512 -27.3205 Z"/></clipPath>
+<pattern id="grid-c" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0 H0 V64" fill="none" stroke="#7FA8DF" stroke-width="2" opacity=".45"/></pattern>
+</defs>
+<g clip-path="url(#art-c)">
+<rect x="0" y="0" width="1024" height="1024" fill="#123E80"/>
+<rect x="0" y="0" width="1024" height="1024" fill="url(#grid-c)"/>
+<g transform="translate(100 100) scale(1.609375)">
+
+<rect x="126" y="272" width="260" height="196" rx="32" fill="#08204A" opacity=".8"/>
+<rect x="126" y="250" width="260" height="196" rx="32" fill="#16407E" stroke="#FAFCFF" stroke-width="8"/>
+<g fill="none" stroke="#FAFCFF" stroke-width="16" stroke-linecap="round"><path d="M176 300 L228 320"/><path d="M336 300 L284 320"/></g><circle cx="206" cy="346" r="11" fill="#FAFCFF"/><circle cx="306" cy="346" r="11" fill="#FAFCFF"/><rect x="214" y="372" width="84" height="30" rx="10" fill="#FAFCFF"/>
+</g>
+</g>
+</svg>

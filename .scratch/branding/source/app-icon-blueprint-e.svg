@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs>
+<clipPath id="art-e"><path d="M 608.8200 100.0000 c 121.3788 0 182.0682 0 226.6512 27.3205 a 185.4000 185.4000 0 0 1 61.2083 61.2083 c 27.3205 44.5830 27.3205 105.2724 27.3205 226.6512 L 924.0000 608.8200 c 0 121.3788 0 182.0682 -27.3205 226.6512 a 185.4000 185.4000 0 0 1 -61.2083 61.2083 c -44.5830 27.3205 -105.2724 27.3205 -226.6512 27.3205 L 415.1800 924.0000 c -121.3788 0 -182.0682 0 -226.6512 -27.3205 a 185.4000 185.4000 0 0 1 -61.2083 -61.2083 c -27.3205 -44.5830 -27.3205 -105.2724 -27.3205 -226.6512 L 100.0000 415.1800 c 0 -121.3788 0 -182.0682 27.3205 -226.6512 a 185.4000 185.4000 0 0 1 61.2083 -61.2083 c 44.5830 -27.3205 105.2724 -27.3205 226.6512 -27.3205 Z"/></clipPath>
+<pattern id="grid-e" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0 H0 V64" fill="none" stroke="#AFCBEE" stroke-width="2" opacity=".5"/></pattern><pattern id="hatch-e" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="18" stroke="#4C88DC" stroke-width="4" opacity=".55"/></pattern>
+</defs>
+<g clip-path="url(#art-e)">
+<rect x="0" y="0" width="1024" height="1024" fill="#F2F7FE"/>
+<rect x="0" y="0" width="1024" height="1024" fill="url(#grid-e)"/>
+<g transform="translate(100 100) scale(1.609375)">
+
+<rect x="126" y="272" width="260" height="196" rx="32" fill="#123E80" opacity=".18"/>
+<rect x="126" y="250" width="260" height="196" rx="32" fill="url(#hatch-e)" stroke="#1E5CB3" stroke-width="8"/>
+<g fill="none" stroke="#123E80" stroke-width="16" stroke-linecap="round"><path d="M176 300 L228 320"/><path d="M336 300 L284 320"/></g><circle cx="206" cy="346" r="11" fill="#123E80"/><circle cx="306" cy="346" r="11" fill="#123E80"/><rect x="214" y="372" width="84" height="30" rx="10" fill="#123E80"/>
+</g>
+</g>
+</svg>

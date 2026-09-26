@@ -94,3 +94,8 @@ iOSInjectionProject/
 # They stay out of the repository so a clone never depends on a keychain.
 Config/*.local.xcconfig
 
+# Branding scripts
+#
+# Python bytecode from the icon generators under .scratch/branding/source.
+__pycache__/
+

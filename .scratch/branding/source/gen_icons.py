@@ -109,10 +109,15 @@ flat_red = master(RED, f"""{smoke(INK, ".85")}
 <rect x="126" y="250" width="260" height="196" rx="32" fill="{CREAM}"/>
 {face(INK, CREAM)}""")
 
-for name, svg in [
-    ("app-icon-blackout.svg", blackout),
-    ("app-icon-kraft-kit.svg", kraft),
-    ("app-icon-flat-red.svg", flat_red),
-]:
-    (OUT / name).write_text(svg)
-print("wrote", ", ".join(sorted(p.name for p in OUT.glob("app-icon-*.svg"))))
+def main():
+    for name, svg in [
+        ("app-icon-blackout.svg", blackout),
+        ("app-icon-kraft-kit.svg", kraft),
+        ("app-icon-flat-red.svg", flat_red),
+    ]:
+        (OUT / name).write_text(svg)
+    print("wrote", ", ".join(sorted(p.name for p in OUT.glob("app-icon-*.svg"))))
+
+
+if __name__ == "__main__":
+    main()
