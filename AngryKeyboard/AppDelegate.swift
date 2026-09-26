@@ -296,14 +296,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// Opens the standard About panel. The app is an accessory with no app menu,
     /// so there is nowhere for the usual About item to live and the panel is
     /// asked for by hand. Activation comes first, because an accessory app's
-    /// windows otherwise open behind the active app. The panel reads the rest,
-    /// version and build, from the bundle; the display name is the one override,
-    /// since the default would be the bundle's unspaced `CFBundleName`.
+    /// windows otherwise open behind the active app. The panel reads version and
+    /// build from the bundle; the display name and icon are the two overrides.
+    ///
+    /// The name default is the bundle's unspaced `CFBundleName`. The icon default
+    /// is the placeholder, because AppKit fills `applicationIconImage` from the
+    /// Dock tile and an agent app has none. The asset catalog icon is supplied by
+    /// hand to replace it.
     @objc private func showAboutPanel() {
         NSApp.activate()
-        NSApp.orderFrontStandardAboutPanel(options: [
+        var options: [NSApplication.AboutPanelOptionKey: Any] = [
             .applicationName: displayName
-        ])
+        ]
+        if let icon = NSImage(named: "AppIcon") {
+            options[.applicationIcon] = icon
+        }
+        NSApp.orderFrontStandardAboutPanel(options: options)
     }
 
     // MARK: - Permission
