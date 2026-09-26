@@ -122,6 +122,35 @@ flushes its own values. Quit, write, relaunch.
 Launch at Login is not stored here. The app reads it from the system, so System
 Settings > General > Login Items is the source of truth.
 
+## Uninstall
+
+To remove AngryKeyboard completely:
+
+1. Quit the app from its menu bar icon.
+2. Turn off Launch at Login if it is on. Removing the app does not always remove
+   the login item, so after the app is gone check System Settings > General >
+   Login Items and remove any leftover entry.
+3. Drag AngryKeyboard from Applications to the Trash.
+4. Remove the stored preferences:
+
+   ```
+   defaults delete com.zzacong.AngryKeyboard
+   ```
+
+   This clears the volume, mute, and playback mode settings.
+5. Clear the Input Monitoring permission:
+
+   ```
+   tccutil reset ListenEvent com.zzacong.AngryKeyboard
+   ```
+
+   This removes the saved grant. The row may stay in System Settings > Privacy &
+   Security > Input Monitoring; select it and click the minus button to remove
+   it.
+
+The app has no helper process, no launch agent, and no updater, so these steps
+remove everything it installs.
+
 ## Manual verification
 
 Check these by hand after a build.
