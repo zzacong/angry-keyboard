@@ -37,4 +37,12 @@ final class PlaybackTests: XCTestCase {
             XCTAssertGreaterThanOrEqual(binding.voiceCount, 1)
         }
     }
+
+    func testTheArrowPoolIsCappedAtThreeVoices() {
+        let arrows = SoundPack.shipped.bindings.filter { $0.pool == SoundPack.arrowImpacts }
+        XCTAssertEqual(arrows.count, 4)
+        for binding in arrows {
+            XCTAssertEqual(binding.effectiveVoiceCount(for: .overlap), 3)
+        }
+    }
 }

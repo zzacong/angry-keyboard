@@ -58,7 +58,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         eventTap.onKeystroke = { [audio, routingLock] keystroke in
             let routing = routingLock.withLock { $0 }
             guard let binding = routing.pack.binding(for: keystroke) else { return }
-            audio.play(binding.sound, maxVoices: binding.effectiveVoiceCount(for: routing.mode))
+            audio.play(binding.pool, maxVoices: binding.effectiveVoiceCount(for: routing.mode))
         }
 
         applyStoredSettings()

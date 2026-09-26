@@ -53,9 +53,10 @@ private nonisolated extension SoundSamples {
 }
 
 /// One playing copy of a sound: a cursor that reads through the samples at its
-/// own pitch and gain.
+/// own pitch and gain. `pool` is where the sound was drawn from, which is what
+/// the voice limit counts against.
 private nonisolated struct Voice {
-    let sound: Sound
+    let pool: SoundPool
     let samples: SoundSamples
     var position: Double
     let rate: Double
@@ -166,21 +167,25 @@ final nonisolated class AudioOutput: @unchecked Sendable {
         startEngine()
     }
 
-    /// Plays `sound`, allowing up to `maxVoices` copies at once.
+    /// Plays one sound drawn from `pool`, allowing up to `maxVoices` copies of
+    /// the pool at once.
     ///
-    /// A limit of one retriggers: the copy already playing fades out as the new
-    /// one fades in. A higher limit overlaps copies, stealing the oldest once
-    /// the limit is reached. A voice that is already fading out no longer
-    /// counts, so the limit caps the copies at full level and not the brief
-    /// crossfades.
-    func play(_ sound: Sound, maxVoices: Int) {
+    /// A limit of one retriggers: whichever pool sound is already playing fades
+    /// out as the new one fades in. A higher limit overlaps copies, stealing the
+    /// oldest once the limit is reached. Voices are counted across the whole
+    /// pool, so every binding that shares a pool shares its limit. A voice that
+    /// is already fading out no longer counts, so the limit caps the copies at
+    /// full level and not the brief crossfades.
+    func play(_ pool: SoundPool, maxVoices: Int) {
         queue.async { [self] in
+            var generator = SystemRandomNumberGenerator()
+            let sound = pool.draw(using: &generator)
             guard let samples = samples[sound] else { return }
             if !engine.isRunning { startEngine() }
 
             let limit = max(1, maxVoices)
             let voice = Voice(
-                sound: sound,
+                pool: pool,
                 samples: samples,
                 position: 0,
                 rate: 1 + Double.random(in: -Self.pitchSpread...Self.pitchSpread),
@@ -194,9 +199,8 @@ final nonisolated class AudioOutput: @unchecked Sendable {
             lock.lock()
             defer { lock.unlock() }
             guard !isMuted else { return }
-            let held = voices.filter { $0.sound == sound && !$0.releasing }
-            if held.count >= limit,
-               let oldest = voices.firstIndex(where: { $0.sound == sound && !$0.releasing }) {
+            let active = voices.indices.filter { voices[$0].pool == pool && !voices[$0].releasing }
+            if active.count >= limit, let oldest = active.first {
                 voices[oldest].beginRelease()
             }
             voices.append(voice)

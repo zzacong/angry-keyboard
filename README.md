@@ -103,7 +103,10 @@ Check these by hand after a build.
 
 - Type in any app. Every key-down plays a sound.
 - Enter plays the explosion, Esc the rocket whoosh, Backspace the shotgun blast,
-  and Spacebar the shotgun cocking. Every other key plays the shotgun.
+  and Spacebar the shotgun cocking.
+- Press any arrow key. It plays one of four impact sounds, chosen at random on
+  every press.
+- Every other key plays the shotgun.
 - Hold a key. The sound repeats while the key is held.
 - Click, scroll, or press a modifier alone, such as Shift or Command. None of
   these make a sound.
@@ -120,6 +123,8 @@ Check these by hand after a build.
 - Toggle Overlap Sounds. Retrigger restarts one voice per key. Overlap stacks
   copies, so fast typing sounds different. Quit and relaunch: the choice is
   retained.
+- Press arrow keys quickly in Overlap. The impact sounds stack, but never more
+  than three at once.
 - Type fast. There are no clicks, pops, or clipping.
 - Hit the same key repeatedly. The pitch and level vary a little between hits.
 - Sleep the Mac and wake it, or switch the output device. The next keystroke
@@ -170,7 +175,7 @@ builtin and the bare command fails. Stop the stream with Ctrl-C.
 
 ## Learn more
 
-- `CONTEXT.md` defines the vocabulary: keystroke, sound pack, binding, catch-all,
-  and playback mode.
+- `CONTEXT.md` defines the vocabulary: keystroke, sound pack, binding, sound
+  pool, catch-all, and playback mode.
 - `docs/adr/` records the notable decisions.
 - `.scratch/mvp/spec.md` is the MVP spec.

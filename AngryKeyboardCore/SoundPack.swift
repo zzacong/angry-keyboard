@@ -28,25 +28,32 @@ nonisolated enum Key: Equatable, Sendable {
     }
 }
 
-/// One rule in a sound pack: a key and the sound it plays.
+/// One rule in a sound pack: a key and the sounds it plays.
 ///
-/// `voiceCount` is how many copies of `sound` may play at once under
-/// `PlaybackMode.overlap`. The default of one is a retrigger: a new hit
-/// replaces the copy already playing.
+/// `pool` is the set of sounds the binding draws from: one sound for an ordinary
+/// binding, several for one that plays a different sound each hit. `voiceCount`
+/// is how many copies may play at once under `PlaybackMode.overlap`, counted
+/// across the whole pool. The default of one is a retrigger: a new hit replaces
+/// the copy already playing.
 nonisolated struct Binding: Equatable, Sendable {
     let key: Key
-    let sound: Sound
+    let pool: SoundPool
     let voiceCount: Int
 
-    init(key: Key, sound: Sound, voiceCount: Int = 1) {
+    init(key: Key, pool: SoundPool, voiceCount: Int = 1) {
         self.key = key
-        self.sound = sound
+        self.pool = pool
         self.voiceCount = voiceCount
+    }
+
+    /// A binding to a single sound: the deterministic case.
+    init(key: Key, sound: Sound, voiceCount: Int = 1) {
+        self.init(key: key, pool: SoundPool(sound), voiceCount: voiceCount)
     }
 }
 
 nonisolated extension Binding {
-    /// How many copies of `sound` may play at once in `mode`.
+    /// How many copies of the pool's sounds may play at once in `mode`.
     ///
     /// Retrigger always uses a single voice, whatever the binding asks for, so
     /// the menu toggle is a true comparison: the same pack, one voice against
@@ -60,7 +67,7 @@ nonisolated extension Binding {
     }
 }
 
-/// A named set of bindings and the sounds they point at.
+/// A named set of bindings and the sound pools they point at.
 ///
 /// A pack always ends in exactly one catch-all, so any keystroke without a
 /// binding of its own still finds a match. The initializer appends the catch-all
@@ -80,7 +87,8 @@ nonisolated struct SoundPack: Sendable {
 
 nonisolated extension SoundPack {
     /// The pack v1 ships: Enter gets the explosion, Esc the whoosh, Backspace
-    /// the blast, Spacebar the cocking sound, and every other key the shotgun.
+    /// the blast, Spacebar the cocking sound, the arrow keys draw from a pool of
+    /// impact sounds, and every other key the shotgun.
     ///
     /// The voice counts only bite in overlap mode, where they cap how many
     /// copies may stack. Short sounds take more copies, the long explosion
@@ -92,10 +100,18 @@ nonisolated extension SoundPack {
             Binding(key: Key(CGKeyCode(kVK_Escape)), sound: .rocketWhoosh, voiceCount: 2),
             Binding(key: Key(CGKeyCode(kVK_Delete)), sound: .shotgunBlast, voiceCount: 3),
             Binding(key: Key(CGKeyCode(kVK_Space)), sound: .shotgunCocking, voiceCount: 6),
+            Binding(key: Key(CGKeyCode(kVK_UpArrow)), pool: arrowImpacts, voiceCount: 3),
+            Binding(key: Key(CGKeyCode(kVK_DownArrow)), pool: arrowImpacts, voiceCount: 3),
+            Binding(key: Key(CGKeyCode(kVK_LeftArrow)), pool: arrowImpacts, voiceCount: 3),
+            Binding(key: Key(CGKeyCode(kVK_RightArrow)), pool: arrowImpacts, voiceCount: 3),
         ],
         catchAll: .shotgun,
         catchAllVoiceCount: 4
     )
+
+    /// The pool the arrow keys draw from: one impact sound per press, chosen at
+    /// random. All four arrows share it, so their voices count together.
+    static let arrowImpacts = SoundPool([.combatImpact, .kungFuYell, .punchImpactHit, .punch])
 
     /// Every pack the app can offer. v1 ships one; the menu hides the picker
     /// until a second pack makes the choice meaningful.

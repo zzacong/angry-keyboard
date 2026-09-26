@@ -33,8 +33,14 @@ final class ResolverTests: XCTestCase {
         XCTAssertEqual(sound(for: kVK_ANSI_1), .shotgun)
     }
 
-    func testArrowsPlayTheShotgun() {
-        XCTAssertEqual(sound(for: kVK_LeftArrow), .shotgun)
+    func testArrowsPlayTheImpactPool() {
+        for keyCode in [kVK_UpArrow, kVK_DownArrow, kVK_LeftArrow, kVK_RightArrow] {
+            XCTAssertEqual(
+                pool(for: keyCode),
+                SoundPack.arrowImpacts,
+                "key code \(keyCode) should draw from the impact pool"
+            )
+        }
     }
 
     func testFunctionKeysPlayTheShotgun() {
@@ -44,7 +50,7 @@ final class ResolverTests: XCTestCase {
     func testCatchAllIsTheOnlyAnyBindingAndComesLast() {
         XCTAssertEqual(pack.bindings.filter { $0.key == .any }.count, 1)
         XCTAssertEqual(pack.bindings.last?.key, .any)
-        XCTAssertEqual(pack.bindings.last?.sound, .shotgun)
+        XCTAssertEqual(pack.bindings.last?.pool, SoundPool(.shotgun))
     }
 
     // MARK: - Modifiers
@@ -66,12 +72,12 @@ final class ResolverTests: XCTestCase {
         )
 
         XCTAssertEqual(
-            pack.binding(for: Keystroke(keyCode: CGKeyCode(kVK_ANSI_A), modifiers: .maskCommand))?.sound,
-            .explodeRock
+            pack.binding(for: Keystroke(keyCode: CGKeyCode(kVK_ANSI_A), modifiers: .maskCommand))?.pool,
+            SoundPool(.explodeRock)
         )
         XCTAssertEqual(
-            pack.binding(for: Keystroke(keyCode: CGKeyCode(kVK_ANSI_A), modifiers: []))?.sound,
-            .shotgun
+            pack.binding(for: Keystroke(keyCode: CGKeyCode(kVK_ANSI_A), modifiers: []))?.pool,
+            SoundPool(.shotgun)
         )
     }
 
@@ -94,7 +100,16 @@ final class ResolverTests: XCTestCase {
 
     // MARK: - Helpers
 
+    private func pool(for keyCode: Int, modifiers: CGEventFlags = []) -> SoundPool? {
+        pack.binding(for: Keystroke(keyCode: CGKeyCode(keyCode), modifiers: modifiers))?.pool
+    }
+
+    /// The single sound a deterministic binding plays, or `nil` for a binding
+    /// that draws from a pool or matches nothing.
     private func sound(for keyCode: Int, modifiers: CGEventFlags = []) -> Sound? {
-        pack.binding(for: Keystroke(keyCode: CGKeyCode(keyCode), modifiers: modifiers))?.sound
+        guard let pool = pool(for: keyCode, modifiers: modifiers), pool.sounds.count == 1 else {
+            return nil
+        }
+        return pool.sounds.first
     }
 }
