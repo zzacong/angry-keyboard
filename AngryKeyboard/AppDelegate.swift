@@ -268,13 +268,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         refreshStatusIcon()
     }
 
-    /// Repaints the menu bar glyph: the plain keyboard normally, the crossed-out
-    /// speaker while muted. The change is the only thing that explains a silent
-    /// app, so it is refreshed whenever mute changes.
+    /// Repaints the menu bar glyph: the pinned keyboard-with-burst normally, the
+    /// same glyph struck through while muted. The change is the only thing that
+    /// explains a silent app, so it is refreshed whenever mute changes.
+    ///
+    /// Both states are bundled template images (`MenuBarGlyph` and
+    /// `MenuBarGlyphMuted`) drawn at 18pt. Each falls back to a system symbol if
+    /// its asset is missing.
     private func refreshStatusIcon() {
+        let name = settings.isMuted ? "MenuBarGlyphMuted" : "MenuBarGlyph"
         let symbol = settings.isMuted ? "speaker.slash" : "keyboard"
-        let icon = NSImage(systemSymbolName: symbol, accessibilityDescription: displayName)
-            ?? NSImage(systemSymbolName: "keyboard", accessibilityDescription: displayName)
+
+        let icon: NSImage?
+        if let glyph = NSImage(named: name) {
+            glyph.size = NSSize(width: 18, height: 18)
+            icon = glyph
+        } else {
+            icon = NSImage(systemSymbolName: symbol, accessibilityDescription: displayName)
+        }
         icon?.isTemplate = true
         statusItem?.button?.image = icon
         statusItem?.button?.toolTip = settings.isMuted ? "\(displayName) (muted)" : displayName

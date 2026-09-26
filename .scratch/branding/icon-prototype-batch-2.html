@@ -1,0 +1,554 @@
+<!doctype html>
+<!--
+  PROTOTYPE (batch 2) — throwaway, not production.
+  Question: which app icon and menu bar glyph should AngryKeyboard ship?
+
+  A second batch, framed as a reloader's proof sheet: kraft card, stenciled call
+  signs, a red LIVE AMMO stamp. Batch 1 is kept next to this file
+  (icon-prototype.html) and is not touched.
+
+  Five app icons (F–J) and six menu bar glyphs (7–12). Flip with the floating
+  bar or the left/right arrow keys; the pick lives in the URL hash.
+
+  Run: open .scratch/branding/icon-prototype-batch-2.html
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>AngryKeyboard — icon proof sheet, lot 002</title>
+<style>
+  :root {
+    --paper: #e6dcc3;
+    --tray: #d8cba8;
+    --ink: #17140f;
+    --red: #c1271c;
+    --brass: #a9791f;
+    --grey: #6b6558;
+    --stencil: "Impact", "Haettenschweiler", "Arial Narrow", "Helvetica Neue", sans-serif;
+    --ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    --mono: "SF Mono", ui-monospace, Menlo, "Courier New", monospace;
+    --radius: 3px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--ink);
+    color: var(--ink);
+    font: 15px/1.55 var(--ui);
+    -webkit-font-smoothing: antialiased;
+    padding: 34px 20px 130px;
+  }
+  /* film-grain fiber so the paper is not a flat fill */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .5; z-index: 0;
+    background-image: repeating-linear-gradient(0deg, rgba(23,20,15,.028) 0 1px, transparent 1px 3px),
+                      repeating-linear-gradient(90deg, rgba(23,20,15,.028) 0 1px, transparent 1px 3px);
+  }
+
+  .sheet {
+    position: relative; z-index: 1;
+    max-width: 1080px; margin: 0 auto;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 10px 10px 0 rgba(0,0,0,.55);
+  }
+
+  /* ---------- header band ---------- */
+  .band {
+    display: flex; align-items: flex-end; gap: 22px;
+    background: var(--ink); color: var(--paper);
+    padding: 22px 26px 18px; position: relative;
+  }
+  .wordmark {
+    font-family: var(--stencil); text-transform: uppercase;
+    font-size: 46px; line-height: .92; letter-spacing: .012em;
+  }
+  .wordmark em { font-style: normal; color: var(--red); }
+  .band-sub {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .16em;
+    text-transform: uppercase; color: #b9ae90; padding-bottom: 6px;
+  }
+  .stamp {
+    margin-left: auto; text-align: center;
+    border: 3px solid var(--red); color: var(--red);
+    transform: rotate(-4deg);
+    padding: 8px 14px 7px;
+    font-family: var(--stencil); text-transform: uppercase; line-height: 1;
+    box-shadow: inset 0 0 0 1px rgba(193,39,28,.35);
+  }
+  .stamp b { display: block; font-size: 26px; letter-spacing: .03em; }
+  .stamp span { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; margin-top: 4px; }
+
+  /* ---------- spec strip ---------- */
+  .specstrip {
+    display: flex; flex-wrap: wrap; gap: 8px 26px;
+    border-bottom: 2px solid var(--ink);
+    padding: 11px 26px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--grey);
+  }
+  .specstrip b { color: var(--ink); }
+
+  /* ---------- trays ---------- */
+  .tray { padding: 26px; }
+  .tray + .tray { border-top: 2px dashed rgba(23,20,15,.4); }
+  .tray-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+  .tray-head h2 {
+    font-family: var(--stencil); text-transform: uppercase;
+    font-size: 27px; letter-spacing: .02em; margin: 0;
+  }
+  .tray-head .caliber {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--red); border: 2px solid var(--red);
+    padding: 2px 7px;
+  }
+  .tray-note { color: var(--grey); margin: 6px 0 20px; max-width: 74ch; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+  /* ---------- specimen box ---------- */
+  .box {
+    background: var(--tray);
+    border: 2px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    border-radius: var(--radius);
+    padding: 14px;
+    position: relative;
+  }
+  .box:focus-within, .box.is-focus { outline: 3px solid var(--red); outline-offset: 3px; }
+  .callsign {
+    position: absolute; top: -2px; left: -2px;
+    background: var(--ink); color: var(--paper);
+    font-family: var(--stencil); font-size: 22px; line-height: 1;
+    padding: 5px 11px 4px; letter-spacing: .04em;
+  }
+  .box-head { display: flex; justify-content: flex-end; margin-bottom: 4px; }
+  .copy {
+    appearance: none; cursor: pointer;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    background: transparent; color: var(--ink);
+    border: 2px solid var(--ink); border-radius: 2px; padding: 4px 8px;
+  }
+  .copy:hover { background: var(--ink); color: var(--paper); }
+  .tile { width: 190px; height: 190px; margin: 6px auto 14px; display: block; }
+  .tile svg { width: 100%; height: 100%; display: block; }
+  .box h3 { font-family: var(--stencil); text-transform: uppercase; font-size: 21px; letter-spacing: .02em; margin: 0 0 3px; }
+  .box p { margin: 0; font-size: 13px; color: #4a453a; }
+
+  .ladder {
+    display: flex; align-items: flex-end; gap: 16px;
+    margin-top: 14px; padding-top: 12px;
+    border-top: 2px dotted rgba(23,20,15,.35);
+  }
+  .ladder figure { margin: 0; text-align: center; font-family: var(--mono); font-size: 10px; color: var(--grey); }
+  .ladder .g { display: block; margin: 0 auto 6px; }
+  .g svg { display: block; width: 100%; height: 100%; }
+  .g128 { width: 70px; height: 70px; }
+  .g64  { width: 48px; height: 48px; }
+  .g32  { width: 32px; height: 32px; }
+  .g16  { width: 18px; height: 18px; }
+
+  /* ---------- receiver rail ---------- */
+  .rail-wrap { margin-bottom: 22px; }
+  .rail-label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--grey); margin-bottom: 6px;
+  }
+  .rail {
+    display: flex; align-items: center; gap: 18px;
+    padding: 0 16px; height: 34px; border: 2px solid var(--ink);
+  }
+  .rail.on-paper { background: var(--paper); color: var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+  .rail.on-black { background: var(--ink); color: var(--paper); box-shadow: 5px 5px 0 rgba(23,20,15,.4); }
+  .rail .cell { display: grid; place-items: center; width: 22px; height: 22px; }
+  .rail .cell svg { width: 19px; height: 19px; display: block; }
+  .rail .ref { margin-left: auto; font-family: var(--mono); font-size: 10px; opacity: .55; letter-spacing: .1em; }
+
+  .glyph-row { display: flex; align-items: center; gap: 16px; margin: 12px 0 2px; }
+  .glyph-box {
+    background: var(--paper); border: 2px solid var(--ink); border-radius: 2px;
+    display: grid; place-items: center; color: var(--ink);
+    width: 76px; height: 76px;
+  }
+  .glyph-box.dim { width: 60px; height: 60px; }
+  .glyph-box .s22 svg { width: 22px; height: 22px; display: block; }
+  .glyph-box .s40 svg { width: 40px; height: 40px; display: block; }
+  .glyph-box .s16 svg { width: 16px; height: 16px; display: block; }
+  .cap { font-family: var(--mono); font-size: 10px; color: var(--grey); text-align: center; margin-top: 6px; letter-spacing: .06em; }
+
+  /* ---------- notes ---------- */
+  .notes {
+    margin: 0 26px 26px; padding: 20px 22px;
+    border: 3px solid var(--red); border-radius: var(--radius);
+  }
+  .notes h3 { font-family: var(--stencil); text-transform: uppercase; font-size: 19px; letter-spacing: .03em; margin: 0 0 10px; color: var(--red); }
+  .notes ul { margin: 0; padding-left: 20px; }
+  .notes li { margin: 6px 0; }
+  .notes code { font-family: var(--mono); font-size: 12.5px; background: rgba(23,20,15,.08); padding: 1px 5px; }
+  .notes a { color: var(--red); }
+
+  /* ---------- floating ranger bar ---------- */
+  .ranger {
+    position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 4px; z-index: 40;
+    background: var(--ink); color: var(--paper);
+    border: 2px solid var(--paper);
+    box-shadow: 6px 6px 0 rgba(0,0,0,.55);
+    padding: 6px;
+  }
+  .ranger button {
+    appearance: none; border: 0; background: transparent; color: var(--paper);
+    width: 34px; height: 34px; cursor: pointer; font-size: 16px;
+    font-family: var(--stencil); display: grid; place-items: center;
+  }
+  .ranger button:hover { background: rgba(230,220,195,.16); }
+  .ranger .label { min-width: 240px; text-align: center; padding: 0 8px; }
+  .ranger .label b { font-family: var(--stencil); text-transform: uppercase; font-size: 18px; letter-spacing: .03em; color: var(--red); }
+  .ranger .label small { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; color: #b9ae90; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="band">
+    <div class="wordmark">ANGRY<em>KEYBOARD</em></div>
+    <div class="band-sub">Icon proof sheet<br>Lot 002 / rev A</div>
+    <div class="stamp"><b>LIVE AMMO</b><span>12 GAUGE KEYSTROKE</span></div>
+  </header>
+
+  <div class="specstrip">
+    <span><b>5</b> icon directions</span>
+    <span><b>6</b> menu bar glyphs</span>
+    <span>paper <b>manila</b></span>
+    <span>cycle <b>&larr; &rarr;</b></span>
+    <span>batch 1 kept at <b>icon-prototype.html</b></span>
+  </div>
+
+  <section class="tray">
+    <div class="tray-head">
+      <h2>Specimen tray A</h2>
+      <span class="caliber">App icon</span>
+    </div>
+    <p class="tray-note">
+      The icon Finder, Login Items, the About panel, and the Input Monitoring
+      list show. Judge the small end of the ladder first: if a direction muddies
+      at 32 px it will look wrong in every one of those places.
+    </p>
+    <div class="grid" id="appGrid"></div>
+  </section>
+
+  <section class="tray">
+    <div class="tray-head">
+      <h2>Specimen tray B</h2>
+      <span class="caliber">Menu bar glyph</span>
+    </div>
+    <p class="tray-note">
+      Template glyphs render black on a light menu bar and white on a dark one,
+      so the two rails below are one set of artwork. Each glyph also ships a
+      muted variant, because Mute swaps the glyph rather than adding a badge.
+    </p>
+    <div class="rail-wrap">
+      <div class="rail-label">Mounted on the paper rail</div>
+      <div class="rail on-paper" id="railPaper"><span class="ref">light menu bar</span></div>
+    </div>
+    <div class="rail-wrap">
+      <div class="rail-label">Mounted on the black rail</div>
+      <div class="rail on-black" id="railBlack"><span class="ref">dark menu bar</span></div>
+    </div>
+    <div class="grid" id="glyphGrid"></div>
+  </section>
+
+  <div class="notes">
+    <h3>After the pick</h3>
+    <ul>
+      <li><b>App icon.</b> The chosen SVG rasterizes to one 1024x1024 PNG in <code>AppIcon.appiconset</code>. Xcode 27 takes the single file, so no per-size images are needed.</li>
+      <li><b>Menu bar glyph.</b> Ships as a template image, not the <code>keyboard</code> SF Symbol. The mute path points at the muted variant instead of <code>speaker.slash</code>.</li>
+      <li><b>About item.</b> Once the app icon is real, the About panel shows it for free.</li>
+      <li><b>Batch 1</b> is still at <code>.scratch/branding/icon-prototype.html</code> in this worktree if you want to compare across lots.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ranger" id="ranger">
+  <button id="prev" title="Previous (left arrow)" aria-label="Previous">&larr;</button>
+  <div class="label" id="rLabel"></div>
+  <button id="next" title="Next (right arrow)" aria-label="Next">&rarr;</button>
+</div>
+
+<script>
+/* ---------------- app icon artwork (F–J) ---------------- */
+const appIcons = [
+  {
+    id: "app-f", tag: "F", name: "Bore",
+    blurb: "Looking down the barrel: concentric rings and choke notches. Calm and mechanical.",
+    svg: `<svg viewBox="0 0 512 512" role="img" aria-label="Bore">
+<rect width="512" height="512" rx="112" fill="#E6DCC3"/>
+<circle cx="256" cy="256" r="178" fill="#17140F"/>
+<circle cx="256" cy="256" r="132" fill="none" stroke="#E6DCC3" stroke-width="12"/>
+<circle cx="256" cy="256" r="92" fill="#0B0907"/>
+<circle cx="256" cy="256" r="92" fill="none" stroke="#C1271C" stroke-width="10"/>
+<g stroke="#E6DCC3" stroke-width="14" stroke-linecap="round">
+<path d="M256 80 V118"/><path d="M256 432 V394"/>
+<path d="M80 256 H118"/><path d="M432 256 H394"/>
+</g>
+</svg>`
+  },
+  {
+    id: "app-g", tag: "G", name: "Reticle Key",
+    blurb: "A keycap held in a red crosshair. Reads as aim, not decoration.",
+    svg: `<svg viewBox="0 0 512 512" role="img" aria-label="Reticle Key">
+<rect width="512" height="512" rx="112" fill="#22201D"/>
+<circle cx="256" cy="256" r="150" fill="none" stroke="#C1271C" stroke-width="10"/>
+<g stroke="#C1271C" stroke-width="14" stroke-linecap="round">
+<path d="M256 38 V146"/><path d="M256 366 V474"/>
+<path d="M38 256 H146"/><path d="M366 256 H474"/>
+</g>
+<rect x="181" y="196" width="150" height="120" rx="22" fill="#E6DCC3"/>
+<rect x="205" y="220" width="102" height="72" rx="12" fill="#CFC2A2"/>
+</svg>`
+  },
+  {
+    id: "app-h", tag: "H", name: "Hazard Key",
+    blurb: "A keycap in yellow and black hazard stripes. Warning-label energy, still a key.",
+    svg: `<svg viewBox="0 0 512 512" role="img" aria-label="Hazard Key">
+<defs><clipPath id="hk"><rect x="131" y="161" width="250" height="190" rx="30"/></clipPath></defs>
+<rect width="512" height="512" rx="112" fill="#141210"/>
+<rect x="131" y="161" width="250" height="190" rx="30" fill="#F2C21A"/>
+<g clip-path="url(#hk)" stroke="#17140F" stroke-width="36">
+<path d="M20 420 L260 120"/><path d="M100 420 L340 120"/>
+<path d="M180 420 L420 120"/><path d="M260 420 L500 120"/>
+<path d="M340 420 L580 120"/>
+</g>
+<rect x="131" y="161" width="250" height="190" rx="30" fill="none" stroke="#17140F" stroke-width="8"/>
+</svg>`
+  },
+  {
+    id: "app-i", tag: "I", name: "Split Key",
+    blurb: "A keycap split by a hard crack on signal red. A misfire you can see from across the Dock.",
+    svg: `<svg viewBox="0 0 512 512" role="img" aria-label="Split Key">
+<rect width="512" height="512" rx="112" fill="#C1271C"/>
+<rect x="141" y="168" width="230" height="176" rx="28" fill="#E6DCC3"/>
+<rect x="141" y="168" width="230" height="176" rx="28" fill="none" stroke="#00000022" stroke-width="2"/>
+<path d="M266 150 L234 250 L276 250 L238 362" fill="none" stroke="#141210" stroke-width="20" stroke-linejoin="miter" stroke-linecap="round"/>
+</svg>`
+  },
+  {
+    id: "app-j", tag: "J", name: "Smoking Key",
+    blurb: "A spent keycap with smoke curling off it. The quiet one in a loud set.",
+    svg: `<svg viewBox="0 0 512 512" role="img" aria-label="Smoking Key">
+<rect width="512" height="512" rx="112" fill="#E6DCC3"/>
+<path d="M256 300 C 232 254, 288 236, 262 190 S 226 118, 258 74" fill="none" stroke="#17140F" stroke-width="24" stroke-linecap="round" opacity=".92"/>
+<path d="M206 296 C 190 262, 224 248, 208 216 S 188 166, 204 140" fill="none" stroke="#17140F" stroke-width="13" stroke-linecap="round" opacity=".55"/>
+<path d="M308 298 C 322 266, 292 250, 306 220 S 324 176, 310 150" fill="none" stroke="#17140F" stroke-width="13" stroke-linecap="round" opacity=".55"/>
+<rect x="161" y="300" width="190" height="140" rx="26" fill="#17140F"/>
+<rect x="185" y="324" width="142" height="92" rx="15" fill="#3B362C"/>
+</svg>`
+  }
+];
+
+/* ---------------- menu bar glyph artwork (7–12), 24x24, currentColor ---------------- */
+const glyphs = [
+  {
+    id: "glyph-7", tag: "7", name: "Crosshair",
+    blurb: "A reticle. Crisp at 16 px and unmistakable next to other system glyphs.",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+<circle cx="12" cy="12" r="6.6"/>
+<path d="M12 1.6V22.4M1.6 12H22.4"/>
+<circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>
+</svg>`,
+    muted: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+<defs><mask id="m7"><rect width="24" height="24" fill="#fff"/><path d="M3.4 3.4 20.6 20.6" stroke="#000" stroke-width="4.6" stroke-linecap="round"/></mask></defs>
+<g mask="url(#m7)"><circle cx="12" cy="12" r="6.6"/><path d="M12 1.6V22.4M1.6 12H22.4"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></g>
+<path d="M3.4 3.4 20.6 20.6" stroke-width="2.2"/>
+</svg>`
+  },
+  {
+    id: "glyph-8", tag: "8", name: "Trigger",
+    blurb: "A trigger inside its guard. The most literal fit for the app, and the fiddliest small.",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M7.4 6.6a6.6 7.2 0 1 0 9.2 0"/>
+<path d="M12 6.6v4.9c0 1.2-1.3 1.7-1.3 2.8"/>
+</svg>`,
+    muted: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+<defs><mask id="m8"><rect width="24" height="24" fill="#fff"/><path d="M3.4 3.4 20.6 20.6" stroke="#000" stroke-width="4.6" stroke-linecap="round"/></mask></defs>
+<g mask="url(#m8)"><path d="M7.4 6.6a6.6 7.2 0 1 0 9.2 0"/><path d="M12 6.6v4.9c0 1.2-1.3 1.7-1.3 2.8"/></g>
+<path d="M3.4 3.4 20.6 20.6" stroke-width="2.2"/>
+</svg>`
+  },
+  {
+    id: "glyph-9", tag: "9", name: "Bore",
+    blurb: "A muzzle seen head on. A circle and a dot, so it survives the smallest size.",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+<circle cx="12" cy="12" r="8.3"/>
+<circle cx="12" cy="12" r="3.1" fill="currentColor" stroke="none"/>
+<path d="M12 1.5V3.6M12 22.5v-2.1M1.5 12h2.1M22.5 12h-2.1"/>
+</svg>`,
+    muted: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+<defs><mask id="m9"><rect width="24" height="24" fill="#fff"/><path d="M3.4 3.4 20.6 20.6" stroke="#000" stroke-width="4.6" stroke-linecap="round"/></mask></defs>
+<g mask="url(#m9)"><circle cx="12" cy="12" r="8.3"/><circle cx="12" cy="12" r="3.1" fill="currentColor" stroke="none"/><path d="M12 1.5V3.6M12 22.5v-2.1M1.5 12h2.1M22.5 12h-2.1"/></g>
+<path d="M3.4 3.4 20.6 20.6" stroke-width="2.2"/>
+</svg>`
+  },
+  {
+    id: "glyph-10", tag: "10", name: "Cartridge",
+    blurb: "A shell with a brass head. Tall and narrow, so it stands out in a row of round glyphs.",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M7.6 7.6a4.4 4.4 0 0 1 8.8 0V16H7.6z"/>
+<rect x="6.6" y="16" width="10.8" height="3.6" rx="1.1" fill="currentColor" stroke="none"/>
+</svg>`,
+    muted: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+<defs><mask id="m10"><rect width="24" height="24" fill="#fff"/><path d="M3.4 3.4 20.6 20.6" stroke="#000" stroke-width="4.6" stroke-linecap="round"/></mask></defs>
+<g mask="url(#m10)"><path d="M7.6 7.6a4.4 4.4 0 0 1 8.8 0V16H7.6z"/><rect x="6.6" y="16" width="10.8" height="3.6" rx="1.1" fill="currentColor" stroke="none"/></g>
+<path d="M3.4 3.4 20.6 20.6" stroke-width="2.2"/>
+</svg>`
+  },
+  {
+    id: "glyph-11", tag: "11", name: "Shell End",
+    blurb: "A shell base: primer dot and crimp marks. A wheel-like round glyph that still says ammo.",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+<circle cx="12" cy="12" r="8.8"/>
+<circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
+<path d="M12 3.2V6.6M18.6 7.8 16 9.9M18.6 16.2 16 14.1M12 20.8v-3.4M5.4 16.2 8 14.1M5.4 7.8 8 9.9"/>
+</svg>`,
+    muted: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+<defs><mask id="m11"><rect width="24" height="24" fill="#fff"/><path d="M3.4 3.4 20.6 20.6" stroke="#000" stroke-width="4.6" stroke-linecap="round"/></mask></defs>
+<g mask="url(#m11)"><circle cx="12" cy="12" r="8.8"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/><path d="M12 3.2V6.6M18.6 7.8 16 9.9M18.6 16.2 16 14.1M12 20.8v-3.4M5.4 16.2 8 14.1M5.4 7.8 8 9.9"/></g>
+<path d="M3.4 3.4 20.6 20.6" stroke-width="2.2"/>
+</svg>`
+  },
+  {
+    id: "glyph-12", tag: "12", name: "Impact Ring",
+    blurb: "Two arcs off a point. The calmest of the six, and the one that pairs with Bore.",
+    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+<circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+<path d="M8.8 6.6a7 7 0 0 1 0 10.8"/>
+<path d="M13.4 3.9a11 11 0 0 1 0 16.2"/>
+</svg>`,
+    muted: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+<defs><mask id="m12"><rect width="24" height="24" fill="#fff"/><path d="M3.4 3.4 20.6 20.6" stroke="#000" stroke-width="4.6" stroke-linecap="round"/></mask></defs>
+<g mask="url(#m12)"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><path d="M8.8 6.6a7 7 0 0 1 0 10.8"/><path d="M13.4 3.9a11 11 0 0 1 0 16.2"/></g>
+<path d="M3.4 3.4 20.6 20.6" stroke-width="2.2"/>
+</svg>`
+  }
+];
+
+/* ---------------- render ---------------- */
+const $ = (s) => document.querySelector(s);
+
+function ladder(svg) {
+  const sizes = [["g128", 128], ["g64", 64], ["g32", 32], ["g16", 16]];
+  return `<div class="ladder">${sizes.map(([cls, px]) =>
+    `<figure><span class="g ${cls}">${svg}</span><figcaption>${px}</figcaption></figure>`
+  ).join("")}</div>`;
+}
+
+appIcons.forEach((icon) => {
+  const box = document.createElement("div");
+  box.className = "box";
+  box.dataset.id = icon.id;
+  box.innerHTML = `
+    <span class="callsign">${icon.tag}</span>
+    <div class="box-head"><button class="copy" data-copy="${icon.id}">Copy SVG</button></div>
+    <div class="tile">${icon.svg}</div>
+    <h3>${icon.name}</h3>
+    <p>${icon.blurb}</p>
+    ${ladder(icon.svg)}`;
+  $("#appGrid").appendChild(box);
+});
+
+glyphs.forEach((g) => {
+  const box = document.createElement("div");
+  box.className = "box";
+  box.dataset.id = g.id;
+  box.innerHTML = `
+    <span class="callsign">${g.tag}</span>
+    <div class="box-head"><button class="copy" data-copy="${g.id}">Copy SVG</button></div>
+    <div class="glyph-row">
+      <div><div class="glyph-box"><span class="s40">${g.svg}</span></div><div class="cap">plain 40</div></div>
+      <div><div class="glyph-box dim"><span class="s22">${g.muted}</span></div><div class="cap">muted 22</div></div>
+    </div>
+    <h3>${g.name}</h3>
+    <p>${g.blurb}</p>
+    <div class="glyph-row" style="margin-top:14px;padding-top:12px;border-top:2px dotted rgba(23,20,15,.35)">
+      <div><div class="glyph-box dim"><span class="s22">${g.svg}</span></div><div class="cap">22</div></div>
+      <div><div class="glyph-box dim"><span class="s16">${g.svg}</span></div><div class="cap">16</div></div>
+    </div>`;
+  $("#glyphGrid").appendChild(box);
+});
+
+$("#railPaper").insertAdjacentHTML("afterbegin", glyphs.map((g) => `<span class="cell">${g.svg}</span>`).join(""));
+$("#railBlack").insertAdjacentHTML("afterbegin", glyphs.map((g) => `<span class="cell">${g.svg}</span>`).join(""));
+
+/* ---------------- ranger bar ---------------- */
+const items = [
+  ...appIcons.map((x) => ({ ...x, kind: "app icon" })),
+  ...glyphs.map((x) => ({ ...x, kind: "menu bar glyph" }))
+];
+
+function hashParam(name) {
+  const m = location.hash.match(new RegExp(name + "=([0-9]+)"));
+  return m ? parseInt(m[1], 10) : null;
+}
+let idx = Math.max(0, Math.min(items.length - 1, hashParam("i") ?? 0));
+
+function focusItem(scroll) {
+  document.querySelectorAll(".box.is-focus").forEach((b) => b.classList.remove("is-focus"));
+  const item = items[idx];
+  const box = document.querySelector(`.box[data-id="${item.id}"]`);
+  if (box) {
+    box.classList.add("is-focus");
+    if (scroll) box.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  const prefix = item.kind === "app icon" ? "Icon" : "Glyph";
+  $("#rLabel").innerHTML = `<b>${prefix} ${item.tag}</b> ${item.name}` +
+    `<small>${idx + 1} / ${items.length}, ${item.kind}</small>`;
+  history.replaceState(null, "", `#i=${idx}`);
+}
+
+$("#prev").onclick = () => { idx = (idx - 1 + items.length) % items.length; focusItem(true); };
+$("#next").onclick = () => { idx = (idx + 1) % items.length; focusItem(true); };
+
+document.addEventListener("keydown", (e) => {
+  const t = e.target;
+  if (t && t.closest("input, textarea, [contenteditable]")) return;
+  if (e.key === "ArrowLeft") { e.preventDefault(); $("#prev").click(); }
+  if (e.key === "ArrowRight") { e.preventDefault(); $("#next").click(); }
+});
+
+document.addEventListener("click", (e) => {
+  const copy = e.target.closest("[data-copy]");
+  if (copy) {
+    const id = copy.dataset.copy;
+    const src = [...appIcons, ...glyphs].find((x) => x.id === id);
+    copyText(src.svg);
+    copy.textContent = "Copied";
+    setTimeout(() => (copy.textContent = "Copy SVG"), 1100);
+    return;
+  }
+  const box = e.target.closest(".box");
+  if (box) {
+    const i = items.findIndex((x) => x.id === box.dataset.id);
+    if (i >= 0) { idx = i; focusItem(false); }
+  }
+});
+
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).catch(() => legacyCopy(text));
+  } else {
+    legacyCopy(text);
+  }
+}
+function legacyCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); } catch (_) {}
+  ta.remove();
+}
+
+focusItem(false);
+</script>
+</body>
+</html>
