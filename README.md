@@ -6,10 +6,12 @@ It has no window and no Dock icon. The app lives in the menu bar as a keyboard i
 
 ## Requirements
 
-- macOS 26.7 or later
-- Xcode 27.0 or later
+- macOS 14.0 (Sonoma) or later
 
 ## Build and run
+
+Building from source needs Xcode 27.0 or later. Running the app needs only
+macOS; Xcode is not a runtime dependency.
 
 ### Xcode
 
