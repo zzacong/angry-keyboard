@@ -145,6 +145,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         self.launchAtLoginItem = launchAtLoginItem
 
         menu.addItem(.separator())
+
+        let aboutItem = NSMenuItem(
+            title: "About \(displayName)",
+            action: #selector(showAboutPanel),
+            keyEquivalent: ""
+        )
+        aboutItem.target = self
+        // Tahoe draws an icon for standard actions like Quit but not for custom
+        // ones, so About supplies its own to keep the pair looking even.
+        aboutItem.image = NSImage(systemSymbolName: "info.circle", accessibilityDescription: nil)
+        aboutItem.image?.isTemplate = true
+        menu.addItem(aboutItem)
+
         menu.addItem(
             withTitle: "Quit \(displayName)",
             action: #selector(NSApplication.terminate(_:)),
@@ -265,6 +278,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         icon?.isTemplate = true
         statusItem?.button?.image = icon
         statusItem?.button?.toolTip = settings.isMuted ? "\(displayName) (muted)" : displayName
+    }
+
+    // MARK: - About
+
+    /// Opens the standard About panel. The app is an accessory with no app menu,
+    /// so there is nowhere for the usual About item to live and the panel is
+    /// asked for by hand. Activation comes first, because an accessory app's
+    /// windows otherwise open behind the active app. The panel reads the rest,
+    /// version and build, from the bundle; the display name is the one override,
+    /// since the default would be the bundle's unspaced `CFBundleName`.
+    @objc private func showAboutPanel() {
+        NSApp.activate()
+        NSApp.orderFrontStandardAboutPanel(options: [
+            .applicationName: displayName
+        ])
     }
 
     // MARK: - Permission

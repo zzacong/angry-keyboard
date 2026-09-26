@@ -141,6 +141,8 @@ Check these by hand after a build.
 
 - Toggle Launch at Login. Open System Settings > General > Login Items and
   confirm the app matches the toggle.
+- Click About Angry Keyboard. The standard About panel opens with the app name,
+  version, and build.
 - Quit from the menu. The icon disappears.
 
 ## Troubleshooting
