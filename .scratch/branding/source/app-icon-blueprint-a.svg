@@ -15,6 +15,11 @@
 <g stroke="#1E5CB3" stroke-width="3" fill="none">
 <path d="M126 478 H386"/><path d="M126 464 V492"/><path d="M386 464 V492"/>
 </g>
+<g fill="none" stroke="#1E5CB3" stroke-linecap="round" opacity=".8">
+<path d="M256 258 C 232 212, 288 194, 262 148 S 226 76, 258 32" stroke-width="24"/>
+<path d="M206 256 C 190 222, 224 208, 208 176 S 188 126, 204 100" stroke-width="13" opacity=".6"/>
+<path d="M308 258 C 322 226, 292 210, 306 180 S 324 136, 310 110" stroke-width="13" opacity=".6"/>
+</g>
 <rect x="126" y="272" width="260" height="196" rx="32" fill="#123E80" opacity=".16"/>
 <rect x="126" y="250" width="260" height="196" rx="32" fill="#FAFCFF" stroke="#1E5CB3" stroke-width="8"/>
 <path d="M144 428 H368" stroke="#AFCBEE" stroke-width="3"/>

@@ -26,15 +26,21 @@ All three masters sit on Apple's macOS icon grid: a 1024 canvas, an 824 art box
 centered at (100,100), corner radius 185.4, continuous corners. macOS does not
 mask app icons, so the squircle is part of the artwork.
 
-## Dev blueprint (pending)
+## Dev blueprint
 
-The dev channel needs its own identity: a white-and-blue app icon and a menu bar
-glyph that differs from production by shape, because the status item is a
+The dev channel carries its own identity: a white-and-blue app icon and a menu
+bar glyph that differs from production by shape, because the status item is a
 template image and macOS recolors it. `icon-prototype-dev-blueprint.html` holds
-five app icon variants (A-E) and five glyphs (1-5) in light, dark, and muted. The
-masters are `source/app-icon-blueprint-{a..e}.svg`, built by
-`source/gen_dev_blueprint.py` onto the same icon grid, and the glyphs are
-`source/menu-bar-glyph-dev-{1..5}.svg`. No pick has been made yet.
+five app icon variants (A-E) and five glyphs (1-5) in light, dark, and muted.
+
+Picked: app icon A, "Drafting", and glyph 3, "Fuming key". A keeps its dimension
+line and gained the rising smoke. Glyph 3 ships as the template images
+`MenuBarGlyphDev` and `MenuBarGlyphDevMuted`, rasterized by
+`source/make-menu-bar-glyph.sh MenuBarGlyphDev menu-bar-glyph-dev-3`.
+
+A's colorway is still open. `icon-prototype-dev-blueprint-refined.html` shows A
+on its white tile next to an inverted version on a deep-blue tile, both built by
+`source/gen_dev_blueprint.py`.
 
 ## Regenerate or switch
 
@@ -50,4 +56,8 @@ Files:
 - `source/gen_icons.py` writes the masters
 - `source/make-app-icon.sh` rasterizes one master into `AppIcon.appiconset`
 - `source/menu-bar-glyph.svg` and `source/menu-bar-glyph-muted.svg`
-- `source/make-menu-bar-glyph.sh` rasterizes both into the asset catalog
+- `source/make-menu-bar-glyph.sh` rasterizes a glyph pair into the asset catalog
+- `source/app-icon-blueprint-{a..e}.svg` (dev candidates, A picked)
+- `source/app-icon-blueprint-a-inverted.svg` (A, inverted colorway)
+- `source/menu-bar-glyph-dev-{1..5}.svg` and `-muted` (dev glyphs, 3 picked)
+- `source/gen_dev_blueprint.py` writes the dev masters and both blueprint sheets

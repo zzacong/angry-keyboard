@@ -11,7 +11,7 @@ Then run a design pass for the dev channel's blueprint identity: a white-and-blu
 - [x] The dev app shows its own icon in Finder, the About panel, and the permission alert; production keeps the shipped icon.
 - [x] The menu bar glyph name comes from the bundle, and production's glyph is unchanged.
 - [x] Several blueprint app icon variants and at least one shape-distinct dev menu bar glyph exist as prototypes.
-- [ ] Zac chooses a variant before the design is finalized.
+- [x] Zac chooses a variant before the design is finalized.
 - [ ] The chosen app icon ships in the dev app's asset set, and the dev menu bar glyph differs from production by shape.
 - [x] Nothing about production's icon or glyph changes.
 
@@ -36,11 +36,19 @@ Channel plumbing is in place.
   (A-E) and five glyphs (1-5), each glyph shown in light, dark, and muted. The
   1024 masters and glyph SVGs sit in `.scratch/branding/source`.
 
-Waiting on Zac for the pick. Reply with an app icon letter and a glyph number,
-for example "icon C, glyph 3". Then the chosen master rasterizes into
-`AppIconDev.appiconset`, the chosen glyph gets its own imageset with a muted
-variant, and `Config/Debug.xcconfig` names that glyph. Production keys and
-artwork do not change.
+Zac picked app icon A, "Drafting", and glyph 3, "Fuming key".
+
+Glyph 3 is done. It ships as `MenuBarGlyphDev` and `MenuBarGlyphDevMuted`,
+rasterized by `make-menu-bar-glyph.sh MenuBarGlyphDev menu-bar-glyph-dev-3`, and
+`Config/Debug.xcconfig` names them. Verified in the built Dev plist
+(`AKMenuBarGlyph = MenuBarGlyphDev`) and in `Assets.car`. Production still reads
+`MenuBarGlyph` / `MenuBarGlyphMuted`.
+
+A gained the rising smoke and keeps the dimension line. Its colorway is still
+open: `.scratch/branding/icon-prototype-dev-blueprint-refined.html` shows A on
+its white tile next to an inverted version on a deep-blue tile. Reply white or
+inverted, then that master rasterizes into `AppIconDev.appiconset` and the last
+box closes. Production artwork does not change.
 
 Note: Xcode is open on the project and rewrote `project.pbxproj` mid-session
 (product reference renamed to `AngryKeyboardDev.app`, groups reordered). That

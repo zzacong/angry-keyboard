@@ -13,7 +13,7 @@ is copied over `menu-bar-glyph-dev.svg`.
 import json
 from pathlib import Path
 
-from gen_icons import ART, INSET, RADIUS, SMOOTH, SCALE, squircle
+from gen_icons import ART, INSET, RADIUS, SMOOTH, SCALE, smoke, squircle
 
 OUT = Path(__file__).resolve().parent
 SHEET = OUT.parent / "icon-prototype-dev-blueprint.html"
@@ -74,10 +74,27 @@ def drafting(uid):
 <g stroke="{BLUE}" stroke-width="3" fill="none">
 <path d="M126 478 H386"/><path d="M126 464 V492"/><path d="M386 464 V492"/>
 </g>
+{smoke(BLUE, ".8")}
 <rect x="{CAP_X}" y="{CAP_Y + 22}" width="{CAP_W}" height="{CAP_H}" rx="{CAP_R}" fill="{BLUE_D}" opacity=".16"/>
 <rect x="{CAP_X}" y="{CAP_Y}" width="{CAP_W}" height="{CAP_H}" rx="{CAP_R}" fill="{PAPER_L}" stroke="{BLUE}" stroke-width="8"/>
 <path d="M144 428 H368" stroke="{GRID}" stroke-width="3"/>
 {face(BLUE, outline_eyes=True)}''')
+
+
+def drafting_inverted(uid):
+    return master(uid, BLUE_D, f'''
+<g stroke="{PAPER_L}" stroke-width="3" fill="none" opacity=".8">
+<path d="M64 104 V64 H104"/><path d="M408 64 H448 V104"/>
+<path d="M448 408 V448 H408"/><path d="M104 448 H64 V408"/>
+</g>
+<g stroke="{PAPER_L}" stroke-width="3" fill="none">
+<path d="M126 478 H386"/><path d="M126 464 V492"/><path d="M386 464 V492"/>
+</g>
+{smoke(PAPER_L, ".9")}
+<rect x="{CAP_X}" y="{CAP_Y + 22}" width="{CAP_W}" height="{CAP_H}" rx="{CAP_R}" fill="#08204A" opacity=".8"/>
+<rect x="{CAP_X}" y="{CAP_Y}" width="{CAP_W}" height="{CAP_H}" rx="{CAP_R}" fill="#1A4A8F" stroke="{PAPER_L}" stroke-width="8"/>
+<path d="M144 428 H368" stroke="#7FA8DF" stroke-width="3"/>
+{face(PAPER_L)}''', grid_color="#7FA8DF", grid_opacity=".45")
 
 
 def solid(uid):
@@ -121,12 +138,20 @@ def hatch(uid):
 
 
 APP_ICONS = [
-    ("a", "A", "Drafting", "Outlined keycap on graph paper, dimension line and registration marks. Reads as a spec sheet.", drafting("a")),
+    ("a", "A", "Drafting", "Outlined keycap on graph paper, smoke rising and a dimension line beneath.", drafting("a")),
     ("b", "B", "Solid", "Blueprint-blue keycap with a white knockout face. The loudest of the set.", solid("b")),
     ("c", "C", "Cyanotype", "Deep-blue tile, white linework and grid. The negative of a blueprint.", cyanotype("c")),
     ("d", "D", "Target", "Crosshair and rings with the angry face at centre. No keycap at all.", target("d")),
     ("e", "E", "Hatched", "Graph-paper keycap filled with blue hatching, outlined and stamped with the face.", hatch("e")),
 ]
+
+# The pick was A. This is A plus its inverted colorway for the final colour call.
+A_INVERTED = (
+    "a-inverted", "A&#8242;", "Drafting, inverted",
+    "The same composition on a deep-blue tile with white linework, like C.",
+    drafting_inverted("a-inverted"),
+)
+FINALIST_ICONS = [APP_ICONS[0], A_INVERTED]
 
 # -- menu bar glyphs --------------------------------------------------------
 def glyph_angry_key():
@@ -171,31 +196,34 @@ GLYPHS = [
 ]
 
 # -- write the masters ------------------------------------------------------
-for slug, _, _, _, svg in APP_ICONS:
+for slug, _, _, _, svg in APP_ICONS + [A_INVERTED]:
     (OUT / f"app-icon-blueprint-{slug}.svg").write_text(svg)
 
 for slug, _, _, _, body in GLYPHS:
+    inked = body.replace("currentColor", "#000000")
     (OUT / f"menu-bar-glyph-dev-{slug}.svg").write_text(
         f'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" '
-        f'fill="none" stroke="#000000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">\n{body}\n</svg>\n'
+        f'fill="none" stroke="#000000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">\n{inked}\n</svg>\n'
     )
     (OUT / f"menu-bar-glyph-dev-{slug}-muted.svg").write_text(
         f'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">\n'
         f'<defs><mask id="gap"><rect width="24" height="24" fill="#ffffff"/>'
         f'<path d="M3.4 3.4 20.6 20.6" stroke="#000000" stroke-width="4.6" stroke-linecap="round"/></mask></defs>\n'
-        f'<g mask="url(#gap)" fill="none" stroke="#000000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">\n{body}\n</g>\n'
+        f'<g mask="url(#gap)" fill="none" stroke="#000000" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">\n{inked}\n</g>\n'
         f'<path d="M3.4 3.4 20.6 20.6" stroke="#000000" stroke-width="2.2" stroke-linecap="round"/>\n</svg>\n'
     )
 
-# -- proof sheet ------------------------------------------------------------
-app_entries = [
-    {"id": f"app-{slug}", "tag": tag, "name": name, "blurb": blurb, "svg": svg}
-    for slug, tag, name, blurb, svg in APP_ICONS
-]
-glyph_entries = [
-    {"id": f"glyph-{slug}", "tag": tag, "name": name, "blurb": blurb, "body": body}
-    for slug, tag, name, blurb, body in GLYPHS
-]
+# -- proof sheets -----------------------------------------------------------
+def entries(icons, glyphs_):
+    app_entries = [
+        {"id": f"app-{s}", "tag": tag, "name": name, "blurb": blurb, "svg": svg}
+        for s, tag, name, blurb, svg in icons
+    ]
+    glyph_entries = [
+        {"id": f"glyph-{s}", "tag": tag, "name": name, "blurb": blurb, "body": body}
+        for s, tag, name, blurb, body in glyphs_
+    ]
+    return app_entries, glyph_entries
 
 CSS = r"""
   :root {
@@ -387,7 +415,7 @@ function focusItem(scroll) {
   const box = document.querySelector(`.box[data-id="${item.id}"]`);
   if (box) { box.classList.add("is-focus"); if (scroll) box.scrollIntoView({ behavior: "smooth", block: "center" }); }
   $("#rLabel").innerHTML = `<b>${item.kind === "icon" ? "Icon" : "Glyph"} ${item.tag}</b> ${item.name}` +
-    `<small>${idx + 1} / ${ALL.length} \u00b7 pick one of each</small>`;
+    `<small>${idx + 1} / ${ALL.length} \u00b7 ${PICK_HINT}</small>`;
   history.replaceState(null, "", `#i=${idx}`);
 }
 $("#prev").onclick = () => { idx = (idx - 1 + ALL.length) % ALL.length; focusItem(true); };
@@ -416,73 +444,171 @@ focusItem(false);
 
 PRODUCTION_ICON = (OUT / "app-icon-blackout.svg").read_text()
 PRODUCTION_GLYPH = (OUT / "menu-bar-glyph.svg").read_text()
+SHEET_REFINED = OUT.parent / "icon-prototype-dev-blueprint-refined.html"
 
-html = (
-    "<!doctype html>\n"
-    "<!--\n"
-    "  PROTOTYPE (dev blueprint) - throwaway, not production.\n"
-    "  Question: which white-and-blue app icon and menu bar glyph give the dev\n"
-    "  channel its own identity?\n\n"
-    "  Five app icons (A-E) on Apple's icon grid, five menu bar glyphs (1-5) with\n"
-    "  muted variants, each shown in light and dark menu bars. Flip with the\n"
-    "  ranger bar or the left/right arrow keys.\n\n"
-    "  Run: open .scratch/branding/icon-prototype-dev-blueprint.html\n"
-    "-->\n"
-    '<html lang="en">\n<head>\n<meta charset="utf-8">\n'
-    '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-    "<title>AngryKeyboard - dev blueprint identity</title>\n"
-    f"<style>{CSS}</style>\n</head>\n<body>\n"
-    '<div class="sheet">\n'
-    '  <header class="band">\n'
-    '    <div class="wordmark">ANGRY<em>KEYBOARD</em></div>\n'
-    '    <div class="band-sub">Dev channel proof sheet<br>Blueprint identity</div>\n'
-    '    <div class="stamp"><b>DEV</b><span>WHITE + BLUE</span></div>\n'
-    "  </header>\n"
-    '  <div class="specstrip">\n'
-    "    <span><b>5</b> app icons</span>\n"
-    "    <span><b>5</b> menu bar glyphs</span>\n"
-    "    <span>production <b>unchanged</b></span>\n"
-    "    <span>cycle <b>&larr; &rarr;</b></span>\n"
-    "  </div>\n"
-    '  <div class="pinned">\n'
+
+def glyph_markup(body):
+    return ('<svg viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.7" '
+            'stroke-linecap="round" stroke-linejoin="round">' + body + '</svg>')
+
+
+def render_sheet(path, app_entries, glyph_entries, meta):
+    html = (
+        "<!doctype html>\n"
+        "<!--\n"
+        + meta["comment"]
+        + "-->\n"
+        '<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        + f"<title>{meta['title']}</title>\n"
+        + f"<style>{CSS}</style>\n</head>\n<body>\n"
+        '<div class="sheet">\n'
+        '  <header class="band">\n'
+        '    <div class="wordmark">ANGRY<em>KEYBOARD</em></div>\n'
+        + f'    <div class="band-sub">{meta["subtitle"]}</div>\n'
+        + f'    <div class="stamp"><b>{meta["stamp_top"]}</b><span>{meta["stamp_sub"]}</span></div>\n'
+        "  </header>\n"
+        '  <div class="specstrip">\n'
+        + "".join(f"    <span>{s}</span>\n" for s in meta["spec"])
+        + "  </div>\n"
+        '  <div class="pinned">\n'
+        + meta["pinned"]
+        + "  </div>\n"
+        '  <section class="tray">\n'
+        + f'    <div class="tray-head"><h2>App icon</h2><span class="caliber">{meta["app_caliber"]}</span></div>\n'
+        + f'    <p class="tray-note">{meta["app_note"]}</p>\n'
+        '    <div class="grid" id="appGrid"></div>\n'
+        "  </section>\n"
+        '  <section class="tray">\n'
+        '    <div class="tray-head"><h2>Menu bar glyph</h2><span class="caliber">Shape, not colour</span></div>\n'
+        + f'    <p class="tray-note">{meta["glyph_note"]}</p>\n'
+        '    <div class="grid glyphs" id="glyphGrid"></div>\n'
+        "  </section>\n"
+        '  <div class="notes">\n'
+        + f'    <h3>{meta["notes_head"]}</h3>\n'
+        "    <ul>\n"
+        + "".join(f"      <li>{li}</li>\n" for li in meta["notes"])
+        + "    </ul>\n"
+        "  </div>\n"
+        "</div>\n"
+        '<div class="ranger" id="ranger">\n'
+        '  <button id="prev" title="Previous (left arrow)" aria-label="Previous">&larr;</button>\n'
+        '  <div class="label" id="rLabel"></div>\n'
+        '  <button id="next" title="Next (right arrow)" aria-label="Next">&rarr;</button>\n'
+        "</div>\n"
+        "<script>\n"
+        "const APP_ICONS = " + json.dumps(app_entries) + ";\n"
+        "const GLYPHS = " + json.dumps(glyph_entries) + ";\n"
+        "const PICK_HINT = " + json.dumps(meta["pick_hint"]) + ";\n"
+        + JS +
+        "</script>\n</body>\n</html>\n"
+    )
+    path.write_text(html)
+
+
+CANDIDATE_PINNED = (
     '    <span class="tag">Production rides along</span>\n'
     f'    <span class="chip"><span class="cell" style="width:34px;height:34px">{PRODUCTION_ICON}</span> AppIcon</span>\n'
     f'    <span class="chip"><span class="cell">{PRODUCTION_GLYPH}</span> MenuBarGlyph</span>\n'
     '    <span class="chip">Neither changes. Dev only.</span>\n'
-    "  </div>\n"
-    '  <section class="tray">\n'
-    '    <div class="tray-head"><h2>App icon</h2><span class="caliber">White and blue</span></div>\n'
-    '    <p class="tray-note">Five directions, all on Apple&rsquo;s macOS icon grid. Compare the 32 and 16 px rungs: the face and any dimension marks have to survive there. The chosen master rasterizes into <code>AppIconDev.appiconset</code> for the Debug channel only.</p>\n'
-    '    <div class="grid" id="appGrid"></div>\n'
-    "  </section>\n"
-    '  <section class="tray">\n'
-    '    <div class="tray-head"><h2>Menu bar glyph</h2><span class="caliber">Shape, not colour</span></div>\n'
-    '    <p class="tray-note">The status item is a template image, so macOS recolours it and the blueprint palette cannot show. Only the shape carries the identity. These all differ from production&rsquo;s keyboard-and-burst silhouette. Muted is the same shape struck through, matching production&rsquo;s convention.</p>\n'
-    '    <div class="grid glyphs" id="glyphGrid"></div>\n'
-    "  </section>\n"
-    '  <div class="notes">\n'
-    "    <h3>After the pick</h3>\n"
-    "    <ul>\n"
-    "      <li>The chosen master rasterizes with <code>./make-app-icon.sh app-icon-blueprint-&lt;x&gt;.svg AppIconDev</code>, and Debug already points at <code>AppIconDev</code>.</li>\n"
-    "      <li>The chosen glyph gets its own imageset, with a muted variant, and <code>Config/Debug.xcconfig</code> names it. Production&rsquo;s keys and artwork stay as they are.</li>\n"
-    "      <li>Tell me the app icon letter and the glyph number. For example, &ldquo;icon C, glyph 3&rdquo;.</li>\n"
-    "    </ul>\n"
-    "  </div>\n"
-    "</div>\n"
-    '<div class="ranger" id="ranger">\n'
-    '  <button id="prev" title="Previous (left arrow)" aria-label="Previous">&larr;</button>\n'
-    '  <div class="label" id="rLabel"></div>\n'
-    '  <button id="next" title="Next (right arrow)" aria-label="Next">&rarr;</button>\n'
-    "</div>\n"
-    "<script>\n"
-    "const APP_ICONS = " + json.dumps(app_entries) + ";\n"
-    "const GLYPHS = " + json.dumps(glyph_entries) + ";\n"
-    + JS +
-    "</script>\n</body>\n</html>\n"
 )
 
-SHEET.write_text(html)
+render_sheet(
+    SHEET,
+    *entries(APP_ICONS, GLYPHS),
+    meta={
+        "comment": (
+            "  PROTOTYPE (dev blueprint) - throwaway, not production.\n"
+            "  Question: which white-and-blue app icon and menu bar glyph give the dev\n"
+            "  channel its own identity?\n\n"
+            "  Five app icons (A-E) on Apple's icon grid, five menu bar glyphs (1-5) with\n"
+            "  muted variants, each shown in light and dark menu bars. Flip with the\n"
+            "  ranger bar or the left/right arrow keys.\n\n"
+            "  Run: open .scratch/branding/icon-prototype-dev-blueprint.html\n"
+        ),
+        "title": "AngryKeyboard - dev blueprint identity",
+        "subtitle": "Dev channel proof sheet<br>Blueprint identity",
+        "stamp_top": "DEV",
+        "stamp_sub": "WHITE + BLUE",
+        "spec": [
+            "<b>5</b> app icons",
+            "<b>5</b> menu bar glyphs",
+            "production <b>unchanged</b>",
+            "cycle <b>&larr; &rarr;</b>",
+        ],
+        "pinned": CANDIDATE_PINNED,
+        "app_caliber": "White and blue",
+        "app_note": (
+            "Five directions, all on Apple&rsquo;s macOS icon grid. Compare the 32 and 16 px "
+            "rungs: the face and any dimension marks have to survive there. The chosen "
+            "master rasterizes into <code>AppIconDev.appiconset</code> for the Debug channel only."
+        ),
+        "glyph_note": (
+            "The status item is a template image, so macOS recolours it and the blueprint "
+            "palette cannot show. Only the shape carries the identity. These all differ from "
+            "production&rsquo;s keyboard-and-burst silhouette. Muted is the same shape struck "
+            "through, matching production&rsquo;s convention."
+        ),
+        "notes_head": "After the pick",
+        "notes": [
+            "The chosen master rasterizes with <code>./make-app-icon.sh app-icon-blueprint-&lt;x&gt;.svg AppIconDev</code>, and Debug already points at <code>AppIconDev</code>.",
+            "The chosen glyph gets its own imageset, with a muted variant, and <code>Config/Debug.xcconfig</code> names it. Production&rsquo;s keys and artwork stay as they are.",
+            "Tell me the app icon letter and the glyph number. For example, &ldquo;icon C, glyph 3&rdquo;.",
+        ],
+        "pick_hint": "pick one of each",
+    },
+)
 
-print("wrote app icons:", ", ".join(f"app-icon-blueprint-{s}.svg" for s, *_ in APP_ICONS))
+REFINED_PINNED = (
+    '    <span class="tag">Glyph 3 pinned</span>\n'
+    f'    <span class="chip"><span class="cell">{glyph_markup(GLYPHS[2][4])}</span> MenuBarGlyphDev</span>\n'
+    '    <span class="chip">Production&rsquo;s icon and glyph are untouched.</span>\n'
+)
+
+render_sheet(
+    SHEET_REFINED,
+    *entries(FINALIST_ICONS, [GLYPHS[2]]),
+    meta={
+        "comment": (
+            "  PROTOTYPE (dev blueprint refinement) - throwaway, not production.\n"
+            "  Question: white or inverted for app icon A?\n\n"
+            "  A keeps its dimension line and gains the rising smoke. The inverted colourway\n"
+            "  puts the same composition on a deep-blue tile with white linework. Glyph 3 is\n"
+            "  pinned. Flip with the ranger bar or the left/right arrow keys.\n\n"
+            "  Run: open .scratch/branding/icon-prototype-dev-blueprint-refined.html\n"
+        ),
+        "title": "AngryKeyboard - dev blueprint refinement",
+        "subtitle": "Dev channel refinement<br>A, two colourways",
+        "stamp_top": "PICK ONE",
+        "stamp_sub": "COLOURWAY",
+        "spec": [
+            "<b>2</b> colourways",
+            "glyph <b>3</b> pinned",
+            "production <b>unchanged</b>",
+            "cycle <b>&larr; &rarr;</b>",
+        ],
+        "pinned": REFINED_PINNED,
+        "app_caliber": "White or blue",
+        "app_note": (
+            "Your pick was A. Both colourways carry the dimension line and the smoke from "
+            "production, drawn in the blueprint palette. The inverted tile matches C&rsquo;s "
+            "negative. Check the 32 and 16 px rungs before choosing."
+        ),
+        "glyph_note": (
+            "Glyph 3, the fuming key, is pinned. It grows upward with two smoke curls, "
+            "unlike production&rsquo;s keyboard and side burst. Shown in light, dark, and muted."
+        ),
+        "notes_head": "Next",
+        "notes": [
+            "Tell me which colourway, white or inverted.",
+            "Then it rasterizes into <code>AppIconDev</code>, and glyph 3 ships as its own imageset with a muted variant.",
+            "Production&rsquo;s icon and glyph stay as they are.",
+        ],
+        "pick_hint": "pick a colourway",
+    },
+)
+
+print("wrote app icons:", ", ".join(f"app-icon-blueprint-{s}.svg" for s, *_ in APP_ICONS + [A_INVERTED]))
 print("wrote glyphs:", ", ".join(f"menu-bar-glyph-dev-{s}.svg" for s, *_ in GLYPHS))
 print("wrote", SHEET.relative_to(OUT.parent.parent.parent))
+print("wrote", SHEET_REFINED.relative_to(OUT.parent.parent.parent))
