@@ -17,14 +17,14 @@
 			path = AngryKeyboard;
 			sourceTree = "<group>";
 		};
-		FA000000000000000000000A /* AngryKeyboardCore */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AngryKeyboardCore;
-			sourceTree = "<group>";
-		};
 		FA0000000000000000000006 /* AngryKeyboardTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = AngryKeyboardTests;
+			sourceTree = "<group>";
+		};
+		FA000000000000000000000A /* AngryKeyboardCore */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AngryKeyboardCore;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -94,11 +94,9 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			fileSystemSynchronizedGroups = (
-				FA000000000000000000000A /* AngryKeyboardCore */,
 				FA0000000000000000000006 /* AngryKeyboardTests */,
+				FA000000000000000000000A /* AngryKeyboardCore */,
 			);
 			name = AngryKeyboardTests;
 			productName = AngryKeyboardTests;
@@ -293,7 +291,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "AngryKeyboard Local";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = NO;
@@ -324,7 +323,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "AngryKeyboard Local";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = NO;
