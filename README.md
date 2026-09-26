@@ -179,3 +179,7 @@ builtin and the bare command fails. Stop the stream with Ctrl-C.
   pool, catch-all, and playback mode.
 - `docs/adr/` records the notable decisions.
 - `.scratch/mvp/spec.md` is the MVP spec.
+
+## License
+
+MIT. See `LICENSE`.
