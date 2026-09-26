@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Channel menu bar glyph names. The values come from the per-configuration
+	     xcconfig, because custom keys do not survive the generated Info.plist. -->
+	<key>AKMenuBarGlyph</key>
+	<string>$(AK_MENU_BAR_GLYPH)</string>
+	<key>AKMenuBarGlyphMuted</key>
+	<string>$(AK_MENU_BAR_GLYPH_MUTED)</string>
+</dict>
+</plist>

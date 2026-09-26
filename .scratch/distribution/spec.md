@@ -57,14 +57,18 @@ The app already reads its name from `CFBundleDisplayName` through `AppDelegate.d
 
 Two lookups hardcode production assets and must change:
 
-- `AppDelegate.applicationIcon` hardcodes `NSImage(named: "AppIcon")`. It becomes `NSImage(named: Bundle.main.object(forInfoDictionaryKey: "CFBundleIconName") as? String ?? "AppIcon")`. Xcode already writes `CFBundleIconName` from `ASSETCATALOG_COMPILER_APPICON_NAME`.
+- `AppDelegate.applicationIcon` hardcodes `NSImage(named: "AppIcon")`. It reads `CFBundleIconName`, which Xcode writes from `ASSETCATALOG_COMPILER_APPICON_NAME`, so each channel loads its own icon.
 - `AppDelegate.refreshStatusIcon` hardcodes `MenuBarGlyph` and `MenuBarGlyphMuted`. It reads two custom Info.plist keys, `AKMenuBarGlyph` and `AKMenuBarGlyphMuted`, falling back to the current names.
+
+Both lookups live in `AngryKeyboardCore/ChannelAssets.swift` so the fallbacks are unit-tested.
+
+Xcode 27 drops custom keys written as `INFOPLIST_KEY_<name>` from the generated Info.plist. The two glyph keys therefore come from a real `Config/Info.plist` that is merged with the generated one (`INFOPLIST_FILE = Config/Info.plist` alongside `GENERATE_INFOPLIST_FILE = YES`). Its values are build settings, `$(AK_MENU_BAR_GLYPH)` and `$(AK_MENU_BAR_GLYPH_MUTED)`, so the per-channel names still live in the xcconfig files.
 
 ### Dev assets
 
-The dev app icon is a second appiconset, `AppIconDev`, until the blueprint redesign lands. It is generated from the existing Kraft Kit master, which is one command in `.scratch/branding/source`.
+The dev app icon is a second appiconset, `AppIconDev`, generated from the existing Kraft Kit master, which is one command in `.scratch/branding/source`. It stays in place until the blueprint pick is implemented.
 
-The dev menu bar glyph is deferred. Until the blueprint redesign produces one, `AKMenuBarGlyph` and `AKMenuBarGlyphMuted` point at the production assets, so the two menu bar icons look identical for now. The keys exist so the swap is a two-line change later.
+The blueprint design pass lives in `.scratch/branding`: `icon-prototype-dev-blueprint.html` shows five white-and-blue app icon variants and five shape-distinct menu bar glyphs, with the 1024 masters and glyph SVGs next to it in `source/`. The menu bar glyph stays deferred until Zac picks one. `AKMenuBarGlyph` and `AKMenuBarGlyphMuted` point at the production assets in both channels for now, so the two menu bar icons look identical. The keys exist so the swap is a two-line change in `Config/Debug.xcconfig` once the glyph exists.
 
 The blueprint theme cannot be applied to the menu bar glyph. `refreshStatusIcon` sets `isTemplate = true`, so macOS recolors the glyph to match the menu bar, black in light mode and white in dark mode. The dev glyph has to differ from production by shape, not color. The blueprint palette is for the app icon, which is drawn at large sizes and in color.
 
@@ -183,8 +187,8 @@ PRODUCT_BUNDLE_IDENTIFIER = com.zzacong.AngryKeyboard.dev
 PRODUCT_NAME = AngryKeyboardDev
 INFOPLIST_KEY_CFBundleDisplayName = Angry Keyboard Dev
 ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev
-INFOPLIST_KEY_AKMenuBarGlyph = MenuBarGlyph
-INFOPLIST_KEY_AKMenuBarGlyphMuted = MenuBarGlyphMuted
+AK_MENU_BAR_GLYPH = MenuBarGlyph
+AK_MENU_BAR_GLYPH_MUTED = MenuBarGlyphMuted
 
 CODE_SIGN_STYLE = Manual
 CODE_SIGN_IDENTITY = -
@@ -198,8 +202,8 @@ PRODUCT_BUNDLE_IDENTIFIER = com.zzacong.AngryKeyboard
 PRODUCT_NAME = AngryKeyboard
 INFOPLIST_KEY_CFBundleDisplayName = Angry Keyboard
 ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
-INFOPLIST_KEY_AKMenuBarGlyph = MenuBarGlyph
-INFOPLIST_KEY_AKMenuBarGlyphMuted = MenuBarGlyphMuted
+AK_MENU_BAR_GLYPH = MenuBarGlyph
+AK_MENU_BAR_GLYPH_MUTED = MenuBarGlyphMuted
 
 CODE_SIGN_STYLE = Manual
 CODE_SIGN_IDENTITY = -
@@ -382,8 +386,11 @@ The same text goes in the README, the release notes, and `packaging/INSTALL.txt`
 | `packaging/INSTALL.txt` | new, the warning and install steps |
 | `packaging/RELEASE-NOTES.md` | new, the warning block appended to release notes |
 | `CREDITS.md` | new, Pixabay sound credit |
-| `AngryKeyboard/Assets.xcassets/AppIconDev.appiconset` | new, the dev app icon from the Kraft Kit master |
-| `AngryKeyboard/AppDelegate.swift` | read the app icon from `CFBundleIconName`, read the glyph names from the Info.plist keys |
+| `AngryKeyboard/Assets.xcassets/AppIconDev.appiconset` | new, the dev app icon, generated from the Kraft Kit master until the blueprint redesign lands |
+| `Config/Info.plist` | new, holds the custom glyph keys with build-setting values, merged into the generated Info.plist |
+| `AngryKeyboard/AppDelegate.swift` | read the app icon and the glyph names through `ChannelAssets` instead of hardcoded assets |
+| `AngryKeyboardCore/ChannelAssets.swift` | new, the channel asset name lookups and their production fallbacks |
+| `AngryKeyboardTests/ChannelAssetsTests.swift` | new, pins the fallback behaviour |
 | `AngryKeyboard.xcodeproj/project.pbxproj` | base each app configuration on its `Config/*.xcconfig`, remove the overridden settings, add the version script phase, set `ENABLE_USER_SCRIPT_SANDBOXING = NO` on the app target, change `MARKETING_VERSION` to `0.1.0` |
 | `.gitignore` | add `Config/Debug.local.xcconfig`, `Config/Release.local.xcconfig`, `*.p12`, `dist/` |
 | `README.md` | add a distribution section and the install flows, document both channels and their bundle ids, note the production certificate, update the rebuild caveat |
@@ -394,7 +401,7 @@ Repository secrets and variables live in GitHub settings, not in the repo: `CERT
 
 - Verify the fresh-install experience on a second user account or a second Mac. Confirm that a downloaded DMG gets through Gatekeeper, that Input Monitoring can be granted, and that the app makes sound. This is untested because it needs a machine that has never seen the app.
 - After the second release, confirm that an Input Monitoring grant survives an update from the previous version, since both are signed with `AngryKeyboard Production`. This is the claim the signing setup rests on.
-- Run a prototype session for the dev channel's blueprint theme. It produces a new app icon master in white and blue for `AppIconDev`, and a dev menu bar glyph that differs from production by shape, since template images cannot carry color.
+- The dev channel's blueprint proof sheet exists and waits on a pick. Implementing that pick ships the chosen master as `AppIconDev` and points the dev glyph keys at a shape-distinct glyph, since template images cannot carry color.
 
 ## Out of Scope
 

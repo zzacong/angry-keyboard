@@ -54,12 +54,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             ?? ProcessInfo.processInfo.processName
     }
 
-    /// The app icon from the asset catalog. An agent app has no Dock tile, so
-    /// AppKit never loads the bundle icon into `NSApplication.applicationIconImage`.
-    /// The places that would otherwise draw it, the About panel and an alert, are
-    /// handed it by hand.
+    /// The app icon from the asset catalog, named by the bundle so each channel
+    /// draws its own. An agent app has no Dock tile, so AppKit never loads the
+    /// bundle icon into `NSApplication.applicationIconImage`. The places that
+    /// would otherwise draw it, the About panel and an alert, are handed it by
+    /// hand.
     private var applicationIcon: NSImage? {
-        NSImage(named: "AppIcon")
+        NSImage(named: ChannelAssets.appIconName(in: Bundle.main.infoDictionary ?? [:]))
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -280,11 +281,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// same glyph struck through while muted. The change is the only thing that
     /// explains a silent app, so it is refreshed whenever mute changes.
     ///
-    /// Both states are bundled template images (`MenuBarGlyph` and
-    /// `MenuBarGlyphMuted`) drawn at 18pt. Each falls back to a system symbol if
-    /// its asset is missing.
+    /// Both states are bundled template images, named by the bundle so each
+    /// channel can draw its own, and drawn at 18pt. Each falls back to a system
+    /// symbol if its asset is missing.
     private func refreshStatusIcon() {
-        let name = settings.isMuted ? "MenuBarGlyphMuted" : "MenuBarGlyph"
+        let name = ChannelAssets.menuBarGlyphName(
+            in: Bundle.main.infoDictionary ?? [:],
+            muted: settings.isMuted
+        )
         let symbol = settings.isMuted ? "speaker.slash" : "keyboard"
 
         let icon: NSImage?
