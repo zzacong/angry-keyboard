@@ -187,6 +187,16 @@ Check these by hand after a build.
 - After a rebuild, macOS may ask for Input Monitoring again. A locally signed
   Debug build can change identity between builds, so the old grant no longer
   matches. Grant it again, or keep one build for everyday use.
+- If a grant will not take, clear the stored approval and grant it again:
+
+  ```
+  tccutil reset ListenEvent com.zzacong.AngryKeyboard
+  ```
+
+  The reset drops the saved approval, so the next launch starts from the
+  explainer and a fresh system request. It does not remove the app's row from
+  the list; if that row is stuck, select it and click the minus button, which
+  asks for your password.
 
 ## Logs
 
