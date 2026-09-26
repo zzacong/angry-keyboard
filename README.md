@@ -43,6 +43,31 @@ The test target covers the resolver, the settings model, playback voice math, an
 sound onset detection. Capture, audio, and permissions cannot be unit tested, so
 they have a manual checklist below.
 
+### Local signing
+
+Xcode signs a build ad-hoc by default when there is no team. An ad-hoc
+signature is identified by a hash of the binary, so it changes on every build.
+macOS keys the Input Monitoring grant to that identity, so each rebuild looks
+like a new app and the grant is lost. This is the rebuild caveat in
+Troubleshooting.
+
+To hold one identity across builds, sign with a self-signed certificate:
+
+1. Open Keychain Access, then Keychain Access > Certificate Assistant > Create a
+   Certificate.
+2. Name it, set Identity Type to Self-Signed Root and Certificate Type to Code
+   Signing. Check "Let me override defaults" to reach Validity Period, and set it
+   to 3650 days (the default is 365).
+3. In the project, select the AngryKeyboard target > Signing & Capabilities,
+   uncheck Automatically manage signing, and set Signing Certificate to the
+   certificate's name.
+4. Grant Input Monitoring once. The grant then survives rebuilds.
+
+A free Apple ID works too, with no certificate to manage: add it under Xcode >
+Settings > Accounts, set the target's Team to the Personal Team, and Xcode signs
+with an Apple Development certificate it renews each year. It needs an Apple ID
+signed in, and it buys nothing locally that the self-signed certificate does not.
+
 ## Grant Input Monitoring
 
 AngryKeyboard hears every keystroke system wide, so macOS gates it behind Input
