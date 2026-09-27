@@ -38,9 +38,11 @@ line and gained the rising smoke. Glyph 3 ships as the template images
 `MenuBarGlyphDev` and `MenuBarGlyphDevMuted`, rasterized by
 `source/make-menu-bar-glyph.sh MenuBarGlyphDev menu-bar-glyph-dev-3`.
 
-A's colorway is still open. `icon-prototype-dev-blueprint-refined.html` shows A
-on its white tile next to an inverted version on a deep-blue tile, both built by
-`source/gen_dev_blueprint.py`.
+The shipped dev icon is the inverted colorway:
+`source/app-icon-blueprint-a-inverted.svg`, rasterized into
+`AppIconDev.appiconset` by
+`./make-app-icon.sh app-icon-blueprint-a-inverted.svg AppIconDev`. The white
+colorway stays as `source/app-icon-blueprint-a.svg`.
 
 ## Regenerate or switch
 
