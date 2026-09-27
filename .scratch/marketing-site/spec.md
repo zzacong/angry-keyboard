@@ -1,6 +1,6 @@
 # AngryKeyboard marketing site
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ## Goal
 
@@ -33,7 +33,7 @@ The prototype is the primary source, not code to lift:
 2. First-person pitch, with the download button and a "hobby project" sticker.
 3. The deck, presented as a taped-in card.
 4. The six key bindings.
-5. How to get it, three steps, then the download call to action.
+5. How to get it: the install note, three steps, then the download call to action.
 6. The sticker sheet and a footer.
 
 ## Assets
@@ -46,12 +46,15 @@ The prototype is the primary source, not code to lift:
 
 ## Open items
 
-- The download link and the release artifact behind it. Every button points at
-  `#` in the prototype.
+The page is built in `site/`. The download buttons point at the latest GitHub
+Release, so the link and its artifact are resolved.
+
 - A notarized or Developer ID build to download. See ADR 0007 and ADR 0009.
-- An FAQ for the Input Monitoring request. It is the first thing a cautious
-  visitor will ask about.
+- An FAQ for the Input Monitoring request. Step 3's "it only listens" line stands
+  in for now.
 - An illustrated sticker set to replace the prototype's vector shapes.
+- Sticker and deck animation: smoke, fire, and sparks reacting to the live deck.
+  Deferred to its own pass after this port.
 
 ## Out of scope
 
