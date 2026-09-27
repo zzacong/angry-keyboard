@@ -62,7 +62,8 @@ It creates both certificates in Keychain Access, writes the gitignored
 `Config/Debug.local.xcconfig` and `Config/Release.local.xcconfig`, exports
 production as a `.p12` for the release workflow, backs it up, and stores the
 repository secrets (`CERTIFICATE_P12_BASE64`, `CERTIFICATE_PASSWORD`,
-`KEYCHAIN_PASSWORD`) and the `SIGNING_IDENTITY` variable.
+`KEYCHAIN_PASSWORD`) and the `SIGNING_IDENTITY` variable. What each of those
+holds and how CI uses them is documented in `docs/signing.md`.
 
 A clone with no certificates still builds both channels. The committed
 `Config/Debug.xcconfig` and `Config/Release.xcconfig` sign ad-hoc, and each
