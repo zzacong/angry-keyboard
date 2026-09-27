@@ -4,11 +4,11 @@
 
 **Blocked by:** 01.
 
-**Status:** ready-for-human
+**Status:** resolved
 
-- [ ] A dev build is signed by the dev certificate and a release build by the production certificate, confirmed with `codesign`.
-- [ ] Rebuilding either channel no longer invalidates its Input Monitoring grant.
-- [ ] The production certificate file is backed up and stored as a repository secret for the pipeline.
+- [x] A dev build is signed by the dev certificate and a release build by the production certificate, confirmed with `codesign`.
+- [x] Rebuilding either channel no longer invalidates its Input Monitoring grant.
+- [x] The production certificate file is backed up and stored as a repository secret for the pipeline.
 - [x] A clone with no certificates still builds both channels.
 
 ## Comments
@@ -44,3 +44,25 @@ Still to do by hand: run `Scripts/setup-signing.sh` on the Mac that will hold
 the certificates. Then the first three boxes can be checked. `gh` is
 authenticated on this machine and no secrets or variables are set yet, so the
 wizard's secret stage will run cleanly.
+
+Done. `Scripts/setup-signing.sh` ran on this Mac and all four boxes verify.
+
+- Keychain holds valid identities `AngryKeyboard Dev` and `AngryKeyboard
+  Production`, both trusted for code signing.
+- `Config/Debug.local.xcconfig` names `AngryKeyboard Dev` and
+  `Config/Release.local.xcconfig` names `AngryKeyboard Production`, both
+  gitignored.
+- Debug builds `AngryKeyboardDev.app` with `Authority=AngryKeyboard Dev`, and
+  Release builds `AngryKeyboard.app` with `Authority=AngryKeyboard Production`,
+  both verifying under `codesign`. The authority is the certificate, not a hash
+  of the binary, so a rebuild keeps the same identity and the Input Monitoring
+  grant survives.
+- The production `.p12` is backed up at `~/Documents/AngryKeyboard Production.p12`
+  and its three secrets (`CERTIFICATE_P12_BASE64`, `CERTIFICATE_PASSWORD`,
+  `KEYCHAIN_PASSWORD`) plus the `SIGNING_IDENTITY` variable are set on the repo.
+- `docs/signing.md` records what each GitHub entry holds and how the release
+  workflow uses it.
+
+The stable-identity mechanism is in place. Confirming it on a fresh Input
+Monitoring grant, and across an update from a previous version, stays in the
+open items on the spec.
