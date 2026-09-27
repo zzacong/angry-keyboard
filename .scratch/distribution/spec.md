@@ -266,7 +266,7 @@ VERSION=$(git describe --tags --dirty --always 2>/dev/null | sed 's/^v//')
   "$TARGET_BUILD_DIR/$INFOPLIST_PATH"
 ```
 
-Four costs come with this. The project has `ENABLE_USER_SCRIPT_SANDBOXING = YES`, so the app target must set it to `NO` or the script cannot run `git` and write the built plist. The script runs before code signing, so the signature covers the patched plist. Until the first tag exists, `git describe` falls back to a short commit hash, so the dev version reads as a hash rather than `0.1.0`. And it is gated to Debug so it never overwrites the tag injected into Release.
+Four costs come with this. The project has `ENABLE_USER_SCRIPT_SANDBOXING = YES`, so the app target must set it to `NO` or the script cannot run `git` and write the built plist. The phase lists the built Info.plist as an input so the build system orders it after `ProcessInfoPlistFile`; without that dependency Xcode can regenerate the plist after the script and silently overwrite the stamp on incremental builds. The script runs before code signing, so the signature covers the patched plist. Until the first tag exists, `git describe` falls back to a short commit hash, so the dev version reads as a hash rather than `0.1.0`. And it is gated to Debug so it never overwrites the tag injected into Release.
 
 ## Build and package
 
