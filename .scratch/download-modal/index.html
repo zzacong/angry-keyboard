@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Angry Keyboard — download modal (prototype)</title>
+
+<!--
+  PROTOTYPE. Not production. Answers one question: what should the "thanks for
+  downloading" modal card look like? Four card variants sit in one self-contained
+  file, switchable with ?variant=a|b|c|d and the floating bar at the bottom.
+  The modal opens over a faithful copy of the site's "How to get it" section so
+  the card can be judged in context. Throw this file away once a direction wins.
+
+  Built on a native <dialog> opened with showModal(), so it lives in the top
+  layer and never fights the page decor for z-index.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600..900&family=Big+Shoulders+Stencil+Display:wght@700..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Caveat:wght@400..700&family=Space+Grotesk:wght@400..700&family=Saira+Condensed:wght@500;600;700&family=Archivo:wght@400..900&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================================
+   Palette and type. Values lifted from the real site so the prototype matches.
+   ========================================================================= */
+:root{
+  --paper:#EDE8DC; --card:#FFFDF7; --cardBar:#F4EEE0;
+  --ink:#1B1712; --inkSoft:#6B6252; --inkSoftest:#9A9080;
+  --red:#C8281C; --redDeep:#A81F16; --tape:#C8A268;
+  --noteYellow:#F7E9A0; --noteBlue:#CFE3F5; --notePink:#F6CFC7; --blue:#2B4E8C;
+
+  --head:"Bricolage Grotesque",system-ui,sans-serif;
+  --hand:"Caveat","Bradley Hand",cursive;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background-color:var(--paper);
+  background-image:radial-gradient(rgba(27,23,18,.16) 1px, transparent 1.2px);
+  background-size:12px 12px;
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:1.08rem;
+  line-height:1.65;
+  min-height:100svh;
+  padding-bottom:4.5rem;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px;border-radius:2px}
+
+/* =========================================================================
+   Context: the real "How to get it" section, reproduced from GetIt.astro so
+   the modal can be judged against the page it lands on. Not the prototype.
+   ========================================================================= */
+.wrap{width:min(1180px,92vw);margin:0 auto}
+.f-get{position:relative;margin-top:4rem;padding-top:.5rem}
+.f-get h2{
+  font-family:var(--head);font-weight:800;
+  font-size:clamp(1.5rem,3.2vw,2.3rem);letter-spacing:-.02em;line-height:1.02;
+  margin:0 0 1.4rem;
+}
+.f-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem}
+.f-note-card{
+  padding:1.2rem 1.2rem 1.4rem;
+  box-shadow:3px 4px 0 rgba(27,23,18,.18);
+  font-family:var(--hand);font-size:1.32rem;line-height:1.25;
+  background:var(--noteYellow);transform:rotate(-1.3deg);
+}
+.f-note-card:nth-child(2){background:var(--noteBlue);transform:rotate(1deg)}
+.f-note-card:nth-child(3){background:var(--notePink);transform:rotate(-.5deg)}
+.f-note-card b{font-family:var(--head);font-weight:800;font-size:1.6rem;display:block;margin-bottom:.2rem}
+.f-cta{margin-top:2.6rem;display:flex;flex-wrap:wrap;align-items:center;gap:1.2rem}
+.f-cta .meta{font-family:var(--mono);font-size:12px;color:var(--inkSoft)}
+.btn{
+  display:inline-flex;align-items:center;gap:.55em;
+  font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.01em;
+  padding:.82em 1.15em;border:1px solid transparent;border-radius:2px;
+  text-decoration:none;cursor:pointer;
+  transition:background .15s ease, transform .12s ease;
+}
+.btn:active{transform:translateY(1px)}
+.btn-fire{background:var(--red);color:var(--card);box-shadow:3px 4px 0 rgba(27,23,18,.3);font-family:var(--head);font-weight:800}
+.btn-fire:hover{background:var(--redDeep)}
+/* page decor sits below content, takes no pointer events, and hides on narrow screens */
+.f-decor{position:absolute;inset:0;pointer-events:none;z-index:1;display:block}
+.f-decor .fst{position:absolute;filter:drop-shadow(2px 3px 0 rgba(27,23,18,.24))}
+.fst-free{width:98px;right:1%;top:-34px;transform:rotate(9deg)}
+.fst-missile{width:170px;right:-42px;bottom:-6px;transform:rotate(-13deg)}
+.f-get > *:not(.f-decor){position:relative;z-index:2}
+@media (max-width:980px){
+  .f-decor{display:none}
+  .f-notes{grid-template-columns:1fr}
+}
+
+/* =========================================================================
+   Dialog shell. Native <dialog> + showModal() puts the card in the top layer,
+   so it beats the page decor without any z-index tuning.
+   ========================================================================= */
+dialog.dlm{
+  position:fixed;inset:0;
+  margin:auto;             /* centers the card */
+  width:fit-content;height:fit-content;
+  max-width:none;max-height:none;
+  padding:0;border:0;background:transparent;overflow:visible;
+  color:var(--ink);
+}
+dialog.dlm::backdrop{
+  /* dimmed paper, not a hard black curtain */
+  background:rgba(43,35,26,.34);
+  backdrop-filter:blur(1.5px);
+}
+
+/* =========================================================================
+   Card base — shared furniture across the four variants
+   ========================================================================= */
+.card{
+  position:relative;
+  background:var(--card);
+  border:1.5px solid var(--ink);
+  border-radius:2px;
+  box-shadow:5px 7px 0 rgba(27,23,18,.22);
+  color:var(--ink);
+  margin:0 auto;
+}
+[data-card][hidden]{display:none!important}
+
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin:0 0 .35rem}
+.title{font-family:var(--head);font-weight:800;letter-spacing:-.02em;line-height:1.03;margin:0 0 .6rem;font-size:clamp(1.45rem,2.4vw,1.95rem)}
+.body{font-family:var(--serif);font-size:1rem;line-height:1.6;margin:0;max-width:46ch}
+.retry{font-family:var(--serif);font-size:.98rem;margin:.9rem 0 0;color:var(--inkSoft)}
+.retry a{color:var(--red);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+
+/* close control: shared shape, reachable on touch, restyled per variant */
+.close{
+  position:absolute;top:.5rem;right:.5rem;z-index:3;
+  width:34px;height:34px;display:grid;place-items:center;
+  background:var(--card);border:1.5px solid var(--ink);border-radius:2px;
+  color:var(--ink);font-family:var(--head);font-weight:800;font-size:19px;line-height:1;
+  cursor:pointer;transition:background .12s ease,color .12s ease;
+}
+.close:hover{background:var(--ink);color:var(--card)}
+
+/* =========================================================================
+   VARIANT A · Taped note card  (recommended direction)
+   A plain paper card with tape at the corners. Deliberately number-free and
+   red-kickered so it does not read as "step 4". The retry line is the
+   handwriting accent.
+   ========================================================================= */
+[data-card="a"]{
+  --rot:-1.2deg;
+  width:min(520px,92vw);
+  padding:1.7rem 1.5rem 1.4rem;
+  transform:rotate(var(--rot));
+}
+[data-card="a"] .kicker{color:var(--red)}
+[data-card="a"] .retry{
+  font-family:var(--hand);font-size:1.5rem;line-height:1.15;
+  color:var(--blue);transform:rotate(-.6deg);margin-top:.55rem;
+}
+[data-card="a"] .retry a{color:var(--red)}
+[data-card="a"] .tape{
+  position:absolute;width:96px;height:26px;
+  background:var(--tape);opacity:.8;
+  border:1px solid rgba(27,23,18,.1);
+  box-shadow:0 2px 4px rgba(27,23,18,.12);
+}
+[data-card="a"] .tape.l{top:-14px;left:-16px;transform:rotate(-8deg)}
+[data-card="a"] .tape.r{top:-14px;right:-16px;transform:rotate(7deg)}
+@media (max-width:480px){
+  [data-card="a"] .tape.l{left:-6px}
+  [data-card="a"] .tape.r{right:-6px}
+}
+
+/* =========================================================================
+   VARIANT B · Receipt / order slip
+   IBM Plex Mono throughout, dashed torn edges, a line-item body, and a TOTAL.
+   ========================================================================= */
+[data-card="b"]{
+  width:min(392px,92vw);
+  padding:1rem 1.2rem 1.2rem;
+  font-family:var(--mono);
+  border-top:2px dashed rgba(27,23,18,.5);
+  border-bottom:2px dashed rgba(27,23,18,.5);
+}
+[data-card="b"] .close{width:30px;height:30px;font-family:var(--mono);font-weight:600;font-size:16px}
+[data-card="b"] .b-head{
+  display:flex;justify-content:space-between;gap:1rem;
+  font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--inkSoftest);
+  padding-bottom:.5rem;padding-right:2.4rem; /* clear the close button */
+}
+[data-card="b"] .kicker{
+  color:var(--inkSoft);font-size:10.5px;letter-spacing:.16em;margin:.55rem 0 .2rem;
+}
+[data-card="b"] .title{
+  font-family:var(--mono);font-weight:600;font-size:1.22rem;letter-spacing:-.01em;
+  line-height:1.25;margin:0 0 .55rem;padding-right:1.6rem;
+}
+[data-card="b"] .rule{border:0;border-top:1.5px dashed rgba(27,23,18,.4);margin:.7rem 0}
+[data-card="b"] .body{font-family:var(--mono);font-size:.82rem;line-height:1.62;color:var(--ink);max-width:none}
+[data-card="b"] .total{
+  display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+  font-size:1rem;font-weight:600;letter-spacing:.06em;margin:.1rem 0 .2rem;
+}
+[data-card="b"] .total span:last-child{font-size:1.15rem}
+[data-card="b"] .retry{font-family:var(--mono);font-size:.78rem;color:var(--inkSoft);margin-top:.7rem}
+[data-card="b"] .perf{
+  height:5px;
+  background-image:radial-gradient(circle, rgba(27,23,18,.45) 0 1.3px, transparent 1.5px);
+  background-size:9px 5px;background-repeat:repeat-x;background-position:center;
+}
+
+/* =========================================================================
+   VARIANT C · Dispatch note
+   A form-like slip carrying a big angled AIR MAIL stamp and a mailed sticker.
+   ========================================================================= */
+[data-card="c"]{
+  --rot:.6deg;
+  width:min(520px,92vw);
+  padding:1.7rem 1.5rem 1.5rem;
+  transform:rotate(var(--rot));
+}
+[data-card="c"] .kicker{color:var(--red)}
+[data-card="c"] .stamp{
+  position:absolute;top:-22px;right:58px;transform:rotate(-11deg);
+  border:2.5px dashed var(--blue);border-radius:3px;
+  background:rgba(255,253,247,.86);
+  color:var(--blue);text-align:center;line-height:1.3;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  padding:.4rem .6rem;opacity:.9;pointer-events:none;
+}
+[data-card="c"] .stamp b{display:block;font-weight:600}
+[data-card="c"] .stamp span{font-size:9px;letter-spacing:.12em}
+[data-card="c"] .c-rule{
+  border:0;border-top:1.5px solid rgba(27,23,18,.35);
+  box-shadow:0 3px 0 -1px rgba(27,23,18,.35);
+  margin:0 0 .9rem;
+}
+[data-card="c"] .missile{
+  position:absolute;bottom:-24px;right:-18px;width:96px;transform:rotate(-13deg);
+  filter:drop-shadow(2px 3px 0 rgba(27,23,18,.24));pointer-events:none;
+}
+@media (max-width:480px){
+  [data-card="c"] .stamp{right:44px;top:-16px}
+  [data-card="c"] .missile{right:-8px;width:76px}
+}
+
+/* =========================================================================
+   VARIANT D · InstallNote look
+   Copies site/src/components/InstallNote.astro: hazard sticker, mono kicker,
+   Bricolage title, serif body.
+   ========================================================================= */
+[data-card="d"]{
+  width:min(540px,92vw);
+  padding:1.35rem 1.4rem 1.4rem;
+}
+[data-card="d"] .hazard{
+  /* held clear of the close button at the top-right corner */
+  position:absolute;top:-26px;right:62px;width:56px;transform:rotate(12deg);
+  filter:drop-shadow(2px 3px 0 rgba(27,23,18,.24));pointer-events:none;
+}
+[data-card="d"] .kicker{color:var(--blue);letter-spacing:.08em;font-size:11px}
+[data-card="d"] .title{font-size:clamp(1.3rem,2.2vw,1.7rem);margin-bottom:.55rem}
+[data-card="d"] .body{font-size:1rem;line-height:1.62}
+[data-card="d"] .retry{font-size:.92rem}
+@media (max-width:560px){[data-card="d"] .hazard{display:none}}
+
+/* =========================================================================
+   Entrance motion — a card being slapped down. ~150ms, and only when the
+   visitor has not asked for reduced motion.
+   ========================================================================= */
+@media (prefers-reduced-motion: no-preference){
+  dialog[open] .card{animation:settle 150ms cubic-bezier(.2,.85,.3,1.1) both}
+  @keyframes settle{
+    0%{transform:rotate(calc(var(--rot,0deg) - 3deg)) scale(1.035);opacity:0}
+    60%{opacity:1}
+    100%{transform:rotate(var(--rot,0deg)) scale(1);opacity:1}
+  }
+}
+
+/* =========================================================================
+   Prototype-only variant switcher. Delete with the losing variants.
+   ========================================================================= */
+.proto-bar{
+  position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:99;
+  display:flex;align-items:center;gap:.3rem;
+  background:var(--ink);color:var(--paper);
+  border-radius:999px;padding:.3rem .5rem;
+  box-shadow:0 14px 40px -10px rgba(27,23,18,.7);
+  font-family:var(--mono);font-size:12px;
+}
+.proto-bar button{
+  font-family:var(--head);font-size:17px;line-height:1;font-weight:800;
+  height:2rem;min-width:2rem;padding:0 .5rem;
+  border:0;border-radius:999px;cursor:pointer;
+  background:transparent;color:var(--paper);
+}
+.proto-bar button:hover{background:rgba(237,232,220,.18)}
+.proto-bar .lab{padding:0 .55rem;min-width:13ch;text-align:center;letter-spacing:.02em}
+.proto-bar .sep{width:1px;height:1.4rem;background:rgba(237,232,220,.28);margin:0 .15rem}
+.proto-bar .key-tip{padding:0 .5rem 0 .3rem;color:var(--inkSoftest);font-size:10.5px}
+</style>
+</head>
+<body>
+
+<!-- Sticker sprite. Geometry lifted from .scratch/marketing-site/_src/template.html
+     (s-free, s-hazard, s-fist, s-missile) so the prototype uses the site's own art. -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <symbol id="s-missile" viewBox="0 0 196 110">
+    <path d="M72 47 L26 55 L72 63 Z" fill="#E8B33D" stroke="#FFFDF7" stroke-width="10" stroke-linejoin="round" paint-order="stroke"/>
+    <g fill="#FFFDF7" stroke="#FFFDF7" stroke-width="12" stroke-linejoin="round">
+      <path d="M72 40 H140 L184 55 L140 70 H72 Z"/>
+      <path d="M72 40 L40 12 L72 26 Z"/>
+      <path d="M72 70 L40 98 L72 84 Z"/>
+    </g>
+    <path d="M72 40 H140 L184 55 L140 70 H72 Z" fill="#C8281C"/>
+    <path d="M140 40 L184 55 L140 70 Z" fill="#1B1712"/>
+    <path d="M72 40 L40 12 L72 26 Z" fill="#1B1712"/>
+    <path d="M72 70 L40 98 L72 84 Z" fill="#1B1712"/>
+    <path d="M84 47 H126 M84 55 H126 M84 63 H126" stroke="#FFFDF7" stroke-width="4" opacity=".5"/>
+  </symbol>
+  <symbol id="s-hazard" viewBox="0 0 160 148">
+    <path d="M80 8 L156 138 H4 Z" fill="#E8B33D" stroke="#FFFDF7" stroke-width="11" stroke-linejoin="round" paint-order="stroke"/>
+    <path d="M80 32 L132 122 H28 Z" fill="none" stroke="#1B1712" stroke-width="7" stroke-linejoin="round"/>
+    <rect x="73" y="56" width="14" height="42" rx="6" fill="#1B1712"/>
+    <circle cx="80" cy="112" r="9" fill="#1B1712"/>
+  </symbol>
+  <symbol id="s-free" viewBox="0 0 130 130">
+    <circle cx="65" cy="65" r="56" fill="#C8281C" stroke="#FFFDF7" stroke-width="11" paint-order="stroke"/>
+    <circle cx="65" cy="65" r="43" fill="none" stroke="#FFFDF7" stroke-width="4" stroke-dasharray="4 6"/>
+    <text x="65" y="62" text-anchor="middle" font-family="Archivo, Helvetica, sans-serif" font-size="30" font-weight="900" fill="#FFFDF7">FREE</text>
+    <text x="65" y="86" text-anchor="middle" font-family="Archivo, Helvetica, sans-serif" font-size="14" font-weight="800" fill="#FFFDF7">MIT</text>
+  </symbol>
+  <symbol id="s-fist" viewBox="0 0 152 140">
+    <g fill="#FFFDF7" stroke="#FFFDF7" stroke-width="11" stroke-linejoin="round">
+      <rect x="4" y="58" width="58" height="38" rx="18"/>
+      <rect x="46" y="30" width="92" height="86" rx="26"/>
+      <circle cx="62" cy="32" r="14"/><circle cx="88" cy="28" r="14"/><circle cx="114" cy="30" r="14"/><circle cx="136" cy="42" r="13"/>
+    </g>
+    <rect x="4" y="58" width="58" height="38" rx="18" fill="#C8A268"/>
+    <rect x="46" y="30" width="92" height="86" rx="26" fill="#EDE4CE"/>
+    <g fill="#EDE4CE" stroke="#1B1712" stroke-width="4">
+      <circle cx="62" cy="32" r="14"/><circle cx="88" cy="28" r="14"/><circle cx="114" cy="30" r="14"/><circle cx="136" cy="42" r="13"/>
+    </g>
+    <path d="M48 96 q-14 4 -10 16 q3 10 18 6" fill="#EDE4CE" stroke="#1B1712" stroke-width="5"/>
+  </symbol>
+</svg>
+
+<!-- ===================== context: the "How to get it" section ===================== -->
+<main class="wrap">
+  <div class="f-get">
+    <div class="f-decor" aria-hidden="true">
+      <svg class="fst fst-free" viewBox="0 0 130 130"><use href="#s-free"/></svg>
+      <svg class="fst fst-missile" viewBox="0 0 196 110"><use href="#s-missile"/></svg>
+    </div>
+
+    <h2>How to get it</h2>
+
+    <div class="f-notes">
+      <div class="f-note-card"><b>1</b>Download it and open it. It sits in the menu bar and nowhere else.</div>
+      <div class="f-note-card"><b>2</b>Turn on Input Monitoring when it asks. It opens the right System Settings pane for you.</div>
+      <div class="f-note-card"><b>3</b>Type anywhere. It only listens, and password fields stay silent.</div>
+    </div>
+
+    <div class="f-cta">
+      <button type="button" class="btn btn-fire" id="dlBtn">Download for macOS</button>
+      <span class="meta">macOS 14 or later. Free and open source under MIT.</span>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== the modal ===================== -->
+<dialog class="dlm" id="dlg" aria-label="Thanks for downloading">
+
+  <!-- VARIANT A · Taped note card -->
+  <div class="card" data-card="a">
+    <span class="tape l" aria-hidden="true"></span>
+    <span class="tape r" aria-hidden="true"></span>
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <p class="kicker">thanks for downloading</p>
+    <h2 class="title">Now the annoying part.</h2>
+    <p class="body">macOS will say it can't verify the app. That's expected &mdash; it's signed, just not notarized. Open it anyway, then say yes to Input Monitoring so it can hear your keys.</p>
+    <p class="retry">Didn't start? <a href="#">Download it again</a></p>
+  </div>
+
+  <!-- VARIANT B · Receipt / order slip -->
+  <div class="card" data-card="b" hidden>
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <div class="b-head"><span>Angry Keyboard</span><span>No. 0001</span></div>
+    <div class="perf" aria-hidden="true"></div>
+    <p class="kicker">thanks for downloading</p>
+    <h2 class="title">Now the annoying part.</h2>
+    <hr class="rule">
+    <p class="body">macOS will say it can't verify the app. That's expected &mdash; it's signed, just not notarized. Open it anyway, then say yes to Input Monitoring so it can hear your keys.</p>
+    <hr class="rule">
+    <div class="total"><span>TOTAL</span><span>$0.00</span></div>
+    <p class="retry">Didn't start? <a href="#">Download it again</a></p>
+    <div class="perf" aria-hidden="true"></div>
+  </div>
+
+  <!-- VARIANT C · Dispatch note -->
+  <div class="card" data-card="c" hidden>
+    <span class="stamp" aria-hidden="true"><b>Air Mail</b><span>Par Avion</span></span>
+    <svg class="missile" viewBox="0 0 196 110" aria-hidden="true"><use href="#s-missile"/></svg>
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <p class="kicker">thanks for downloading</p>
+    <h2 class="title">Now the annoying part.</h2>
+    <hr class="c-rule">
+    <p class="body">macOS will say it can't verify the app. That's expected &mdash; it's signed, just not notarized. Open it anyway, then say yes to Input Monitoring so it can hear your keys.</p>
+    <p class="retry">Didn't start? <a href="#">Download it again</a></p>
+  </div>
+
+  <!-- VARIANT D · InstallNote look -->
+  <div class="card" data-card="d" hidden>
+    <svg class="hazard" viewBox="0 0 160 148" aria-hidden="true"><use href="#s-hazard"/></svg>
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <p class="kicker">thanks for downloading</p>
+    <h2 class="title">Now the annoying part.</h2>
+    <p class="body">macOS will say it can't verify the app. That's expected &mdash; it's signed, just not notarized. Open it anyway, then say yes to Input Monitoring so it can hear your keys.</p>
+    <p class="retry">Didn't start? <a href="#">Download it again</a></p>
+  </div>
+
+</dialog>
+
+<!-- prototype-only switcher -->
+<nav class="proto-bar" id="protoBar" aria-label="Prototype variant switcher">
+  <button type="button" data-step="-1" aria-label="Previous variant">&#8249;</button>
+  <span class="lab" id="protoLabel">A &middot; Taped note</span>
+  <button type="button" data-step="1" aria-label="Next variant">&#8250;</button>
+  <span class="sep" aria-hidden="true"></span>
+  <button type="button" data-open aria-label="Reopen modal">open</button>
+  <span class="key-tip">arrow keys</span>
+</nav>
+
+<script>
+/* =========================================================================
+   Prototype variant switcher and dialog wiring. Prototype-only: delete with
+   the losing variants. The card itself is plain CSS; this only toggles which
+   card is shown and drives the native <dialog>.
+   ========================================================================= */
+const VARIANTS = [
+  { id:"a", name:"Taped note" },
+  { id:"b", name:"Receipt" },
+  { id:"c", name:"Dispatch" },
+  { id:"d", name:"Install note" }
+];
+
+const dlg = document.getElementById("dlg");
+const cards = [...dlg.querySelectorAll("[data-card]")];
+const dlBtn = document.getElementById("dlBtn");
+const label = document.getElementById("protoLabel");
+let index = 0;
+
+function render(){
+  const v = VARIANTS[index];
+  cards.forEach((c) => { c.hidden = c.dataset.card !== v.id; });
+  label.textContent = v.id.toUpperCase() + " \u00b7 " + v.name;
+  // replaceState can throw on file://; the switcher works either way
+  try{
+    const url = new URL(location.href);
+    url.searchParams.set("variant", v.id);
+    history.replaceState(null, "", url);
+  }catch(e){}
+}
+
+function openModal(){ if(!dlg.open) dlg.showModal(); }
+
+// Reopen on demand so the entrance motion replays for the new card.
+function show(){
+  if(dlg.open) dlg.close();
+  openModal();
+}
+function step(delta){
+  index = (index + delta + VARIANTS.length) % VARIANTS.length;
+  render();
+  show();
+}
+
+// The real download button is the trigger (and the focus return target).
+dlBtn.addEventListener("click", openModal);
+
+// Esc is native; the close button and a backdrop click both dismiss.
+dlg.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => dlg.close()));
+dlg.addEventListener("click", (e) => { if(e.target === dlg) dlg.close(); });
+
+// Return focus to the download button on close. Guarded on dlg.open so a
+// programmatic close-then-reopen (variant switch) does not steal focus back.
+dlg.addEventListener("close", () => { if(!dlg.open) dlBtn.focus(); });
+
+document.getElementById("protoBar").addEventListener("click", (e) => {
+  const s = e.target.closest("[data-step]");
+  if(s){ step(Number(s.dataset.step)); return; }
+  if(e.target.closest("[data-open]")) openModal();
+});
+window.addEventListener("keydown", (e) => {
+  const el = document.activeElement;
+  const typing = el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+  if(typing) return;
+  if(e.key === "ArrowLeft") step(-1);
+  else if(e.key === "ArrowRight") step(1);
+});
+
+const requested = new URLSearchParams(location.search).get("variant");
+const found = VARIANTS.findIndex((v) => v.id === (requested || "a").toLowerCase());
+index = found < 0 ? 0 : found;
+render();
+openModal();
+</script>
+</body>
+</html>

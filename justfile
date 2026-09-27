@@ -23,17 +23,17 @@ default:
 site-install:
     pnpm --dir {{site}} install
 
-# Run the site dev server.
-site-dev:
-    pnpm --dir {{site}} run dev
+# Run the site dev server. Extra arguments pass through to Astro, e.g. --host.
+site-dev *args:
+    pnpm --dir {{site}} run dev {{args}}
 
 # Build the site for production.
 site-build:
     pnpm --dir {{site}} run build
 
-# Serve the built site locally.
-site-preview:
-    pnpm --dir {{site}} run preview
+# Serve the built site locally. Extra arguments pass through, e.g. --host.
+site-preview *args:
+    pnpm --dir {{site}} run preview {{args}}
 
 # Typecheck, format-check, and lint the site.
 site-check:

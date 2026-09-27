@@ -38,36 +38,22 @@ only listens. It never records, stores, or sends what you type.
 Building from source needs Xcode 27.0 or later. Running the app needs only
 macOS; Xcode is not a runtime dependency.
 
-### Xcode
-
-1. Open the project:
-
-   ```
-   open AngryKeyboard.xcodeproj
-   ```
-
-2. Select the AngryKeyboard scheme and press Run (Cmd-R).
-3. The app launches with no window. Look for the keyboard icon in the menu bar.
-
-### Command line
+The `justfile` wraps the common commands. Run `just` to list them.
 
 ```
-xcodebuild -scheme AngryKeyboard -configuration Debug -derivedDataPath build build
-open build/Build/Products/Debug/AngryKeyboardDev.app
+just app-build   # build the Debug app into build/
+just app-run     # build, then open the AngryKeyboardDev app
+just app-test    # run the app test suite
 ```
 
-The app is built at `build/Build/Products/Debug/AngryKeyboardDev.app`. Debug is
-the dev channel, which runs beside the production app that Release builds.
+Debug is the dev channel, which runs beside the production app that Release
+builds.
 
-### Tests
+Or open `AngryKeyboard.xcodeproj` in Xcode, select the AngryKeyboard scheme, and
+press Run (Cmd-R).
 
-```
-xcodebuild test -scheme AngryKeyboard -destination 'platform=macOS'
-```
-
-The test target covers the resolver, the settings model, playback voice math, and
-sound onset detection. Capture, audio, and permissions cannot be unit tested, so
-they have a manual checklist below.
+Capture, audio, and permissions cannot be unit tested, so they have a manual
+checklist below.
 
 ### Local signing
 
@@ -231,8 +217,9 @@ Check these by hand after a build.
 - Move the volume slider while a sound is playing. The sound in flight follows
   the drag.
 - Set a volume, quit, and relaunch. The slider comes back at the same value.
-- Turn on Mute. The menu bar icon becomes a crossed-out speaker and keystrokes go
-  silent. Quit and relaunch: it stays muted. Turn Mute off and sound returns.
+- Turn on Mute. The menu bar icon becomes the keyboard glyph struck through and
+  keystrokes go silent. Quit and relaunch: it stays muted. Turn Mute off and sound
+  returns.
 - Toggle Overlap Sounds. Retrigger restarts one voice per key. Overlap stacks
   copies, so fast typing sounds different. Quit and relaunch: the choice is
   retained.
@@ -303,7 +290,6 @@ builtin and the bare command fails. Stop the stream with Ctrl-C.
 - `CONTEXT.md` defines the vocabulary: keystroke, sound pack, binding, sound
   pool, catch-all, and playback mode.
 - `docs/adr/` records the notable decisions.
-- `.scratch/mvp/spec.md` is the MVP spec.
 
 ## License
 

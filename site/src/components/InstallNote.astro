@@ -1,0 +1,46 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/components/installNote.stylex";
+import { styles as shared } from "@/styles/shared.stylex";
+---
+
+<div {...stylex.attrs(styles.card, shared.above)}>
+  <svg
+    viewBox="0 0 160 148"
+    aria-hidden="true"
+    {...stylex.attrs(styles.hazard)}
+  >
+    <use href="#s-hazard" />
+  </svg>
+
+  <p {...stylex.attrs(styles.kicker)}>heads up before you install</p>
+  <h3 {...stylex.attrs(styles.title)}>
+    macOS will say it cannot verify the app
+  </h3>
+  <p {...stylex.attrs(styles.body)}>
+    This build is signed but not notarized, because notarization needs the
+    $99/year Apple Developer Program and this is a hobby project. So the first
+    launch gets a Gatekeeper warning. That is expected. Here is the way through
+    it:
+  </p>
+  <div {...stylex.attrs(styles.flows)}>
+    <div>
+      <span {...stylex.attrs(styles.flowLabel)}>macOS 15 or later</span>
+      <p {...stylex.attrs(styles.flow)}>
+        Open the app. When macOS says it cannot be verified, choose Done. Then
+        open System Settings → Privacy &amp; Security, find the AngryKeyboard
+        message, and click Open Anyway.
+      </p>
+    </div>
+    <div>
+      <span {...stylex.attrs(styles.flowLabel)}>macOS 14</span>
+      <p {...stylex.attrs(styles.flow)}>
+        Control-click the app and choose Open.
+      </p>
+    </div>
+  </div>
+  <p {...stylex.attrs(styles.foot)}>
+    After that it asks for Input Monitoring, which it needs to hear your keys.
+    It only listens.
+  </p>
+</div>

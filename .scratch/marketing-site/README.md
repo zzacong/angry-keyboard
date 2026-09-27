@@ -4,8 +4,7 @@ Throwaway prototype, not production. It answers one question: what should the
 AngryKeyboard homepage look like, and how should the "type and hear it" demo be
 presented?
 
-The decision is recorded in `docs/adr/0010-zine-homepage.md`. The brief for
-building it is `spec.md`, next to this file.
+The decision is recorded in `spec.md`, next to this file.
 
 Six homepage variants live in one self-contained file, switchable with the
 `?variant=` URL param and the floating bar at the bottom of the page. F is the

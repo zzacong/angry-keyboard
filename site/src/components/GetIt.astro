@@ -1,0 +1,51 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/components/getIt.stylex";
+import InstallNote from "@/components/InstallNote.astro";
+import { downloadUrl } from "@/lib/download";
+import { styles as shared } from "@/styles/shared.stylex";
+---
+
+<section id="f-get" {...stylex.attrs(styles.section)}>
+  <div {...stylex.attrs(shared.decor)} aria-hidden="true">
+    <svg viewBox="0 0 130 130" {...stylex.attrs(shared.fst, styles.free)}>
+      <use href="#s-free" />
+    </svg>
+    <svg viewBox="0 0 196 110" {...stylex.attrs(shared.fst, styles.missile)}>
+      <use href="#s-missile" />
+    </svg>
+  </div>
+
+  <h2 {...stylex.attrs(styles.title, shared.above)}>How to get it</h2>
+
+  <InstallNote />
+
+  <div {...stylex.attrs(styles.notes, shared.above)}>
+    <div {...stylex.attrs(styles.noteCard, styles.cardYellow)}>
+      <b {...stylex.attrs(styles.noteTitle)}>1</b>
+      Download it and open it. It sits in the menu bar and nowhere else.
+    </div>
+    <div {...stylex.attrs(styles.noteCard, styles.cardBlue)}>
+      <b {...stylex.attrs(styles.noteTitle)}>2</b>
+      Turn on Input Monitoring when it asks. It opens the right System Settings
+      pane for you.
+    </div>
+    <div {...stylex.attrs(styles.noteCard, styles.cardPink)}>
+      <b {...stylex.attrs(styles.noteTitle)}>3</b>
+      Type anywhere. It only listens, and password fields stay silent.
+    </div>
+  </div>
+
+  <div {...stylex.attrs(styles.cta, shared.above)}>
+    <a
+      href={downloadUrl}
+      data-download
+      {...stylex.attrs(shared.button, shared.buttonFire)}
+    >
+      Download for macOS
+    </a>
+    <span {...stylex.attrs(styles.meta)}>
+      macOS 14 or later. Free and open source under MIT.
+    </span>
+  </div>
+</section>

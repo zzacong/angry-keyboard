@@ -1,0 +1,58 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/components/downloadThanks.stylex";
+import { downloadUrl } from "@/lib/download";
+import { styles as shared } from "@/styles/shared.stylex";
+---
+
+<!-- Opens from `mountDownloadThanks()` when a `[data-download]` link is clicked.
+     Native <dialog>, so Esc, the focus trap and the top-layer stacking are the
+     browser's job. The copy repeats the two hurdles from InstallNote in short
+     form, because the note itself is easy to scroll past. -->
+<dialog
+  data-thanks
+  aria-labelledby="thanks-title"
+  {...stylex.attrs(styles.dialog, styles.backdrop)}
+>
+  <div {...stylex.attrs(styles.card)}>
+    <span
+      {...stylex.attrs(shared.tape, styles.tapeLeft)}
+      aria-hidden="true"
+    ></span>
+    <span
+      {...stylex.attrs(shared.tape, styles.tapeRight)}
+      aria-hidden="true"
+    ></span>
+
+    <button
+      type="button"
+      data-thanks-close
+      aria-label="Close"
+      {...stylex.attrs(styles.close)}
+    >
+      &times;
+    </button>
+
+    <p {...stylex.attrs(styles.kicker)}>thanks for downloading</p>
+    <h2 id="thanks-title" {...stylex.attrs(styles.title)}>
+      Now the annoying part.
+    </h2>
+    <p {...stylex.attrs(styles.body)}>
+      macOS will say it can't verify the app. That's expected — it's signed,
+      just not notarized. Open it anyway, then say yes to Input Monitoring so it
+      can hear your keys.
+    </p>
+    <p {...stylex.attrs(styles.retry)}>
+      Didn't start?{" "}
+      <a href={downloadUrl} {...stylex.attrs(styles.retryLink)}>
+        Download it again
+      </a>
+    </p>
+  </div>
+</dialog>
+
+<script>
+  import { mountDownloadThanks } from "@/lib/downloadThanks";
+
+  mountDownloadThanks();
+</script>

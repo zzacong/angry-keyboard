@@ -1,9 +1,18 @@
 // @ts-check
+import { fileURLToPath } from "node:url";
 import stylex from "@stylexjs/unplugin";
 import { defineConfig } from "astro/config";
 
+// StyleX's Babel pass resolves theme imports with its own resolver, separate
+// from Vite's, so it will not see the `@/` alias from `tsconfig.json`. Feed it
+// the same mapping. An absolute path keeps it independent of the working
+// directory.
+const srcDir = fileURLToPath(new URL("./src", import.meta.url));
+
 // https://astro.build/config
 export default defineConfig({
+  // Canonical and social URLs are built from this, so it must match production.
+  site: "https://angry-keyboard.zzacong.com",
   vite: {
     plugins: [
       // StyleX compiles to atomic CSS at build time. `runtimeInjection` stays
@@ -12,6 +21,7 @@ export default defineConfig({
         dev: process.env.NODE_ENV === "development",
         useCSSLayers: true,
         runtimeInjection: false,
+        aliases: { "@/*": [`${srcDir}/*`] },
       }),
     ],
   },

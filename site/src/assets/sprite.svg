@@ -1,0 +1,146 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="0"
+  height="0"
+  style="position:absolute;width:0;height:0;overflow:hidden"
+  aria-hidden="true"
+>
+  <!--
+    Inlined once into the document by Layout.astro, then referenced with
+    <use href="#id">. The mascot geometry is the shipped app icon; the stickers
+    are a flat war set drawn in the zine's own palette.
+
+    Document CSS cannot reach into a <use> shadow tree, so fills and strokes are
+    presentation attributes. Animate the outer <svg>, not the shapes inside.
+  -->
+  <symbol id="guy" viewBox="110 20 300 440">
+    <g fill="none" stroke="#E6DCC3" stroke-linecap="round" opacity=".9">
+      <path d="M256 258 C232 212 288 194 262 148 S226 76 258 32" stroke-width="24" />
+      <path d="M206 256 C190 222 224 208 208 176 S188 126 204 100" stroke-width="13" opacity=".6" />
+      <path d="M308 258 C322 226 292 210 306 180 S324 136 310 110" stroke-width="13" opacity=".6" />
+    </g>
+    <rect x="126" y="250" width="260" height="196" rx="32" fill="#CE2B1E" />
+    <g fill="none" stroke="#EDE4CE" stroke-width="18" stroke-linecap="round">
+      <path d="M176 300 L228 320" />
+      <path d="M336 300 L284 320" />
+    </g>
+    <circle cx="206" cy="346" r="12" fill="#EDE4CE" />
+    <circle cx="306" cy="346" r="12" fill="#EDE4CE" />
+    <rect x="214" y="372" width="84" height="30" rx="10" fill="#EDE4CE" />
+    <path d="M232 374 v26 M256 374 v26 M280 374 v26" fill="none" stroke="#CE2B1E" stroke-width="5" />
+  </symbol>
+
+  <!-- Composite shapes are drawn twice: a cream layer paints the die-cut halo,
+       then the colored layer sits on top so the outline stays a single clean edge. -->
+  <symbol id="s-boom" viewBox="0 0 170 156">
+    <path
+      d="M157 78 L116 86 L147 114 L108 101 L121 140 L93 109 L85 150 L77 109 L49 140 L62 101 L23 114 L54 86 L13 78 L54 70 L23 42 L62 55 L49 16 L77 47 L85 6 L93 47 L121 16 L108 55 L147 42 L116 70 Z"
+      fill="#C8281C"
+      stroke="#FFFDF7"
+      stroke-width="12"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    />
+    <text x="85" y="90" text-anchor="middle" font-family="Bricolage Grotesque Variable, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#FFFDF7">BOOM</text>
+  </symbol>
+  <symbol id="s-pow" viewBox="0 0 170 156">
+    <path
+      d="M157 78 L116 86 L147 114 L108 101 L121 140 L93 109 L85 150 L77 109 L49 140 L62 101 L23 114 L54 86 L13 78 L54 70 L23 42 L62 55 L49 16 L77 47 L85 6 L93 47 L121 16 L108 55 L147 42 L116 70 Z"
+      fill="#1B1712"
+      stroke="#FFFDF7"
+      stroke-width="12"
+      stroke-linejoin="round"
+      paint-order="stroke"
+    />
+    <text x="85" y="90" text-anchor="middle" font-family="Bricolage Grotesque Variable, Helvetica, sans-serif" font-size="32" font-weight="900" fill="#FFFDF7">POW!</text>
+  </symbol>
+  <symbol id="s-bomb" viewBox="0 0 150 150">
+    <circle cx="72" cy="90" r="50" fill="#1B1712" stroke="#FFFDF7" stroke-width="12" paint-order="stroke" />
+    <rect x="58" y="28" width="26" height="24" rx="5" fill="#1B1712" stroke="#FFFDF7" stroke-width="12" paint-order="stroke" />
+    <path d="M72 30 C72 10 104 16 108 3" fill="none" stroke="#C8A268" stroke-width="8" stroke-linecap="round" />
+    <circle cx="110" cy="6" r="10" fill="#E8B33D" />
+    <ellipse cx="52" cy="70" rx="15" ry="10" fill="#FFFDF7" opacity=".85" transform="rotate(-32 52 70)" />
+  </symbol>
+  <symbol id="s-grenade" viewBox="0 0 132 156">
+    <g fill="#FFFDF7" stroke="#FFFDF7" stroke-width="12" stroke-linejoin="round">
+      <rect x="40" y="58" width="66" height="90" rx="32" />
+      <rect x="52" y="42" width="20" height="22" />
+      <rect x="34" y="24" width="56" height="18" rx="6" />
+    </g>
+    <rect x="40" y="58" width="66" height="90" rx="32" fill="#C8281C" />
+    <rect x="52" y="42" width="20" height="22" fill="#1B1712" />
+    <rect x="34" y="24" width="56" height="18" rx="6" fill="#1B1712" />
+    <circle cx="106" cy="26" r="15" fill="none" stroke="#1B1712" stroke-width="8" />
+    <path d="M58 44 L44 20" stroke="#1B1712" stroke-width="7" stroke-linecap="round" />
+    <g stroke="#1B1712" stroke-width="5" opacity=".85">
+      <path d="M56 64 V142 M73 60 V146 M90 64 V142" />
+      <path d="M44 90 H102 M44 116 H102" />
+    </g>
+  </symbol>
+  <symbol id="s-missile" viewBox="0 0 196 110">
+    <path d="M72 47 L26 55 L72 63 Z" fill="#E8B33D" stroke="#FFFDF7" stroke-width="10" stroke-linejoin="round" paint-order="stroke" />
+    <g fill="#FFFDF7" stroke="#FFFDF7" stroke-width="12" stroke-linejoin="round">
+      <path d="M72 40 H140 L184 55 L140 70 H72 Z" />
+      <path d="M72 40 L40 12 L72 26 Z" />
+      <path d="M72 70 L40 98 L72 84 Z" />
+    </g>
+    <path d="M72 40 H140 L184 55 L140 70 H72 Z" fill="#C8281C" />
+    <path d="M140 40 L184 55 L140 70 Z" fill="#1B1712" />
+    <path d="M72 40 L40 12 L72 26 Z" fill="#1B1712" />
+    <path d="M72 70 L40 98 L72 84 Z" fill="#1B1712" />
+    <path d="M84 47 H126 M84 55 H126 M84 63 H126" stroke="#FFFDF7" stroke-width="4" opacity=".5" />
+  </symbol>
+  <symbol id="s-bullet" viewBox="0 0 90 170">
+    <g fill="#FFFDF7" stroke="#FFFDF7" stroke-width="11" stroke-linejoin="round">
+      <path d="M22 56 H68 V150 H22 Z" />
+      <path d="M22 56 Q22 12 45 4 Q68 12 68 56 Z" />
+      <rect x="15" y="148" width="60" height="14" rx="4" />
+    </g>
+    <path d="M22 56 H68 V150 H22 Z" fill="#C8A268" />
+    <path d="M22 56 Q22 12 45 4 Q68 12 68 56 Z" fill="#C8281C" />
+    <rect x="15" y="148" width="60" height="14" rx="4" fill="#1B1712" />
+    <path d="M32 64 V144" stroke="#FFFDF7" stroke-width="4" opacity=".45" />
+  </symbol>
+  <symbol id="s-crate" viewBox="0 0 190 130">
+    <g fill="#FFFDF7" stroke="#FFFDF7" stroke-width="11" stroke-linejoin="round">
+      <rect x="10" y="34" width="170" height="86" rx="6" />
+      <rect x="4" y="16" width="182" height="22" rx="5" />
+    </g>
+    <rect x="10" y="34" width="170" height="86" rx="6" fill="#C8A268" />
+    <rect x="4" y="16" width="182" height="22" rx="5" fill="#A8823F" />
+    <rect x="46" y="16" width="14" height="104" fill="#1B1712" />
+    <rect x="130" y="16" width="14" height="104" fill="#1B1712" />
+    <text x="95" y="88" text-anchor="middle" font-family="Bricolage Grotesque Variable, Helvetica, sans-serif" font-size="20" font-weight="900" fill="#1B1712">AMMO</text>
+  </symbol>
+  <symbol id="s-hazard" viewBox="0 0 160 148">
+    <path d="M80 8 L156 138 H4 Z" fill="#E8B33D" stroke="#FFFDF7" stroke-width="11" stroke-linejoin="round" paint-order="stroke" />
+    <path d="M80 32 L132 122 H28 Z" fill="none" stroke="#1B1712" stroke-width="7" stroke-linejoin="round" />
+    <rect x="73" y="56" width="14" height="42" rx="6" fill="#1B1712" />
+    <circle cx="80" cy="112" r="9" fill="#1B1712" />
+  </symbol>
+  <symbol id="s-free" viewBox="0 0 130 130">
+    <circle cx="65" cy="65" r="56" fill="#C8281C" stroke="#FFFDF7" stroke-width="11" paint-order="stroke" />
+    <circle cx="65" cy="65" r="43" fill="none" stroke="#FFFDF7" stroke-width="4" stroke-dasharray="4 6" />
+    <text x="65" y="62" text-anchor="middle" font-family="Bricolage Grotesque Variable, Helvetica, sans-serif" font-size="30" font-weight="900" fill="#FFFDF7">FREE</text>
+    <text x="65" y="86" text-anchor="middle" font-family="Bricolage Grotesque Variable, Helvetica, sans-serif" font-size="14" font-weight="800" fill="#FFFDF7">MIT</text>
+  </symbol>
+  <symbol id="s-fist" viewBox="0 0 152 140">
+    <g fill="#FFFDF7" stroke="#FFFDF7" stroke-width="11" stroke-linejoin="round">
+      <rect x="4" y="58" width="58" height="38" rx="18" />
+      <rect x="46" y="30" width="92" height="86" rx="26" />
+      <circle cx="62" cy="32" r="14" />
+      <circle cx="88" cy="28" r="14" />
+      <circle cx="114" cy="30" r="14" />
+      <circle cx="136" cy="42" r="13" />
+    </g>
+    <rect x="4" y="58" width="58" height="38" rx="18" fill="#C8A268" />
+    <rect x="46" y="30" width="92" height="86" rx="26" fill="#EDE4CE" />
+    <g fill="#EDE4CE" stroke="#1B1712" stroke-width="4">
+      <circle cx="62" cy="32" r="14" />
+      <circle cx="88" cy="28" r="14" />
+      <circle cx="114" cy="30" r="14" />
+      <circle cx="136" cy="42" r="13" />
+    </g>
+    <path d="M48 96 q-14 4 -10 16 q3 10 18 6" fill="#EDE4CE" stroke="#1B1712" stroke-width="5" />
+  </symbol>
+</svg>

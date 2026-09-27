@@ -1,0 +1,88 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/components/deck.stylex";
+import { styles as shared } from "@/styles/shared.stylex";
+---
+
+<div id="f-try" {...stylex.attrs(styles.paste)}>
+  <div {...stylex.attrs(shared.decor)} aria-hidden="true">
+    <svg viewBox="0 0 170 156" {...stylex.attrs(shared.fst, styles.pow)}>
+      <use href="#s-pow" />
+    </svg>
+    <svg viewBox="0 0 160 148" {...stylex.attrs(shared.fst, styles.hazard)}>
+      <use href="#s-hazard" />
+    </svg>
+    <svg viewBox="0 0 132 156" {...stylex.attrs(shared.fst, styles.grenade)}>
+      <use href="#s-grenade" />
+    </svg>
+  </div>
+
+  <div {...stylex.attrs(styles.card, shared.above)}>
+    <span {...stylex.attrs(shared.tape, shared.tapeLeft)}></span>
+    <span {...stylex.attrs(shared.tape, shared.tapeRight)}></span>
+
+    <div data-demo {...stylex.attrs(styles.demo)}>
+      <div data-demo-flash {...stylex.attrs(styles.flash)}></div>
+
+      <div {...stylex.attrs(styles.bar)}>
+        <span {...stylex.attrs(styles.status)}>
+          <span data-demo-dot {...stylex.attrs(styles.dot)}></span>
+          <span data-demo-status {...stylex.attrs(styles.statusText)}>
+            Click in here, then type
+          </span>
+        </span>
+        <span>
+          shots{" "}
+          <strong data-demo-count {...stylex.attrs(styles.countNum)}>
+            0
+          </strong>
+        </span>
+      </div>
+
+      <textarea
+        data-demo-input
+        spellcheck="false"
+        aria-label="Type here to hear what Angry Keyboard does on every keystroke"
+        placeholder="Ignore the neighbours and start typing"
+        {...stylex.attrs(styles.surface)}
+      ></textarea>
+
+      <div {...stylex.attrs(styles.foot)}>
+        <span {...stylex.attrs(styles.last)}>
+          Last:{" "}
+          <b data-demo-last {...stylex.attrs(styles.lastSound)}>
+            nothing yet
+          </b>
+        </span>
+        <span data-demo-log {...stylex.attrs(styles.log)}></span>
+        <span {...stylex.attrs(styles.ctl)}>
+          <button
+            type="button"
+            data-demo-mute
+            aria-pressed="false"
+            {...stylex.attrs(styles.mute)}
+          >
+            mute
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value="60"
+            data-demo-vol
+            aria-label="Demo volume"
+            {...stylex.attrs(styles.volume)}
+          />
+        </span>
+      </div>
+    </div>
+
+    <p {...stylex.attrs(styles.hint)}>try typing here, then try Enter</p>
+  </div>
+</div>
+
+<script>
+  import { mountDecks } from "@/lib/deck";
+
+  mountDecks();
+</script>

@@ -1,7 +1,10 @@
-# Branding decisions
+# AngryKeyboard branding
 
-Notes for the app icon and the menu bar glyph. The design explorations are the
-`icon-prototype*.html` files next to this one.
+**Status:** resolved
+
+The app icon and the menu bar glyph for both channels. The picks from the design
+passes are recorded here; the masters and the scripts that rasterize them into
+the asset catalog live in `source/`.
 
 ## Menu bar glyph
 
@@ -50,7 +53,7 @@ colorway stays as `source/app-icon-blueprint-a.svg`.
     python3 gen_icons.py                        # rewrite the masters
     ./make-app-icon.sh app-icon-kraft-kit.svg   # ship L instead of M
 
-Files:
+## Files
 
 - `source/app-icon-blackout.svg` (M, shipped)
 - `source/app-icon-kraft-kit.svg` (L, alternate)

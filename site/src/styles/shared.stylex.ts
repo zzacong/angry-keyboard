@@ -1,0 +1,110 @@
+import * as stylex from "@stylexjs/stylex";
+import { tokens } from "@/styles/tokens.stylex";
+
+// Styles shared across the zine sections: the page shell, buttons, keycaps,
+// the sticker decor layer, and the taped-card furniture.
+export const styles = stylex.create({
+  // Raises real content above the decor layer, which sits at z-index 1.
+  above: {
+    position: "relative",
+    zIndex: 2,
+  },
+  button: {
+    borderColor: "transparent",
+    borderRadius: "2px",
+    borderStyle: "solid",
+    borderWidth: "1px",
+    gap: "0.55em",
+    paddingBlock: "0.82em",
+    paddingInline: "1.15em",
+    alignItems: "center",
+    cursor: "pointer",
+    display: "inline-flex",
+    fontFamily: tokens.fontSans,
+    fontSize: "15px",
+    fontWeight: 600,
+    letterSpacing: "0.01em",
+    textDecorationLine: "none",
+    transform: { default: "none", ":active": "translateY(1px)" },
+    transitionDuration: "150ms",
+    transitionProperty: "background-color, border-color, transform",
+    transitionTimingFunction: "ease",
+  },
+  buttonFire: {
+    backgroundColor: { default: tokens.red, ":hover": tokens.redDeep },
+    boxShadow: "3px 4px 0 rgba(27, 23, 18, 0.3)",
+    color: tokens.card,
+    fontFamily: tokens.fontHead,
+    fontWeight: 800,
+  },
+  decor: {
+    display: { default: "block", "@media (max-width: 980px)": "none" },
+    pointerEvents: "none",
+    position: "absolute",
+    zIndex: 1,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 0,
+  },
+  // Base for a placed sticker. Each placement adds width, position and rotation.
+  fst: {
+    filter: "drop-shadow(2px 3px 0 rgba(27, 23, 18, 0.24))",
+    position: "absolute",
+  },
+  lede: {
+    marginBlockEnd: 0,
+    marginBlockStart: "2rem",
+    maxWidth: "58ch",
+  },
+  page: {
+    backgroundColor: tokens.paper,
+    backgroundImage:
+      "radial-gradient(rgba(27, 23, 18, 0.16) 1px, transparent 1.2px)",
+    backgroundSize: "12px 12px",
+    color: tokens.ink,
+    fontFamily: tokens.fontSerif,
+    fontSize: "1.08rem",
+    lineHeight: 1.65,
+    minHeight: "100svh",
+    paddingBottom: "4.5rem",
+  },
+  stickerLabel: {
+    borderRadius: "3px",
+    paddingBlock: "0.45em",
+    paddingInline: "0.7em",
+    backgroundColor: tokens.red,
+    boxShadow: "2px 3px 0 rgba(27, 23, 18, 0.35)",
+    color: tokens.paper,
+    display: "inline-block",
+    fontFamily: tokens.fontHead,
+    fontSize: "14px",
+    fontWeight: 800,
+    transform: "rotate(-3deg)",
+  },
+  tape: {
+    borderColor: "rgba(27, 23, 18, 0.1)",
+    borderStyle: "solid",
+    borderWidth: "1px",
+    backgroundColor: tokens.tape,
+    boxShadow: "0 2px 4px rgba(27, 23, 18, 0.12)",
+    opacity: 0.75,
+    position: "absolute",
+    height: "28px",
+    width: "118px",
+  },
+  tapeLeft: {
+    transform: "rotate(-4deg)",
+    left: "40px",
+    top: "-15px",
+  },
+  tapeRight: {
+    transform: "rotate(5deg)",
+    right: "44px",
+    top: "-15px",
+  },
+  wrap: {
+    marginInline: "auto",
+    width: "min(1180px, 92vw)",
+  },
+});
