@@ -38,15 +38,19 @@ the identity, and signs the Release build with it.
 ```
 echo "$CERTIFICATE_P12_BASE64" | base64 --decode > certificate.p12
 security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+security default-keychain -s build.keychain
+security list-keychains -d user -s build.keychain
 security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
 security import certificate.p12 -k build.keychain -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
 security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" build.keychain
 xcodebuild ... CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" ...
 ```
 
-`security set-key-partition-list` lets `codesign` use the key without a prompt.
-Without it the build hangs. The job deletes the `.p12` and the keychain in an
-`if: always()` step.
+`security default-keychain` makes the temporary keychain the default, and
+`security list-keychains` makes it the only keychain `codesign` searches, so
+`codesign` finds the identity without a prompt. `security set-key-partition-list`
+lets `codesign` use the key. Without these the build hangs. The job deletes the
+`.p12` and the keychain in an `if: always()` step.
 
 ## Backups
 

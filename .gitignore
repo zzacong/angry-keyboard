@@ -98,6 +98,9 @@ Config/*.local.xcconfig
 # Scripts/setup-signing.sh writes them to a backup location instead.
 *.p12
 
+# Staged app and DMG from a local release build.
+dist/
+
 # Branding scripts
 #
 # Python bytecode from the icon generators under .scratch/branding/source.

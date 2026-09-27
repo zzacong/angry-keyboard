@@ -20,8 +20,9 @@ permissions:
 jobs:
   # Opens or updates the release pull request from the conventional commits, and,
   # once that pull request is merged, tags the release and writes its notes. The
-  # job that builds and attaches the DMG joins this workflow in ticket 07: a
-  # release created with the built-in token does not trigger another workflow.
+  # build job below runs in the same workflow on purpose: a release created with
+  # the built-in token does not trigger another workflow, so an `on: release`
+  # workflow would never fire.
   release-please:
     runs-on: ubuntu-latest
     outputs:
@@ -33,3 +34,114 @@ jobs:
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  # Builds, signs, packages, and publishes only when Release Please cut a tag.
+  # The identity is the production certificate from ADR 0007: signed, not
+  # notarized, so the install warning ships with every artifact.
+  build:
+    needs: release-please
+    if: needs.release-please.outputs.released == 'true'
+    runs-on: xcode-27
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    env:
+      TAG: ${{ needs.release-please.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.release-please.outputs.tag }}
+
+      - name: Import the production certificate
+        env:
+          CERTIFICATE_P12_BASE64: ${{ secrets.CERTIFICATE_P12_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          echo "$CERTIFICATE_P12_BASE64" | base64 --decode > certificate.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security list-keychains -d user -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security import certificate.p12 -k build.keychain \
+            -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s \
+            -k "$KEYCHAIN_PASSWORD" build.keychain
+          security find-identity -v -p codesigning build.keychain
+
+      - name: Build the release app
+        env:
+          SIGNING_IDENTITY: ${{ vars.SIGNING_IDENTITY }}
+        run: |
+          VERSION="${TAG#v}"
+          xcodebuild \
+            -project AngryKeyboard.xcodeproj \
+            -scheme AngryKeyboard \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            -derivedDataPath build \
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
+            build
+
+      - name: Package the DMG
+        run: |
+          mkdir -p dist/dmg
+          cp -R build/Build/Products/Release/AngryKeyboard.app dist/dmg/
+          ln -s /Applications dist/dmg/Applications
+          cp packaging/INSTALL.txt "dist/dmg/Read Me.txt"
+          hdiutil create -volname "Angry Keyboard" -srcfolder dist/dmg \
+            -ov -format UDZO dist/AngryKeyboard.dmg
+          shasum -a 256 dist/AngryKeyboard.dmg \
+            | awk '{print $1}' > dist/AngryKeyboard.dmg.sha256
+
+      - name: Verify the signature
+        env:
+          SIGNING_IDENTITY: ${{ vars.SIGNING_IDENTITY }}
+        run: |
+          codesign --verify --deep --strict --verbose=2 \
+            build/Build/Products/Release/AngryKeyboard.app
+          codesign -dv --verbose=2 \
+            build/Build/Products/Release/AngryKeyboard.app 2>&1 \
+            | grep -qF "Authority=$SIGNING_IDENTITY"
+          hdiutil attach dist/AngryKeyboard.dmg -nobrowse -readonly
+          codesign --verify --deep --strict \
+            "/Volumes/Angry Keyboard/AngryKeyboard.app"
+          codesign -dv --verbose=2 \
+            "/Volumes/Angry Keyboard/AngryKeyboard.app" 2>&1 \
+            | grep -qF "Authority=$SIGNING_IDENTITY"
+          hdiutil detach "/Volumes/Angry Keyboard"
+
+      - uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: dist/AngryKeyboard.dmg
+
+      - name: Append the install warning to the release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "$TAG" --json body --jq .body \
+            | grep -qF '## Installing'; then
+            echo "Install warning already present; leaving the notes unchanged."
+          else
+            gh release view "$TAG" --json body --jq .body > notes.md
+            printf '\n' >> notes.md
+            cat packaging/RELEASE-NOTES.md >> notes.md
+            gh release edit "$TAG" --notes-file notes.md
+          fi
+
+      - name: Upload the release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "$TAG" \
+            dist/AngryKeyboard.dmg dist/AngryKeyboard.dmg.sha256 --clobber
+
+      - name: Remove the certificate
+        if: always()
+        run: |
+          security delete-keychain build.keychain 2>/dev/null || true
+          rm -f certificate.p12
