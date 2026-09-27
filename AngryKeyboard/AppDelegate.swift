@@ -307,13 +307,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     /// Opens the standard About panel. The app is an accessory with no app menu,
     /// so there is nowhere for the usual About item to live and the panel is
-    /// asked for by hand. Activation comes first, because an accessory app's
-    /// windows otherwise open behind the active app. The panel reads version and
-    /// build from the bundle; the display name and icon are the two overrides,
-    /// since the defaults are the bundle's unspaced `CFBundleName` and the
-    /// placeholder.
+    /// asked for by hand. Activation uses `ignoringOtherApps:` on purpose: the
+    /// cooperative `activate()` added in macOS 14 only asks the frontmost app to
+    /// yield, so for an accessory app nobody is waiting on it does nothing and
+    /// the panel opens behind the active app without focus. The panel reads
+    /// version and build from the bundle; the display name and icon are the two
+    /// overrides, since the defaults are the bundle's unspaced `CFBundleName`
+    /// and the placeholder.
     @objc private func showAboutPanel() {
-        NSApp.activate()
+        NSApp.activate(ignoringOtherApps: true)
         var options: [NSApplication.AboutPanelOptionKey: Any] = [
             .applicationName: displayName
         ]
