@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  build-and-test:
     # Pinned because the project is written at Xcode 27's objectVersion (110)
     # and will not open in Xcode 26. Xcode 27 only runs on Apple silicon.
     runs-on: xcode-27
