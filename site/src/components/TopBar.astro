@@ -1,0 +1,19 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "./topBar.stylex";
+---
+
+<div {...stylex.attrs(styles.top)}>
+  <span {...stylex.attrs(styles.name)}>Angry Keyboard</span>
+  <nav {...stylex.attrs(styles.nav)}>
+    <a href="#f-try" {...stylex.attrs(styles.link)}>
+      Try it
+    </a>
+    <a href="#f-sounds" {...stylex.attrs(styles.link)}>
+      Sounds
+    </a>
+    <a href="#f-get" {...stylex.attrs(styles.link)}>
+      Get it
+    </a>
+  </nav>
+</div>

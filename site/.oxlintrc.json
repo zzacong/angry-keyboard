@@ -2,15 +2,6 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "ignorePatterns": ["dist/**", ".astro/**"],
   "jsPlugins": [{ "name": "stylex", "specifier": "@stylexjs/eslint-plugin" }],
-  "overrides": [
-    {
-      "files": ["src/samples/**"],
-      "rules": {
-        "stylex/no-legacy-contextual-styles": "off",
-        "stylex/valid-styles": "off"
-      }
-    }
-  ],
   "rules": {
     "stylex/no-legacy-contextual-styles": "error",
     "stylex/no-unused": "error",

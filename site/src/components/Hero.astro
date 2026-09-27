@@ -1,0 +1,39 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles as shared } from "../styles/shared.stylex";
+import { styles } from "./hero.stylex";
+---
+
+<section {...stylex.attrs(styles.hero)}>
+  <div {...stylex.attrs(shared.decor)} aria-hidden="true">
+    <svg viewBox="0 0 170 156" {...stylex.attrs(shared.fst, styles.boom)}>
+      <use href="#s-boom" />
+    </svg>
+    <svg viewBox="0 0 90 170" {...stylex.attrs(shared.fst, styles.bullet1)}>
+      <use href="#s-bullet" />
+    </svg>
+    <svg viewBox="0 0 90 170" {...stylex.attrs(shared.fst, styles.bullet2)}>
+      <use href="#s-bullet" />
+    </svg>
+  </div>
+
+  <div {...stylex.attrs(shared.above)}>
+    <h1 {...stylex.attrs(styles.title)}>
+      I made my keyboard <em {...stylex.attrs(styles.em)}>loud</em> on purpose.
+    </h1>
+    <p {...stylex.attrs(styles.note)}>(turn your volume down first, sorry)</p>
+    <div {...stylex.attrs(styles.actions)}>
+      <a href="#f-get" {...stylex.attrs(shared.button, shared.buttonFire)}>
+        Download for macOS
+      </a>
+      <span {...stylex.attrs(shared.stickerLabel)}>a hobby project</span>
+    </div>
+  </div>
+
+  <div {...stylex.attrs(styles.art, shared.above)}>
+    <svg aria-hidden="true" {...stylex.attrs(styles.mascot)}>
+      <use href="#guy" />
+    </svg>
+    <p {...stylex.attrs(styles.note, styles.noteArt)}>him. he is the reason.</p>
+  </div>
+</section>

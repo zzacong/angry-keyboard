@@ -1,0 +1,42 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles as shared } from "../styles/shared.stylex";
+import { styles } from "./sounds.stylex";
+
+const bindings = [
+  { key: "Every other key", sound: "shotgun" },
+  { key: "Enter", sound: "explosion" },
+  { key: "Escape", sound: "rocket whoosh" },
+  { key: "Backspace", sound: "shotgun blast" },
+  { key: "Spacebar", sound: "shotgun cock" },
+  { key: "Arrow keys", sound: "one of four impacts" },
+];
+---
+
+<section id="f-sounds" {...stylex.attrs(styles.section)}>
+  <div {...stylex.attrs(shared.decor)} aria-hidden="true">
+    <svg viewBox="0 0 190 130" {...stylex.attrs(shared.fst, styles.crate)}>
+      <use href="#s-crate" />
+    </svg>
+    <svg viewBox="0 0 152 140" {...stylex.attrs(shared.fst, styles.fist)}>
+      <use href="#s-fist" />
+    </svg>
+  </div>
+
+  <div {...stylex.attrs(shared.above)}>
+    <h2 {...stylex.attrs(styles.title)}>The sounds</h2>
+    <p {...stylex.attrs(styles.sub)}>
+      Six rules, one of them a catch-all for every key without its own sound.
+    </p>
+  </div>
+
+  <ul {...stylex.attrs(styles.list, shared.above)}>
+    {bindings.map((binding) => (
+      <li {...stylex.attrs(styles.item)}>
+        <span {...stylex.attrs(styles.box)}></span>
+        {binding.key}
+        <span {...stylex.attrs(styles.sound)}>{binding.sound}</span>
+      </li>
+    ))}
+  </ul>
+</section>

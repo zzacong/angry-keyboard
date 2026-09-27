@@ -1,0 +1,13 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "./footer.stylex";
+---
+
+<div {...stylex.attrs(styles.foot)}>
+  <svg aria-hidden="true" {...stylex.attrs(styles.mascot)}>
+    <use href="#guy" />
+  </svg>
+  <span>A hobby project about noise.</span>
+  <span>Every keystroke fires a shot.</span>
+  <span>Made for macOS.</span>
+</div>

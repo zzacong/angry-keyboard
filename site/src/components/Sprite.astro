@@ -1,0 +1,8 @@
+---
+// Inlines the sticker and mascot symbols once per document. Components
+// reference them with <use href="#id">, which keeps the art in a standalone
+// SVG file while making it styleable and animatable from the page.
+import sprite from "../assets/sprite.svg?raw";
+---
+
+<Fragment set:html={sprite} />
