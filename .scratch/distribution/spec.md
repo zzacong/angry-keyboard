@@ -401,7 +401,6 @@ Repository secrets and variables live in GitHub settings, not in the repo: `CERT
 
 - Verify the fresh-install experience on a second user account or a second Mac. Confirm that a downloaded DMG gets through Gatekeeper, that Input Monitoring can be granted, and that the app makes sound. This is untested because it needs a machine that has never seen the app.
 - After the second release, confirm that an Input Monitoring grant survives an update from the previous version, since both are signed with `AngryKeyboard Production`. This is the claim the signing setup rests on.
-- The dev channel's blueprint proof sheet exists and waits on a pick. Implementing that pick ships the chosen master as `AppIconDev` and points the dev glyph keys at a shape-distinct glyph, since template images cannot carry color.
 
 ## Out of Scope
 
