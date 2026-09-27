@@ -46,23 +46,28 @@ they have a manual checklist below.
 
 ### Local signing
 
-Xcode signs a build ad-hoc by default when there is no team. An ad-hoc
-signature is identified by a hash of the binary, so it changes on every build.
-macOS keys the Input Monitoring grant to that identity, so each rebuild looks
-like a new app and the grant is lost. This is the rebuild caveat in
-Troubleshooting.
+An ad-hoc signature is a hash of the binary, so it changes on every build and
+macOS drops the Input Monitoring grant each time. Both channels therefore sign
+with a stable self-signed certificate: `AngryKeyboard Dev` for Debug and
+`AngryKeyboard Production` for Release. Production is the same identity CI uses,
+so a local release matches the download.
 
-To hold one identity across builds, sign with a self-signed certificate:
+Run the setup wizard once per Mac:
 
-1. Open Keychain Access, then Keychain Access > Certificate Assistant > Create a
-   Certificate.
-2. Name it, set Identity Type to Self-Signed Root and Certificate Type to Code
-   Signing. Check "Let me override defaults" to reach Validity Period, and set it
-   to 3650 days (the default is 365).
-3. In the project, select the AngryKeyboard target > Signing & Capabilities,
-   uncheck Automatically manage signing, and set Signing Certificate to the
-   certificate's name.
-4. Grant Input Monitoring once. The grant then survives rebuilds.
+```
+Scripts/setup-signing.sh
+```
+
+It creates both certificates in Keychain Access, writes the gitignored
+`Config/Debug.local.xcconfig` and `Config/Release.local.xcconfig`, exports
+production as a `.p12` for the release workflow, backs it up, and stores the
+repository secrets (`CERTIFICATE_P12_BASE64`, `CERTIFICATE_PASSWORD`,
+`KEYCHAIN_PASSWORD`) and the `SIGNING_IDENTITY` variable.
+
+A clone with no certificates still builds both channels. The committed
+`Config/Debug.xcconfig` and `Config/Release.xcconfig` sign ad-hoc, and each
+`#include?`s its local file, so nothing in the repository depends on a
+particular keychain.
 
 A free Apple ID works too, with no certificate to manage: add it under Xcode >
 Settings > Accounts, set the target's Team to the Personal Team, and Xcode signs

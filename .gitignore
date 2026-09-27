@@ -94,6 +94,10 @@ iOSInjectionProject/
 # They stay out of the repository so a clone never depends on a keychain.
 Config/*.local.xcconfig
 
+# Exported signing certificates and their private keys never enter the repo.
+# Scripts/setup-signing.sh writes them to a backup location instead.
+*.p12
+
 # Branding scripts
 #
 # Python bytecode from the icon generators under .scratch/branding/source.

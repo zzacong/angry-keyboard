@@ -1,0 +1,7 @@
+// Copy this file to Debug.local.xcconfig to sign debug builds with the dev
+// certificate, so the Input Monitoring grant survives rebuilds. The copy is
+// gitignored, so the repository never names a keychain identity.
+//
+// The certificate name is the Common Name shown in Keychain Access. Create it
+// with Scripts/setup-signing.sh, which also writes this copy for you.
+CODE_SIGN_IDENTITY = AngryKeyboard Dev

@@ -1,0 +1,7 @@
+// Copy this file to Release.local.xcconfig to sign release builds with the
+// production certificate, the same identity CI uses. The copy is gitignored,
+// so the repository never names a keychain identity.
+//
+// The certificate name is the Common Name shown in Keychain Access. Create it
+// with Scripts/setup-signing.sh, which also writes this copy for you.
+CODE_SIGN_IDENTITY = AngryKeyboard Production
