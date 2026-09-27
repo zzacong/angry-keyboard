@@ -1,0 +1,35 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+
+# A newer push to main supersedes an earlier run, which saw fewer commits.
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Release Please writes the changelog, the version files, and the tag through
+# the GitHub API, so it needs write access to the repository and its pull
+# requests. Labels live on the issues API, which is why `issues` is granted too.
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  # Opens or updates the release pull request from the conventional commits, and,
+  # once that pull request is merged, tags the release and writes its notes. The
+  # job that builds and attaches the DMG joins this workflow in ticket 07: a
+  # release created with the built-in token does not trigger another workflow.
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      released: ${{ steps.release.outputs.release_created }}
+      tag: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v5
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
