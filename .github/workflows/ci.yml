@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A superseded run on the same branch has nothing left to prove.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    # Pinned because the project is written at Xcode 27's objectVersion (110)
+    # and will not open in Xcode 26. Xcode 27 only runs on Apple silicon.
+    runs-on: xcode-27
+    steps:
+      - uses: actions/checkout@v7
+
+      # The project is objectVersion 110, which only Xcode 27 opens. Assert the
+      # selected toolchain so a wrong-Xcode runner fails here with a clear
+      # message instead of deep inside the build.
+      - name: Check toolchain
+        run: |
+          xcodebuild -version
+          xcodebuild -version | grep -qE '^Xcode 27\.'
+
+      - name: Run unit tests
+        run: xcodebuild test -scheme AngryKeyboard -destination 'platform=macOS'
+
+      - name: Build dev (Debug)
+        run: xcodebuild build -scheme AngryKeyboard -configuration Debug -destination 'generic/platform=macOS'
+
+      - name: Build release (Release)
+        run: xcodebuild build -scheme AngryKeyboard -configuration Release -destination 'generic/platform=macOS'
