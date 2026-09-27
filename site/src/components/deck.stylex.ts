@@ -1,5 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
-import { tokens } from "../styles/tokens.stylex";
+import { tokens } from "@/styles/tokens.stylex";
 
 // The live deck: the taped card's board, its status lights and its controls.
 // The script in lib/deck.ts swaps a couple of these classes at runtime for

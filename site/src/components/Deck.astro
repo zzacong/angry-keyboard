@@ -1,7 +1,7 @@
 ---
 import * as stylex from "@stylexjs/stylex";
-import { styles as shared } from "../styles/shared.stylex";
-import { styles } from "./deck.stylex";
+import { styles } from "@/components/deck.stylex";
+import { styles as shared } from "@/styles/shared.stylex";
 ---
 
 <div id="f-try" {...stylex.attrs(styles.paste)}>
@@ -82,7 +82,7 @@ import { styles } from "./deck.stylex";
 </div>
 
 <script>
-  import { mountDecks } from "../lib/deck";
+  import { mountDecks } from "@/lib/deck";
 
   mountDecks();
 </script>

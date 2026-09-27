@@ -1,5 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
-import { tokens } from "../styles/tokens.stylex";
+import { tokens } from "@/styles/tokens.stylex";
 
 export const styles = stylex.create({
   link: {

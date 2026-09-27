@@ -28,6 +28,11 @@ Every script in `site/package.json` is also reachable as
 The nine sounds are imported straight from `AngryKeyboard/Sounds/`, so the site
 and the app share one source of truth. Fonts are self-hosted with Fontsource.
 
+In-project imports use the `@/` alias for `src/`, declared in `tsconfig.json`
+and picked up by Astro's Vite config. It is mirrored into `astro.config.mjs` for
+StyleX, whose Babel pass has its own resolver. The sound imports stay relative:
+they reach outside this project.
+
 ## Styling
 
 Styles live in `*.stylex.ts` modules next to the components that use them. See

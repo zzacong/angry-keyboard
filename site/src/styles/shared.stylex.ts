@@ -1,5 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
-import { tokens } from "./tokens.stylex";
+import { tokens } from "@/styles/tokens.stylex";
 
 // Styles shared across the zine sections: the page shell, buttons, keycaps,
 // the sticker decor layer, and the taped-card furniture.

@@ -1,5 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
-import { tokens } from "../styles/tokens.stylex";
+import { tokens } from "@/styles/tokens.stylex";
 
 // The install note: the one warning a visitor meets before they download,
 // covering the Gatekeeper block on a signed-but-not-notarized build.

@@ -1,4 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
+import { styles } from "@/components/deck.stylex";
 import combatImpactUrl from "../../../AngryKeyboard/Sounds/combat-impact.mp3?url";
 import explodeRockUrl from "../../../AngryKeyboard/Sounds/explode-rock.mp3?url";
 import kungFuYellUrl from "../../../AngryKeyboard/Sounds/kung-fu-yell.mp3?url";
@@ -8,7 +9,6 @@ import rocketWhooshUrl from "../../../AngryKeyboard/Sounds/rocket-whoosh.mp3?url
 import shotgunBlastUrl from "../../../AngryKeyboard/Sounds/shotgun-blast.mp3?url";
 import shotgunCockingUrl from "../../../AngryKeyboard/Sounds/shotgun-cocking.mp3?url";
 import shotgunUrl from "../../../AngryKeyboard/Sounds/shotgun.mp3?url";
-import { styles } from "../components/deck.stylex";
 
 // The live demo deck. It mirrors the shipped app: one binding per keystroke,
 // one voice per sound retriggered on repeat, three voices on arrow impacts, and

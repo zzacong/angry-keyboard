@@ -1,5 +1,15 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "exclude": ["dist"],
+  "compilerOptions": {
+    // In-project imports use `@/`, mapped to `src/`. Astro wires these into
+    // Vite itself, but StyleX's Babel pass has its own resolver, so the mapping
+    // is mirrored in `astro.config.mjs` under `aliases`; keep the two in sync.
+    // The sound imports in `src/lib/deck.ts` deliberately stay relative: they
+    // reach outside this project to `AngryKeyboard/Sounds/`.
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }
