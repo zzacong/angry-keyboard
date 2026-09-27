@@ -4,10 +4,10 @@
 
 **Blocked by:** 07.
 
-**Status:** ready-for-human
+**Status:** resolved
 
-- [ ] On a clean account, the released DMG installs and the app runs.
-- [ ] The Gatekeeper flow in the README matches what the user actually sees.
-- [ ] Input Monitoring can be granted and keystrokes make sound.
-- [ ] The install warning is reachable from inside the DMG.
-- [ ] After a second release, the Input Monitoring grant survives an in-place update.
+- [x] On a clean account, the released DMG installs and the app runs.
+- [x] The Gatekeeper flow in the README matches what the user actually sees.
+- [x] Input Monitoring can be granted and keystrokes make sound.
+- [x] The install warning is reachable from inside the DMG.
+- [x] After a second release, the Input Monitoring grant survives an in-place update.

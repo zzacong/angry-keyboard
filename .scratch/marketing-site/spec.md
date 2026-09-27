@@ -9,12 +9,23 @@ the prototype. One page: what the app is, why it exists, hear it, install it.
 
 ## Chosen direction
 
-Variant F, the zine. ADR 0010 records the decision and why the other five were
-rejected.
+Variant F, the zine. The other five directions were rejected in the prototype:
+
+- Live Fire and Field Manual read as competent and a little generic; they wore the
+  app icon's palette without adding a voice.
+- Blueprint was content-rich, but a technical drawing fits a specification more
+  than a homepage.
+- Control Panel was the most crafted and is the strongest runner-up.
+- Poster was the most restrained and the most likely to read as a product rather
+  than a joke.
+
+The tone stays handmade rather than themed. The zine carries its theme through
+structure — newsprint, halftone dots, taped cards, handwriting, and a war sticker
+set drawn as flat SVG in the app's own palette — where the failures wore a
+costume.
 
 The prototype is the primary source, not code to lift:
 
-- branch `opencode/marketing-site`
 - `.scratch/marketing-site/index.html`, the self-contained prototype
 - `.scratch/marketing-site/_src/template.html`, the editable source
 - `.scratch/marketing-site/_src/build.mjs`, which inlines the sounds

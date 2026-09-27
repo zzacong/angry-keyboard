@@ -1,6 +1,6 @@
 # AngryKeyboard MVP
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ## Problem Statement
 
