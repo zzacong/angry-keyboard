@@ -19,7 +19,10 @@ svg {
   display: block;
 }
 
-a {
+/* Only default unclassed links. Styled links carry a StyleX class whose color
+   lives in a layer, and an unlayered `a` rule here would beat every one of
+   them (e.g. the red button's card-coloured label). */
+a:not([class]) {
   color: inherit;
 }
 
