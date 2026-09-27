@@ -6,7 +6,7 @@ Issues and specs live as markdown files under `.scratch/<feature>/` in this repo
 
 ### Triage labels
 
-Five canonical triage roles, label string equal to role name. See `docs/agents/triage-labels.md`.
+Five canonical triage roles plus a resolved state, the label string equal to the role name. See `docs/agents/triage-labels.md`.
 
 ### Domain docs
 

@@ -17,12 +17,12 @@ The release workflow reads four values from the repository settings. They are
 not stored in the repo. Set them under Settings > Secrets and variables >
 Actions.
 
-| Name | Kind | Holds | Used as |
-| --- | --- | --- | --- |
-| `CERTIFICATE_P12_BASE64` | secret | The production certificate and its private key, exported as a `.p12` and base64 encoded | the file CI imports into its build keychain |
-| `CERTIFICATE_PASSWORD` | secret | The password set on that `.p12` | the import password |
-| `KEYCHAIN_PASSWORD` | secret | A random string for the temporary keychain CI creates | the password that unlocks that disposable keychain |
-| `SIGNING_IDENTITY` | variable | The certificate name `AngryKeyboard Production` | the value of `CODE_SIGN_IDENTITY` |
+| Name                     | Kind     | Holds                                                                                   | Used as                                            |
+| ------------------------ | -------- | --------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `CERTIFICATE_P12_BASE64` | secret   | The production certificate and its private key, exported as a `.p12` and base64 encoded | the file CI imports into its build keychain        |
+| `CERTIFICATE_PASSWORD`   | secret   | The password set on that `.p12`                                                         | the import password                                |
+| `KEYCHAIN_PASSWORD`      | secret   | A random string for the temporary keychain CI creates                                   | the password that unlocks that disposable keychain |
+| `SIGNING_IDENTITY`       | variable | The certificate name `AngryKeyboard Production`                                         | the value of `CODE_SIGN_IDENTITY`                  |
 
 Secrets are encrypted and masked in logs. A variable is plain config, which fits
 a certificate name that is not sensitive.

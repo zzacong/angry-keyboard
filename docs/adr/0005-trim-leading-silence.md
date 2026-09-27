@@ -1,6 +1,6 @@
 # Trim leading silence when a sound loads
 
-A keystroke sound should start on the key. Three of the five supplied MP3s are authored with dead air at the head: the explosion carries about 310 ms before its first audible sample, the blast about 300 ms, and the whoosh about 106 ms. The cocking sound and the shotgun are nearly clean, at about 12 ms and 16 ms. Untrimmed, Enter, Backspace, and Esc feel late, and holding one of those keys produces no row at all, because every key-repeat restarts the file inside its own silence and the sound never emerges.
+A keystroke sound should start on the key. Three of the supplied MP3s are authored with dead air at the head: the explosion carries about 310 ms before its first audible sample, the blast about 300 ms, and the whoosh about 106 ms. The cocking sound and the shotgun are nearly clean, at about 12 ms and 16 ms. Untrimmed, Enter, Backspace, and Esc feel late, and holding one of those keys produces no row at all, because every key-repeat restarts the file inside its own silence and the sound never emerges.
 
 We trim at load. `SoundOnset` scans the decoded channels in 2 ms windows and returns the first window whose RMS reaches −60 dBFS; `SoundSamples` then drops every frame before it and applies the usual end fades to the new start. The trim is in memory only, so the bundled MP3s stay untouched, and it is unconditional, so any sound added later is trimmed with no per-file configuration.
 
