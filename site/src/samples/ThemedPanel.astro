@@ -1,0 +1,18 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { dark, styles } from "./themedPanel.stylex";
+
+type Props = {
+  theme?: "light" | "dark";
+  title: string;
+};
+
+const { theme = "light", title } = Astro.props;
+---
+
+<div {...stylex.attrs(styles.panel, theme === "dark" && dark)}>
+  <h3 {...stylex.attrs(styles.heading)}>{title}</h3>
+  <p {...stylex.attrs(styles.text)}>
+    <slot />
+  </p>
+</div>

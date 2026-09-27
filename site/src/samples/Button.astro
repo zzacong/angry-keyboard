@@ -1,0 +1,21 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "./button.stylex";
+
+type Props = {
+  variant?: "primary" | "ghost";
+  disabled?: boolean;
+};
+
+const { variant = "primary", disabled = false } = Astro.props;
+---
+
+<button
+  {...stylex.attrs(
+    styles.base,
+    variant === "primary" ? styles.primary : styles.ghost,
+  )}
+  disabled={disabled}
+>
+  <slot />
+</button>

@@ -1,3 +1,27 @@
 {
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+
+  // Prettier owns formatting; the Oxc formatter stays off. Oxc's linter stays on.
+  "oxc.enable.oxfmt": false,
+  "oxc.enable.oxlint": true,
+
+  // The tools live in the nested `site/` package rather than the workspace root,
+  // so each extension needs an explicit path to find its own binary.
+  "prettier.prettierPath": "./site/node_modules/prettier",
+  "oxc.path.oxlint": "./site/node_modules/.bin/oxlint",
+
+  // Apply Oxc fixes on save only when the user explicitly triggers them.
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
+
+  // Generated and vendored output, hidden from the editor's file explorer.
+  "files.exclude": {
+    "**/.astro": true,
+    "**/build": true
+  },
+
+  // Icon and sticker previews read better against a transparent backdrop.
   "svg.preview.background": "transparent"
 }

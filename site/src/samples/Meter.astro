@@ -1,0 +1,18 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import { styles } from "./meter.stylex";
+
+type Props = {
+  percent: number;
+  label: string;
+};
+
+const { percent, label } = Astro.props;
+---
+
+<div>
+  <div {...stylex.attrs(styles.label)}>{label}</div>
+  <div {...stylex.attrs(styles.track)}>
+    <div {...stylex.attrs(styles.fill(percent))}></div>
+  </div>
+</div>

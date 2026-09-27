@@ -1,0 +1,129 @@
+---
+import * as stylex from "@stylexjs/stylex";
+import "../styles/global.css";
+import StylexDev from "../components/StylexDev.astro";
+import Button from "../samples/Button.astro";
+import Card from "../samples/Card.astro";
+import { styles as cardStyles } from "../samples/card.stylex";
+import Meter from "../samples/Meter.astro";
+import { styles } from "../samples/page.stylex";
+import Tabs from "../samples/Tabs.astro";
+import ThemedPanel from "../samples/ThemedPanel.astro";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>StyleX samples</title>
+    <StylexDev />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700&family=Caveat:wght@600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap"
+    />
+  </head>
+  <body {...stylex.attrs(styles.page)}>
+    <main {...stylex.attrs(styles.wrap)}>
+      <div {...stylex.attrs(styles.kicker)}>StyleX samples</div>
+      <h1 {...stylex.attrs(styles.title)}>StyleX, running in Astro</h1>
+      <p {...stylex.attrs(styles.lede)}>
+        Every style on this page lives in a <code>*.stylex.ts</code> module. The
+        build compiles those modules to atomic CSS and Astro inlines the result.
+        Nothing here ships a style-injecting runtime.
+      </p>
+
+      <section {...stylex.attrs(styles.section)}>
+        <h2 {...stylex.attrs(styles.sectionTitle)}>Variants compose</h2>
+        <p {...stylex.attrs(styles.note)}>
+          stylex.attrs(styles.base, variant === 'primary' ? styles.primary :
+          styles.ghost)
+        </p>
+        <div {...stylex.attrs(styles.row)}>
+          <Button>Install</Button>
+          <Button variant="ghost">Read the docs</Button>
+          <Button variant="ghost" disabled>
+            Sold out
+          </Button>
+        </div>
+      </section>
+
+      <section {...stylex.attrs(styles.section)}>
+        <h2 {...stylex.attrs(styles.sectionTitle)}>
+          Responsive rules and pseudo-elements
+        </h2>
+        <p {...stylex.attrs(styles.note)}>
+          One grid, three columns at 960px, two at 640px. The tape is a
+          ::before.
+        </p>
+        <div {...stylex.attrs(cardStyles.grid)}>
+          <Card label="Sound" title="One voice per key">
+            Repeats retrigger the same voice instead of stacking a new one.
+          </Card>
+          <Card label="Keys" title="Three on impact">
+            Arrow keys layer three voices so movement reads heavier.
+          </Card>
+          <Card label="Feel" title="Random per hit">
+            Pitch and gain shift on every press, so the board never repeats
+            itself.
+          </Card>
+        </div>
+      </section>
+
+      <section {...stylex.attrs(styles.section)}>
+        <h2 {...stylex.attrs(styles.sectionTitle)}>Themes from tokens</h2>
+        <p {...stylex.attrs(styles.note)}>
+          createTheme(tokens, overrides) on the second panel. Same component,
+          same styles.
+        </p>
+        <div {...stylex.attrs(styles.columns)}>
+          <ThemedPanel title="Newsprint">
+            Tokens resolve to the light values from tokens.stylex.ts.
+          </ThemedPanel>
+          <ThemedPanel theme="dark" title="Blackout">
+            The dark theme overrides paper, ink and edge for this subtree.
+          </ThemedPanel>
+        </div>
+      </section>
+
+      <section {...stylex.attrs(styles.section)}>
+        <h2 {...stylex.attrs(styles.sectionTitle)}>Conditional styles</h2>
+        <p {...stylex.attrs(styles.note)}>
+          index === selected && styles.selected, folded in by stylex.attrs.
+        </p>
+        <Tabs
+          selected={1}
+          tabs={[
+            {
+              label: "sound",
+              body: "Nine sounds, one per key, already in the repo.",
+            },
+            {
+              label: "keys",
+              body: "Arrow impacts layer three voices for weight.",
+            },
+            { label: "feel", body: "Pitch and gain randomise on every hit." },
+          ]}
+        />
+      </section>
+
+      <section {...stylex.attrs(styles.section)}>
+        <h2 {...stylex.attrs(styles.sectionTitle)}>
+          Keyframes and dynamic values
+        </h2>
+        <p {...stylex.attrs(styles.note)}>
+          keyframes() for the sweep. styles.fill(percent) passes the width
+          through a custom property.
+        </p>
+        <div {...stylex.attrs(styles.meters)}>
+          <Meter label="one voice per key" percent={32} />
+          <Meter label="three voices on impact" percent={68} />
+          <Meter label="random pitch and gain" percent={91} />
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

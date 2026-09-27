@@ -1,0 +1,41 @@
+{
+  "name": "angrykeyboard-site",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "dev:bg": "astro dev --background",
+    "dev:stop": "astro dev stop",
+    "dev:logs": "astro dev logs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "prettier . --write",
+    "fmt:check": "prettier . --check",
+    "check": "pnpm run typecheck && pnpm run fmt:check && pnpm run lint",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@stylexjs/stylex": "0.19.1",
+    "astro": "^7.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+    "@stylexjs/eslint-plugin": "0.19.1",
+    "@stylexjs/unplugin": "0.19.1",
+    "@types/node": "^22.20.4",
+    "oxlint": "^1.85.0",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
+    "typescript": "^6.0.3"
+  },
+  "allowScripts": {
+    "esbuild": true
+  }
+}

@@ -37,3 +37,32 @@ jobs:
 
       - name: Build release (Release)
         run: xcodebuild build -scheme AngryKeyboard -configuration Release -destination 'generic/platform=macOS'
+
+  site:
+    # The site is a self-contained pnpm package in site/. It needs no Xcode, so
+    # it runs on a Linux runner in parallel with the app job.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Installs pnpm, then Node from the site's own .node-version. The install
+      # runs in site/ and fails if the lockfile is out of date, so a dependency
+      # change without a lockfile change is caught here. `version: 12` pins the
+      # pnpm major line only.
+      - uses: pnpm/setup@v3
+        with:
+          working-directory: site
+          node-version-file: .node-version
+          version: 12
+          cache: true
+          require-lockfile: true
+
+      - name: Typecheck, format check, and lint
+        working-directory: site
+        run: pnpm run check
+
+      # `check` never runs the StyleX plugin, so only a build proves the
+      # stylesheet is actually emitted.
+      - name: Build
+        working-directory: site
+        run: pnpm run build
