@@ -1,0 +1,107 @@
+name: dmg-rehearsal
+
+# Rehearses the release DMG build without cutting a tag, so a release can be
+# checked before it happens. It runs the same keychain, build, package, and
+# verify steps as the `build` job in release.yml, attests the DMG, and uploads
+# it as a workflow artifact instead of a release asset.
+#
+# Keep the steps here in step with release.yml. Run it from the Actions tab, or:
+# gh workflow run dmg-rehearsal.yml
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: MARKETING_VERSION to stamp into the test build
+        required: false
+        default: "0.1.0"
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+jobs:
+  build-dmg:
+    runs-on: xcode-27
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Import the production certificate
+        env:
+          CERTIFICATE_P12_BASE64: ${{ secrets.CERTIFICATE_P12_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          echo "$CERTIFICATE_P12_BASE64" | base64 --decode > certificate.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security list-keychains -d user -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security import certificate.p12 -k build.keychain \
+            -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s \
+            -k "$KEYCHAIN_PASSWORD" build.keychain
+          security find-identity -v -p codesigning build.keychain
+
+      - name: Build the release app
+        env:
+          SIGNING_IDENTITY: ${{ vars.SIGNING_IDENTITY }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          xcodebuild \
+            -project AngryKeyboard.xcodeproj \
+            -scheme AngryKeyboard \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            -derivedDataPath build \
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
+            build
+
+      - name: Package the DMG
+        run: |
+          mkdir -p dist/dmg
+          cp -R build/Build/Products/Release/AngryKeyboard.app dist/dmg/
+          ln -s /Applications dist/dmg/Applications
+          cp packaging/INSTALL.txt "dist/dmg/Read Me.txt"
+          hdiutil create -volname "Angry Keyboard" -srcfolder dist/dmg \
+            -ov -format UDZO dist/AngryKeyboard.dmg
+          shasum -a 256 dist/AngryKeyboard.dmg \
+            | awk '{print $1}' > dist/AngryKeyboard.dmg.sha256
+
+      - name: Verify the signature
+        env:
+          SIGNING_IDENTITY: ${{ vars.SIGNING_IDENTITY }}
+        run: |
+          codesign --verify --deep --strict --verbose=2 \
+            build/Build/Products/Release/AngryKeyboard.app
+          codesign -dv --verbose=2 \
+            build/Build/Products/Release/AngryKeyboard.app 2>&1 \
+            | grep -qF "Authority=$SIGNING_IDENTITY"
+          hdiutil attach dist/AngryKeyboard.dmg -nobrowse -readonly
+          codesign --verify --deep --strict \
+            "/Volumes/Angry Keyboard/AngryKeyboard.app"
+          codesign -dv --verbose=2 \
+            "/Volumes/Angry Keyboard/AngryKeyboard.app" 2>&1 \
+            | grep -qF "Authority=$SIGNING_IDENTITY"
+          hdiutil detach "/Volumes/Angry Keyboard"
+
+      - uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: dist/AngryKeyboard.dmg
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: AngryKeyboard-dmg-rehearsal
+          path: |
+            dist/AngryKeyboard.dmg
+            dist/AngryKeyboard.dmg.sha256
+
+      - name: Remove the certificate
+        if: always()
+        run: |
+          security delete-keychain build.keychain 2>/dev/null || true
+          rm -f certificate.p12
