@@ -2,10 +2,8 @@
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/components/getIt.stylex";
 import InstallNote from "@/components/InstallNote.astro";
+import { downloadUrl } from "@/lib/download";
 import { styles as shared } from "@/styles/shared.stylex";
-
-const downloadUrl =
-  "https://github.com/zzacong/angry-keyboard/releases/latest/download/AngryKeyboard.dmg";
 ---
 
 <section id="f-get" {...stylex.attrs(styles.section)}>
@@ -39,7 +37,11 @@ const downloadUrl =
   </div>
 
   <div {...stylex.attrs(styles.cta, shared.above)}>
-    <a href={downloadUrl} {...stylex.attrs(shared.button, shared.buttonFire)}>
+    <a
+      href={downloadUrl}
+      data-download
+      {...stylex.attrs(shared.button, shared.buttonFire)}
+    >
       Download for macOS
     </a>
     <span {...stylex.attrs(styles.meta)}>
