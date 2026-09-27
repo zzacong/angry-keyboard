@@ -8,6 +8,31 @@ It has no window and no Dock icon. The app lives in the menu bar as a keyboard i
 
 - macOS 14.0 (Sonoma) or later
 
+## Install
+
+Download the latest `AngryKeyboard.dmg` from
+[Releases](https://github.com/zzacong/angry-keyboard/releases/latest), open it,
+and drag AngryKeyboard to Applications.
+
+AngryKeyboard is a hobby project I build for myself.
+
+This build is signed but not notarized, because notarization needs the $99/year
+Apple Developer Program and I do not pay it for this. macOS will block the first
+launch. Use it at your own risk.
+
+macOS 15 or later:
+
+1. Open the app. macOS says it cannot be verified. Choose Done.
+2. Open System Settings > Privacy & Security.
+3. Find the AngryKeyboard message and click Open Anyway.
+
+macOS 14:
+
+Control-click the app and choose Open.
+
+The app then asks for Input Monitoring, which it needs to hear keystrokes. It
+only listens. It never records, stores, or sends what you type.
+
 ## Build and run
 
 Building from source needs Xcode 27.0 or later. Running the app needs only
@@ -74,6 +99,30 @@ A free Apple ID works too, with no certificate to manage: add it under Xcode >
 Settings > Accounts, set the target's Team to the Personal Team, and Xcode signs
 with an Apple Development certificate it renews each year. It needs an Apple ID
 signed in, and it buys nothing locally that the self-signed certificate does not.
+
+## Channels
+
+The project builds two apps, production and dev, and they can run at the same
+time.
+
+|                     | Production                  | Dev                             |
+| ------------------- | --------------------------- | ------------------------------- |
+| Build configuration | Release                     | Debug                           |
+| Bundle id           | `com.zzacong.AngryKeyboard` | `com.zzacong.AngryKeyboard.dev` |
+| Display name        | Angry Keyboard              | Angry Keyboard Dev              |
+| Product name        | `AngryKeyboard.app`         | `AngryKeyboardDev.app`          |
+| App icon            | `AppIcon`                   | `AppIconDev`                    |
+| Menu bar glyph      | keyboard                    | fuming key                      |
+| Released            | yes                         | no                              |
+
+Production is the download. Dev is what Xcode builds while working on the app.
+They differ in bundle id, so macOS gives each its own volume, mute, and playback
+mode settings, its own Input Monitoring entry, and its own Login Item. The menu
+bar glyph and the name on the About panel tell them apart at a glance.
+
+A local Release build is signed with the same `AngryKeyboard Production`
+certificate as the download, so it carries the same identity. Debug builds sign
+with `AngryKeyboard Dev`. See Local signing above.
 
 ## Grant Input Monitoring
 
@@ -145,6 +194,7 @@ To remove AngryKeyboard completely:
    ```
 
    This clears the volume, mute, and playback mode settings.
+
 5. Clear the Input Monitoring permission:
 
    ```
@@ -220,9 +270,11 @@ Check these by hand after a build.
 - If the menu bar icon is missing, check Control Center's per-app Allow in Menu
   Bar switch on macOS 26. Turning it off hides the icon, but the app keeps
   running and playing. Turn it back on to reach the menu.
-- After a rebuild, macOS may ask for Input Monitoring again. A locally signed
-  Debug build can change identity between builds, so the old grant no longer
-  matches. Grant it again, or keep one build for everyday use.
+- After a rebuild, macOS may ask for Input Monitoring again when the build is
+  ad-hoc signed. A clone with no certificate signs ad-hoc, and an ad-hoc
+  signature is a hash of the binary, so the old grant no longer matches. Run
+  `Scripts/setup-signing.sh` once to sign each channel with a stable
+  certificate, or keep one build for everyday use.
 - If a grant will not take, clear the stored approval and grant it again:
 
   ```
@@ -255,4 +307,5 @@ builtin and the bare command fails. Stop the stream with Ctrl-C.
 
 ## License
 
-MIT. See `LICENSE`.
+The code is MIT. See `LICENSE`. The sounds are not covered by it. See
+`CREDITS.md`.
