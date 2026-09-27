@@ -5,8 +5,10 @@
 # Release channel is untouched: CI injects its version from the release tag.
 #
 # Run as an app-target build phase, after the Info.plist is processed and before
-# the app is signed. Exits 0 without patching when it cannot derive a version,
-# leaving the committed placeholder in place.
+# the app is signed. The phase declares the built Info.plist as an input so the
+# build system orders it after ProcessInfoPlistFile; without that, incremental
+# builds regenerate the plist and overwrite the stamp. Exits 0 without patching
+# when it cannot derive a version, leaving the committed placeholder in place.
 
 [ "$CONFIGURATION" = "Debug" ] || exit 0
 
