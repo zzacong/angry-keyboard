@@ -77,10 +77,10 @@ nonisolated struct SoundPack: Sendable {
     let name: String
     let bindings: [Binding]
 
-    init(name: String, bindings: [Binding], catchAll: Sound, catchAllVoiceCount: Int = 1) {
+    init(name: String, bindings: [Binding], catchAll: SoundPool, catchAllVoiceCount: Int = 1) {
         self.name = name
         self.bindings = bindings + [
-            Binding(key: .any, sound: catchAll, voiceCount: catchAllVoiceCount)
+            Binding(key: .any, pool: catchAll, voiceCount: catchAllVoiceCount)
         ]
     }
 }
@@ -88,7 +88,8 @@ nonisolated struct SoundPack: Sendable {
 nonisolated extension SoundPack {
     /// The pack v1 ships: Enter gets the explosion, Esc the whoosh, Backspace
     /// the blast, Spacebar the cocking sound, the arrow keys draw from a pool of
-    /// impact sounds, and every other key the shotgun.
+    /// impact sounds, and every other key draws from a pool that is mostly the
+    /// shotgun with an occasional reaction.
     ///
     /// The voice counts only bite in overlap mode, where they cap how many
     /// copies may stack. Short sounds take more copies, the long explosion
@@ -105,13 +106,22 @@ nonisolated extension SoundPack {
             Binding(key: Key(CGKeyCode(kVK_LeftArrow)), pool: arrowImpacts, voiceCount: 3),
             Binding(key: Key(CGKeyCode(kVK_RightArrow)), pool: arrowImpacts, voiceCount: 3),
         ],
-        catchAll: .shotgun,
+        catchAll: catchAllPool,
         catchAllVoiceCount: 4
     )
 
-    /// The pool the arrow keys draw from: one impact sound per press, chosen at
-    /// random. All four arrows share it, so their voices count together.
+    /// The pool the arrow keys draw from: one impact sound per press, uniform.
+    /// All four arrows share it, so their voices count together.
     static let arrowImpacts = SoundPool([.combatImpact, .kungFuYell, .punchImpactHit, .punch])
+
+    /// The pool the catch-all draws from: mostly the shotgun, with a reaction
+    /// sound now and then. A weight of four against one each makes the shotgun
+    /// about 57% of hits. Every default key shares this pool, so their voices
+    /// count together.
+    static let catchAllPool = SoundPool(
+        [.shotgun, .ahhh, .ouch, .ough],
+        weights: [4, 1, 1, 1]
+    )
 
     /// Every pack the app can offer. v1 ships one; the menu hides the picker
     /// until a second pack makes the choice meaningful.

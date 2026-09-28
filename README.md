@@ -227,7 +227,7 @@ Check these by hand after a build.
   and Spacebar the shotgun cocking.
 - Press any arrow key. It plays one of four impact sounds, chosen at random on
   every press.
-- Every other key plays the shotgun.
+- Every other key is usually the shotgun, with an occasional ahhh, ouch, or ough.
 - Hold a key. The sound repeats while the key is held.
 - Click, scroll, or press a modifier alone, such as Shift or Command. None of
   these make a sound.

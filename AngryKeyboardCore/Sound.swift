@@ -12,4 +12,7 @@ nonisolated enum Sound: String, CaseIterable, Sendable {
     case kungFuYell = "kung-fu-yell"
     case punchImpactHit = "punch-impact-hit"
     case punch
+    case ahhh
+    case ouch
+    case ough
 }

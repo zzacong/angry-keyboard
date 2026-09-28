@@ -2,12 +2,15 @@
 
 ## Sounds
 
-The nine sound effects in `AngryKeyboard/Sounds` come from
+The twelve sound effects in `AngryKeyboard/Sounds` come from
 [Pixabay](https://pixabay.com/):
 
+- `ahhh.mp3`
 - `combat-impact.mp3`
 - `explode-rock.mp3`
 - `kung-fu-yell.mp3`
+- `ouch.mp3`
+- `ough.mp3`
 - `punch.mp3`
 - `punch-impact-hit.mp3`
 - `rocket-whoosh.mp3`
