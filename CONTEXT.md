@@ -33,3 +33,15 @@ _Avoid_: polyphony, layering
 **Catch-all**:
 The binding that covers any keystroke without a binding of its own. A sound pack has exactly one, and it is the last rule.
 _Avoid_: default binding, fallback, default
+
+**Channel**:
+One of the two independently installable variants of the app, production or dev, distinguished by bundle identity so both can run at once.
+_Avoid_: build configuration, flavor, variant, environment
+
+**Update**:
+A released build newer than the one the app is running.
+_Avoid_: upgrade, patch, new version
+
+**Update feed**:
+The list of released builds the production app checks to learn an update exists and how to install it.
+_Avoid_: appcast, manifest, release feed, RSS
