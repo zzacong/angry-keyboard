@@ -286,6 +286,7 @@ function mountDeck(root: HTMLElement, board: Board): void {
   let armed = false;
   const triedGuideGroups = new Set<KeyGroup>();
 
+  // Animate and announce the first sound-triggering key in each group.
   const markGuideGroup = (group: KeyGroup): void => {
     if (triedGuideGroups.has(group)) return;
     const guideItem = guideItems.get(group);
