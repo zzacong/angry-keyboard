@@ -189,10 +189,6 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/attest-build-provenance@v4
-        with:
-          subject-path: dist/AngryKeyboard.dmg
-
       - name: Append the install warning to the release notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -214,6 +210,22 @@ jobs:
           gh release upload "$TAG" \
             dist/AngryKeyboard.dmg dist/AngryKeyboard.dmg.sha256 \
             feed/appcast.xml --clobber
+
+      # Sits after the upload and off the critical path. Provenance depends on
+      # Sigstore's public Fulcio, which a runner can fail to reach for reasons
+      # that have nothing to do with the build, and a miss must not cost the
+      # assets. The step below reports it instead.
+      - id: attest
+        uses: actions/attest-build-provenance@v4
+        continue-on-error: true
+        with:
+          subject-path: dist/AngryKeyboard.dmg
+
+      - name: Report a missed attestation
+        if: steps.attest.outcome != 'success'
+        run: |
+          echo "::warning::Build provenance was not attested for ${TAG}. The" \
+            "release assets are uploaded; rerun this job to attach it."
 
       - name: Remove the certificate
         if: always()
