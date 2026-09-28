@@ -135,6 +135,9 @@ jobs:
           mkdir -p feed
           cp dist/AngryKeyboard.dmg dist/AngryKeyboard.dmg.sha256 feed/
 
+          # Mirror release.yml: name the run so the test dialog isn't empty.
+          printf 'Rehearsal build from workflow run %s.\n' "$GITHUB_RUN_NUMBER" > feed/AngryKeyboard.md
+
           # --download-url-prefix ./ overrides the app's own SUFeedURL as the
           # enclosure base, which would otherwise be the published release, and
           # keeps the enclosure relative. The private key travels over stdin and
@@ -144,6 +147,7 @@ jobs:
                 --ed-key-file - \
                 --download-url-prefix ./ \
                 --maximum-deltas 0 \
+                --embed-release-notes \
                 feed
 
           if [ ! -s feed/appcast.xml ]; then

@@ -122,6 +122,7 @@ jobs:
       - name: Generate and sign the update feed
         env:
           SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -153,6 +154,11 @@ jobs:
           mkdir -p feed
           cp dist/AngryKeyboard.dmg feed/
 
+          # generate_appcast attaches release notes from a file named like the
+          # archive; --embed-release-notes folds them into the feed, so Sparkle's
+          # dialog shows what changed without a separate notes asset to host.
+          gh release view "$TAG" --json body --jq .body > feed/AngryKeyboard.md
+
           DOWNLOAD_PREFIX="https://github.com/${{ github.repository }}/releases/download/${TAG}/"
 
           # The private key travels over stdin and is never written to disk.
@@ -161,6 +167,7 @@ jobs:
                 --ed-key-file - \
                 --download-url-prefix "$DOWNLOAD_PREFIX" \
                 --maximum-deltas 0 \
+                --embed-release-notes \
                 feed
 
           if [ ! -s feed/appcast.xml ]; then
