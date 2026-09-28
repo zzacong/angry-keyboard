@@ -15,6 +15,8 @@
 }
 
 html {
+  /* Side stickers can overhang the centered page without widening the viewport. */
+  overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   /* Paint the whole canvas paper. iOS Safari extends the document under the
      notch and home indicator (`viewport-fit=cover`), and the rubber-band
@@ -37,6 +39,7 @@ body::before {
 }
 
 body {
+  overflow-x: clip;
   margin: 0;
   width: 100%;
   padding-top: env(safe-area-inset-top);

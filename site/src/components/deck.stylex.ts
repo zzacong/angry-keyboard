@@ -104,14 +104,14 @@ export const styles = stylex.create({
   },
   grenade: {
     transform: "rotate(13deg)",
-    right: "-16px",
+    right: "-150px",
     top: "-48px",
     width: "80px",
   },
   hazard: {
     transform: "rotate(14deg)",
     left: "44%",
-    top: "-52px",
+    top: "-96px",
     width: "82px",
   },
   hint: {
@@ -177,7 +177,7 @@ export const styles = stylex.create({
   },
   pow: {
     transform: "rotate(-14deg)",
-    left: "-30px",
+    left: "-150px",
     top: "-62px",
     width: "124px",
   },
