@@ -58,16 +58,11 @@ export const styles = stylex.create({
     maxWidth: "58ch",
   },
   page: {
-    backgroundColor: tokens.paper,
-    backgroundImage:
-      "radial-gradient(rgba(27, 23, 18, 0.16) 1px, transparent 1.2px)",
-    backgroundSize: "12px 12px",
     color: tokens.ink,
     fontFamily: tokens.fontSerif,
     fontSize: "1.08rem",
     lineHeight: 1.65,
-    minHeight: "100svh",
-    paddingBottom: "4.5rem",
+    paddingBottom: "3rem",
   },
   stickerLabel: {
     borderRadius: "3px",

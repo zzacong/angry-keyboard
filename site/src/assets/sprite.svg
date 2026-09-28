@@ -30,6 +30,18 @@
     <path d="M232 374 v26 M256 374 v26 M280 374 v26" fill="none" stroke="#CE2B1E" stroke-width="5" />
   </symbol>
 
+  <symbol id="redface" viewBox="126 250 260 196">
+    <rect x="126" y="250" width="260" height="196" rx="32" fill="#CE2B1E" />
+    <g fill="none" stroke="#EDE4CE" stroke-width="18" stroke-linecap="round">
+      <path d="M176 300 L228 320" />
+      <path d="M336 300 L284 320" />
+    </g>
+    <circle cx="206" cy="346" r="12" fill="#EDE4CE" />
+    <circle cx="306" cy="346" r="12" fill="#EDE4CE" />
+    <rect x="214" y="372" width="84" height="30" rx="10" fill="#EDE4CE" />
+    <path d="M232 374v26 M256 374v26 M280 374v26" fill="none" stroke="#CE2B1E" stroke-width="5" />
+  </symbol>
+
   <!-- Composite shapes are drawn twice: a cream layer paints the die-cut halo,
        then the colored layer sits on top so the outline stays a single clean edge. -->
   <symbol id="s-boom" viewBox="0 0 170 156">
