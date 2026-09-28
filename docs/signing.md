@@ -61,3 +61,10 @@ with. Keep the exported `.p12` somewhere durable and keep its password in a
 password manager. `Scripts/setup-signing.sh` copies the `.p12` to a folder you
 choose. Regenerating the certificate is possible, but it makes everyone approve
 the app once more.
+
+The Sparkle update key is the other release-critical secret. Its private key is
+stored as the `SPARKLE_PRIVATE_KEY` CI secret and backed up in the same folder
+as the `.p12` (`Scripts/setup-sparkle-key.sh` writes
+`AngryKeyboard-sparkle-ed25519-private-key.txt` there by default). Losing it
+strands installed apps until users reinstall by hand; restore it by running the
+wizard and importing that backup file.
