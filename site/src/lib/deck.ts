@@ -1,5 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/components/deck.stylex";
+import { onsetSeconds } from "@/lib/onset";
 import ahhhUrl from "../../../AngryKeyboard/Sounds/ahhh.mp3?url";
 import combatImpactUrl from "../../../AngryKeyboard/Sounds/combat-impact.mp3?url";
 import explodeRockUrl from "../../../AngryKeyboard/Sounds/explode-rock.mp3?url";
@@ -15,8 +16,9 @@ import shotgunUrl from "../../../AngryKeyboard/Sounds/shotgun.mp3?url";
 
 // The live demo deck. It mirrors the shipped app: one binding per keystroke,
 // one voice per sound retriggered on repeat, three voices on arrow impacts, and
-// a small random pitch and gain on every hit. The twelve MP3s are imported from
-// the app's own Sounds directory, so the site can never drift from the app.
+// a small random pitch and gain on every hit, starting where the sound does
+// past any dead air. The twelve MP3s are imported from the app's own Sounds
+// directory, so the site can never drift from the app.
 
 const IMPACTS = [
   "combat-impact",
@@ -134,6 +136,12 @@ function pickWeighted(
   return pool[0]![0];
 }
 
+type Clip = {
+  buffer: AudioBuffer;
+  /** Where the sound actually starts, past any dead air the file opens with. */
+  onset: number;
+};
+
 /** The app's resolver, as a plain function over a key name. */
 export function resolveSound(key: string): SoundName | null {
   if (MODIFIER_KEYS.has(key)) return null;
@@ -166,7 +174,7 @@ type Board = {
 function createBoard(): Board {
   let context: AudioContext | null = null;
   let master: GainNode | null = null;
-  let buffers: Record<SoundName, AudioBuffer> | null = null;
+  let clips: Record<SoundName, Clip> | null = null;
   let loading: Promise<void> | null = null;
   const playing: Partial<Record<Pool, AudioBufferSourceNode[]>> = {};
   let volume = 0.6;
@@ -189,10 +197,10 @@ function createBoard(): Board {
     loading = Promise.all(
       Object.entries(SOURCES).map(async ([name, url]) => {
         const bytes = await (await fetch(url)).arrayBuffer();
-        const decoded = await context!.decodeAudioData(bytes);
-        buffers = {
-          ...(buffers ?? ({} as Record<SoundName, AudioBuffer>)),
-          [name]: decoded,
+        const buffer = await context!.decodeAudioData(bytes);
+        clips = {
+          ...(clips ?? ({} as Record<SoundName, Clip>)),
+          [name]: { buffer, onset: onsetSeconds(buffer) },
         };
       }),
     ).then(() => undefined);
@@ -200,17 +208,21 @@ function createBoard(): Board {
   }
 
   function fire(name: SoundName): void {
-    if (!context || !buffers || !master) return;
-    const buffer = buffers[name];
-    if (!buffer) return;
+    if (!context || !clips || !master) return;
+    const clip = clips[name];
+    if (!clip) return;
 
     const pool = poolOf(name);
     const source = context.createBufferSource();
-    source.buffer = buffer;
+    source.buffer = clip.buffer;
     source.playbackRate.value = 1 + (Math.random() * 0.1 - 0.05);
 
+    // A short fade in, matching the app, so starting on the onset never steps
+    // the waveform into a click.
     const gain = context.createGain();
-    gain.gain.value = 0.9 + Math.random() * 0.2;
+    const now = context.currentTime;
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.9 + Math.random() * 0.2, now + 0.002);
     source.connect(gain).connect(master);
 
     // Retrigger: a pool of one steals its own voice; larger pools stack to the cap.
@@ -221,7 +233,8 @@ function createBoard(): Board {
       const index = live.indexOf(source);
       if (index > -1) live.splice(index, 1);
     };
-    source.start();
+    // Start where the sound does, so dead air in the file never delays the key.
+    source.start(0, clip.onset);
 
     // The hook the animation pass listens for.
     document.dispatchEvent(new CustomEvent("ak:fire"));

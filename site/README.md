@@ -21,6 +21,8 @@ Every script in `site/package.json` is also reachable as
   style module.
 - `src/lib/deck.ts` is the live deck: the keystroke resolver and the Web Audio
   board that mirrors the app.
+- `src/lib/onset.ts` is the site's copy of the app's `SoundOnset`, so a clip with
+  a quiet lead still hits on the key.
 - `src/assets/sprite.svg` holds the mascot and sticker symbols, inlined once by
   `Layout.astro` and referenced with `<use>`.
 - `src/styles/tokens.stylex.ts` is the zine palette and type scale.
