@@ -27,3 +27,5 @@
   - Preferences: volume=0.42, playbackMode=overlap, muted=0
   - Login Item: yes
   - Gatekeeper: no re-prompt on the updated launch.
+- The one-time `Scripts/verify-update.sh` wizard was retired after this run; the
+  durable procedure is the "Rehearsing an update" recipe in `docs/signing.md`.
