@@ -14,8 +14,9 @@ permissions:
   contents: read
 
 jobs:
-  # Decides whether the app job has anything to do. A change that only touches
-  # site/ skips the macOS runner, which is the expensive part of this workflow.
+  # Decides which jobs have anything to do. A change that only touches site/ or
+  # .scratch/ skips the macOS runner, the expensive part of this workflow, and a
+  # change that only touches .scratch/ skips the rest of it too.
   changes:
     runs-on: ubuntu-latest
     # `contents: read` is for checkout. `pull-requests: read` lets the change
@@ -25,12 +26,14 @@ jobs:
       pull-requests: read
     outputs:
       app: ${{ steps.filter.outputs.app }}
+      site: ${{ steps.filter.outputs.site }}
     steps:
       - uses: actions/checkout@v7
 
       # `some-with-excludes` matches a file when it matches at least one
       # positive rule and no negated one, so `app` is true when any changed file
-      # lives outside site/. A filter of negated rules alone never matches.
+      # lives outside site/ and .scratch/, and `site` when any lives outside
+      # .scratch/ alone. A filter of negated rules alone never matches.
       - uses: dorny/paths-filter@v4
         id: filter
         with:
@@ -39,6 +42,10 @@ jobs:
             app:
               - '**'
               - '!site/**'
+              - '!.scratch/**'
+            site:
+              - '**'
+              - '!.scratch/**'
 
   build-and-test:
     # A job skipped by a condition reports Success, which still satisfies the
@@ -71,10 +78,11 @@ jobs:
         run: xcodebuild build -scheme AngryKeyboard -configuration Release -destination 'generic/platform=macOS'
 
   site:
-    # Left ungated on purpose. It is cheap on Linux, and running it on every
-    # change also covers anything the site build reads from outside site/.
-    # The site is a self-contained pnpm package in site/. It needs no Xcode, so
+    # Gated only on .scratch/, so it still runs for anything the site build
+    # might read from outside site/. It is cheap on Linux and needs no Xcode, so
     # it runs on a Linux runner in parallel with the app job.
+    needs: changes
+    if: needs.changes.outputs.site == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
