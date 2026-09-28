@@ -206,7 +206,9 @@ export const styles = stylex.create({
     outlineStyle: "none",
     outlineWidth: 0,
     resize: "none",
-    minHeight: "186px",
+    // Border-box counts the 1.2rem block padding in `min-height`, so this is
+    // the box height: 186px of text plus the padding it always added.
+    minHeight: "224px",
     width: "100%",
     "::placeholder": { color: tokens.inkSoftest },
   },

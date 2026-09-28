@@ -46,10 +46,6 @@ export const styles = stylex.create({
     animationTimingFunction: "cubic-bezier(0.2, 0.85, 0.3, 1.1)",
     backgroundColor: tokens.card,
     boxShadow: "5px 7px 0 rgba(27, 23, 18, 0.22)",
-    // The site sets no global border-box, so `width` below would otherwise be
-    // the content width and the padding would push the card past the viewport
-    // on a phone.
-    boxSizing: "border-box",
     color: tokens.ink,
     position: "relative",
     transform: "rotate(-1.2deg)",
@@ -62,8 +58,6 @@ export const styles = stylex.create({
     borderWidth: "1.5px",
     placeItems: "center",
     backgroundColor: { default: tokens.card, ":hover": tokens.ink },
-    // Keeps the touch target at a true 34px, matching the card above.
-    boxSizing: "border-box",
     color: { default: tokens.ink, ":hover": tokens.card },
     cursor: "pointer",
     display: "grid",
