@@ -70,6 +70,7 @@ jobs:
           cp -R build/Build/Products/Release/AngryKeyboard.app dist/dmg/
           ln -s /Applications dist/dmg/Applications
           cp packaging/INSTALL.txt "dist/dmg/Read Me.txt"
+          cp CREDITS.md dist/dmg/Credits.md
           hdiutil create -volname "Angry Keyboard" -srcfolder dist/dmg \
             -ov -format UDZO dist/AngryKeyboard.dmg
           shasum -a 256 dist/AngryKeyboard.dmg \
