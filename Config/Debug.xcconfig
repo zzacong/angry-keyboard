@@ -11,6 +11,11 @@ ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev
 AK_MENU_BAR_GLYPH = MenuBarGlyphDev
 AK_MENU_BAR_GLYPH_MUTED = MenuBarGlyphDevMuted
 
+// Update gate, substituted into Config/Info.plist. Dev never checks for
+// updates, so the updater stays off.
+// See docs/adr/0010-in-app-updates-with-sparkle.md.
+AK_ENABLE_UPDATES = NO
+
 // Ad-hoc by default, so a clone with no certificate still builds. The optional
 // local file, which is gitignored, overrides the identity with the dev
 // certificate.

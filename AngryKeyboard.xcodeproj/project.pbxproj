@@ -6,6 +6,10 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FA0000000000000000000012 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = FA0000000000000000000011 /* Sparkle */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		CA8DEE2130661FAB00E5FED8 /* AngryKeyboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AngryKeyboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA8DEE3030661FAC00E5FED8 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -36,6 +40,7 @@
 		CA8DEE1E30661FAB00E5FED8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				FA0000000000000000000012 /* Sparkle in Frameworks */,
 			);
 		};
 		FA0000000000000000000004 /* Frameworks */ = {
@@ -95,6 +100,9 @@
 				FA000000000000000000000A /* AngryKeyboardCore */,
 			);
 			name = AngryKeyboard;
+			packageProductDependencies = (
+				FA0000000000000000000011 /* Sparkle */,
+			);
 			productName = AngryKeyboard;
 			productReference = CA8DEE2130661FAB00E5FED8 /* AngryKeyboard.app */;
 			productType = "com.apple.product-type.application";
@@ -145,6 +153,9 @@
 			);
 			mainGroup = CA8DEE1830661FAB00E5FED8;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				FA0000000000000000000015 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CA8DEE2230661FAB00E5FED8 /* Products */;
 			projectDirPath = "";
@@ -450,6 +461,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FA0000000000000000000015 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FA0000000000000000000011 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA0000000000000000000015 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CA8DEE1930661FAB00E5FED8 /* Project object */;
 	validationLevel = 1;
