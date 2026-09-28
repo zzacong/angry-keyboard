@@ -23,8 +23,8 @@ export const styles = stylex.create({
   },
   free: {
     transform: "rotate(9deg)",
-    right: "1%",
-    top: "-34px",
+    left: "300px",
+    top: "-55px",
     width: "98px",
   },
   meta: {
@@ -35,7 +35,7 @@ export const styles = stylex.create({
   missile: {
     transform: "rotate(-13deg)",
     bottom: "-6px",
-    right: "-42px",
+    right: "70px",
     width: "170px",
   },
   noteCard: {
