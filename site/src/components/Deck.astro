@@ -1,6 +1,7 @@
 ---
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/components/deck.stylex";
+import { KEY_BINDINGS } from "@/lib/key-bindings";
 import { styles as shared } from "@/styles/shared.stylex";
 ---
 
@@ -39,13 +40,46 @@ import { styles as shared } from "@/styles/shared.stylex";
         </span>
       </div>
 
-      <textarea
-        data-demo-input
-        spellcheck="false"
-        aria-label="Type here to hear what Angry Keyboard does on every keystroke"
-        placeholder="Ignore the neighbours and start typing"
-        {...stylex.attrs(styles.surface)}
-      ></textarea>
+      <div {...stylex.attrs(styles.editor)}>
+        <textarea
+          data-demo-input
+          spellcheck="false"
+          aria-label="Type here to hear what Angry Keyboard does on every keystroke"
+          placeholder="Ignore the neighbours and start typing"
+          {...stylex.attrs(styles.surface)}
+        ></textarea>
+        <div
+          role="group"
+          aria-label="Try these keys"
+          {...stylex.attrs(styles.guide)}
+        >
+          <p {...stylex.attrs(styles.guideLine)}>
+            Go on, make a racket with the{" "}
+            {KEY_BINDINGS.map((binding, index) => (
+              <span {...stylex.attrs(styles.guidePart)}>
+                <span
+                  data-guide-group={binding.group}
+                  {...stylex.attrs(styles.guideToken)}
+                >
+                  {binding.guideKey}
+                </span>
+                {index < KEY_BINDINGS.length - 1
+                  ? index === KEY_BINDINGS.length - 2
+                    ? ", or "
+                    : ", "
+                  : ""}
+              </span>
+            ))}
+            .
+          </p>
+          <span
+            data-guide-live
+            role="status"
+            aria-live="polite"
+            {...stylex.attrs(styles.visuallyHidden)}
+          ></span>
+        </div>
+      </div>
 
       <div {...stylex.attrs(styles.foot)}>
         <span {...stylex.attrs(styles.last)}>

@@ -1,5 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/components/deck.stylex";
+import { KEY_BINDINGS, keyGroupFor, type KeyGroup } from "@/lib/key-bindings";
 import { onsetSeconds } from "@/lib/onset";
 import ahhhUrl from "../../../AngryKeyboard/Sounds/ahhh.mp3?url";
 import combatImpactUrl from "../../../AngryKeyboard/Sounds/combat-impact.mp3?url";
@@ -101,15 +102,6 @@ const LABELS: Record<SoundName, string> = {
   "shotgun-cocking": "shotgun cock",
 };
 
-const MODIFIER_KEYS = new Set([
-  "Alt",
-  "CapsLock",
-  "ContextMenu",
-  "Control",
-  "Meta",
-  "Shift",
-]);
-
 function isImpact(name: SoundName): name is ImpactSound {
   return (IMPACTS as readonly string[]).includes(name);
 }
@@ -144,24 +136,24 @@ type Clip = {
 
 /** The app's resolver, as a plain function over a key name. */
 export function resolveSound(key: string): SoundName | null {
-  if (MODIFIER_KEYS.has(key)) return null;
-  switch (key) {
-    case "Enter":
-      return "explode-rock";
-    case "Escape":
-      return "rocket-whoosh";
-    case "Backspace":
-      return "shotgun-blast";
-    case " ":
+  switch (keyGroupFor(key)) {
+    case "space":
       return "shotgun-cocking";
-    default:
-      break;
+    case "enter":
+      return "explode-rock";
+    case "backspace":
+      return "shotgun-blast";
+    case "escape":
+      return "rocket-whoosh";
+    case "arrows": {
+      const pick = IMPACTS[Math.floor(Math.random() * IMPACTS.length)];
+      return pick ?? "combat-impact";
+    }
+    case "any":
+      return pickWeighted(CATCH_ALL_POOL);
+    case null:
+      return null;
   }
-  if (key.startsWith("Arrow")) {
-    const pick = IMPACTS[Math.floor(Math.random() * IMPACTS.length)];
-    return pick ?? "combat-impact";
-  }
-  return pickWeighted(CATCH_ALL_POOL);
 }
 
 type Board = {
@@ -284,8 +276,30 @@ function mountDeck(root: HTMLElement, board: Board): void {
   }
 
   const countEls = root.querySelectorAll<HTMLElement>("[data-demo-count]");
+  const guideLive = element<HTMLElement>(root, "[data-guide-live]");
+  const guideItems = new Map<KeyGroup, { token: HTMLElement; label: string }>();
+  for (const { group, guideKey } of KEY_BINDINGS) {
+    const token = element<HTMLElement>(root, `[data-guide-group="${group}"]`);
+    if (token) guideItems.set(group, { token, label: guideKey });
+  }
   let shots = 0;
   let armed = false;
+  const triedGuideGroups = new Set<KeyGroup>();
+
+  const markGuideGroup = (group: KeyGroup): void => {
+    if (triedGuideGroups.has(group)) return;
+    const guideItem = guideItems.get(group);
+    if (!guideItem) return;
+
+    triedGuideGroups.add(group);
+    guideItem.token.className =
+      stylex.props(
+        styles.guideToken,
+        styles.guideTokenTried,
+        styles.guideTokenHit,
+      ).className ?? "";
+    if (guideLive) guideLive.textContent = `${guideItem.label} tried.`;
+  };
 
   const arm = (): void => {
     if (armed) return;
@@ -301,6 +315,7 @@ function mountDeck(root: HTMLElement, board: Board): void {
   input.addEventListener("pointerdown", arm);
 
   input.addEventListener("keydown", (event) => {
+    const group = keyGroupFor(event.key);
     const sound = resolveSound(event.key);
     // Keep Tab inside the deck, and let Escape leave it; both still fire.
     if (event.key === "Tab") event.preventDefault();
@@ -309,6 +324,7 @@ function mountDeck(root: HTMLElement, board: Board): void {
 
     arm();
     board.fire(sound);
+    if (group) markGuideGroup(group);
 
     shots += 1;
     countEls.forEach((el) => {

@@ -1,19 +1,8 @@
 ---
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/components/sounds.stylex";
+import { KEY_BINDINGS } from "@/lib/key-bindings";
 import { styles as shared } from "@/styles/shared.stylex";
-
-const bindings = [
-  {
-    key: "Every other key",
-    sound: "mostly the shotgun, plus ouch / ough / ahhh",
-  },
-  { key: "Enter", sound: "explosion" },
-  { key: "Escape", sound: "rocket whoosh" },
-  { key: "Backspace", sound: "shotgun blast" },
-  { key: "Spacebar", sound: "shotgun cock" },
-  { key: "Arrow keys", sound: "one of four impacts" },
-];
 ---
 
 <section id="f-sounds" {...stylex.attrs(styles.section)}>
@@ -34,10 +23,10 @@ const bindings = [
   </div>
 
   <ul {...stylex.attrs(styles.list, shared.above)}>
-    {bindings.map((binding) => (
+    {KEY_BINDINGS.map((binding) => (
       <li {...stylex.attrs(styles.item)}>
         <span {...stylex.attrs(styles.box)}></span>
-        {binding.key}
+        {binding.soundKey}
         <span {...stylex.attrs(styles.sound)}>{binding.sound}</span>
       </li>
     ))}
