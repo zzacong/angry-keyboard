@@ -6,7 +6,7 @@
 #
 #     pnpm --dir site run <script>
 #
-# Remaining scripts include preview, typecheck, lint, lint:fix, dev:bg,
+# Remaining scripts include preview, typecheck, test, lint, lint:fix, dev:bg,
 # dev:stop, and dev:logs.
 
 set shell := ["bash", "-euo", "pipefail", "-c"]

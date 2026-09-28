@@ -18,10 +18,12 @@ plus the voice count that caps how many copies of that pool may overlap.
 _Avoid_: mapping, assignment, rule, slot
 
 **Sound pool**:
-The sounds a binding draws from, one per keystroke. A pool of one plays that
-sound every time; a larger pool is drawn uniformly at random, so a key can play
-a different sound on each hit. The pool is also the unit voices are counted
-against: every binding that shares a pool shares its voice count.
+The sounds a binding draws from, one per keystroke, each carrying a weight. A
+pool of one plays that sound every time; a larger pool is drawn at random in
+proportion to weight, so a key can play a different sound on each hit and a
+heavy sound can dominate the pool. Equal weights make the draw uniform. The pool
+is also the unit voices are counted against: every binding that shares a pool
+shares its voice count.
 _Avoid_: sound set, group, list, playlist
 
 **Playback mode**:

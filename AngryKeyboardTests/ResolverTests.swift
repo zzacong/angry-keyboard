@@ -25,12 +25,12 @@ final class ResolverTests: XCTestCase {
 
     // MARK: - The catch-all
 
-    func testLettersPlayTheShotgun() {
-        XCTAssertEqual(sound(for: kVK_ANSI_A), .shotgun)
+    func testLettersDrawFromTheCatchAllPool() {
+        XCTAssertEqual(pool(for: kVK_ANSI_A), SoundPack.catchAllPool)
     }
 
-    func testNumbersPlayTheShotgun() {
-        XCTAssertEqual(sound(for: kVK_ANSI_1), .shotgun)
+    func testNumbersDrawFromTheCatchAllPool() {
+        XCTAssertEqual(pool(for: kVK_ANSI_1), SoundPack.catchAllPool)
     }
 
     func testArrowsPlayTheImpactPool() {
@@ -43,14 +43,14 @@ final class ResolverTests: XCTestCase {
         }
     }
 
-    func testFunctionKeysPlayTheShotgun() {
-        XCTAssertEqual(sound(for: kVK_F1), .shotgun)
+    func testFunctionKeysDrawFromTheCatchAllPool() {
+        XCTAssertEqual(pool(for: kVK_F1), SoundPack.catchAllPool)
     }
 
     func testCatchAllIsTheOnlyAnyBindingAndComesLast() {
         XCTAssertEqual(pack.bindings.filter { $0.key == .any }.count, 1)
         XCTAssertEqual(pack.bindings.last?.key, .any)
-        XCTAssertEqual(pack.bindings.last?.pool, SoundPool(.shotgun))
+        XCTAssertEqual(pack.bindings.last?.pool, SoundPack.catchAllPool)
     }
 
     // MARK: - Modifiers
@@ -68,7 +68,7 @@ final class ResolverTests: XCTestCase {
                     sound: .explodeRock
                 )
             ],
-            catchAll: .shotgun
+            catchAll: SoundPool(.shotgun)
         )
 
         XCTAssertEqual(

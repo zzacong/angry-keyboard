@@ -21,12 +21,15 @@ Every script in `site/package.json` is also reachable as
   style module.
 - `src/lib/deck.ts` is the live deck: the keystroke resolver and the Web Audio
   board that mirrors the app.
+- `src/lib/onset.ts` is the site's copy of the app's `SoundOnset`, so a clip with
+  a quiet lead still hits on the key.
 - `src/assets/sprite.svg` holds the mascot and sticker symbols, inlined once by
   `Layout.astro` and referenced with `<use>`.
 - `src/styles/tokens.stylex.ts` is the zine palette and type scale.
 
-The nine sounds are imported straight from `AngryKeyboard/Sounds/`, so the site
-and the app share one source of truth. Fonts are self-hosted with Fontsource.
+The twelve sounds are imported straight from `AngryKeyboard/Sounds/`, so the
+site and the app share one source of truth. Fonts are self-hosted with
+Fontsource.
 
 In-project imports use the `@/` alias for `src/`, declared in `tsconfig.json`
 and picked up by Astro's Vite config. It is mirrored into `astro.config.mjs` for
