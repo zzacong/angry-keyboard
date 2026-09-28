@@ -9,12 +9,13 @@ Each is a stable identity, so macOS keeps the Input Monitoring grant across
 rebuilds. The names live in the gitignored `Config/Debug.local.xcconfig` and
 `Config/Release.local.xcconfig`, so a clone with no certificates still builds
 ad-hoc. `Scripts/setup-signing.sh` creates the certificates and writes those
-files. `Scripts/setup-sparkle-key.sh` creates the separate EdDSA key Sparkle
-signs updates with.
+files. The update key is separate: an EdDSA key on the Ed25519 curve, created by
+`Scripts/setup-sparkle-key.sh`, that Sparkle signs the update feed and archive
+with. The app verifies them against the public key in `Config/Info.plist`.
 
 ## GitHub entries
 
-The release workflow reads four values from the repository settings. They are
+The release workflow reads five values from the repository settings. They are
 not stored in the repo. Set them under Settings > Secrets and variables >
 Actions.
 
@@ -24,6 +25,7 @@ Actions.
 | `CERTIFICATE_PASSWORD`   | secret   | The password set on that `.p12`                                                         | the import password                                |
 | `KEYCHAIN_PASSWORD`      | secret   | A random string for the temporary keychain CI creates                                   | the password that unlocks that disposable keychain |
 | `SIGNING_IDENTITY`       | variable | The certificate name `AngryKeyboard Production`                                         | the value of `CODE_SIGN_IDENTITY`                  |
+| `SPARKLE_PRIVATE_KEY`    | secret   | The EdDSA private key Sparkle signs the update feed and archive with                    | the key piped to `generate_appcast` over stdin     |
 
 Secrets are encrypted and masked in logs. A variable is plain config, which fits
 a certificate name that is not sensitive.
@@ -53,6 +55,18 @@ xcodebuild ... CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" ...
 lets `codesign` use the key. Without these the build hangs. The job deletes the
 `.p12` and the keychain in an `if: always()` step.
 
+The feed signing step pipes the update key to `generate_appcast` over stdin, so
+the key never reaches the CI disk:
+
+```
+printf '%s' "$SPARKLE_PRIVATE_KEY" \
+  | "$GENERATE_APPCAST" --ed-key-file - --download-url-prefix "$URL" feed
+```
+
+`generate_appcast` signs the archive and writes the signature into
+`appcast.xml`. The release fails if the feed is unsigned, which is what catches
+a `SPARKLE_PRIVATE_KEY` that does not match the app's `SUPublicEDKey`.
+
 ## Backups
 
 macOS ties each Input Monitoring grant to the production private key. If that
@@ -62,12 +76,25 @@ password manager. `Scripts/setup-signing.sh` copies the `.p12` to a folder you
 choose. Regenerating the certificate is possible, but it makes everyone approve
 the app once more.
 
-The Sparkle update key is the other release-critical secret. Its private key is
-stored as the `SPARKLE_PRIVATE_KEY` CI secret and backed up in the same folder
-as the `.p12` (`Scripts/setup-sparkle-key.sh` writes
-`AngryKeyboard-sparkle-ed25519-private-key.txt` there by default). Losing it
-strands installed apps until users reinstall by hand; restore it by running the
-wizard and importing that backup file.
+The Sparkle update key is the other release-critical secret. It is an EdDSA key
+on the Ed25519 curve. Its private key lives in the login Keychain, in the
+`SPARKLE_PRIVATE_KEY` CI secret, and in a backup beside the `.p12`:
+`Scripts/setup-sparkle-key.sh` writes
+`AngryKeyboard-sparkle-ed25519-private-key.txt` there by default. Losing the key
+strands installed apps until users reinstall by hand, because Sparkle rejects a
+feed signed with a key the app does not carry.
+
+To restore the key on a new Mac, run the wizard:
+
+```
+Scripts/setup-sparkle-key.sh
+```
+
+When it asks for a key to import, give it the backup file. The wizard runs
+`generate_keys -f`, which imports the private key into the login Keychain under
+the `angrykeyboard` account, then re-stores the `SPARKLE_PRIVATE_KEY` secret and
+re-copies the backup. If the Keychain already holds the key, the wizard reuses
+it instead.
 
 ## Rehearsing an update
 

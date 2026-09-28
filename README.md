@@ -14,6 +14,10 @@ Download the latest `AngryKeyboard.dmg` from
 [Releases](https://github.com/zzacong/angry-keyboard/releases/latest), open it,
 and drag AngryKeyboard to Applications.
 
+This is the only install you do by hand. After that the app checks GitHub
+Releases once a day and offers a newer build in its menu bar, where a click
+installs the build and relaunches the app.
+
 AngryKeyboard is a hobby project I build for myself.
 
 This build is signed but not notarized, because notarization needs the $99/year
@@ -104,6 +108,7 @@ time.
 | Product name        | `AngryKeyboard.app`         | `AngryKeyboardDev.app`          |
 | App icon            | `AppIcon`                   | `AppIconDev`                    |
 | Menu bar glyph      | keyboard                    | fuming key                      |
+| Update checks       | yes, once a day             | no                              |
 | Released            | yes                         | no                              |
 
 Production is the download. Dev is what Xcode builds while working on the app.
@@ -184,9 +189,21 @@ To remove AngryKeyboard completely:
    defaults delete com.zzacong.AngryKeyboard
    ```
 
-   This clears the volume, mute, and playback mode settings.
+   This clears the volume, mute, and playback mode settings and Sparkle's
+   `SULastCheckTime` and `SUHasLaunchedBefore` update state.
 
-5. Clear the Input Monitoring permission:
+5. Remove the cached update check:
+
+   ```
+   rm -rf ~/Library/Caches/com.zzacong.AngryKeyboard
+   rm -rf ~/Library/HTTPStorages/com.zzacong.AngryKeyboard
+   rm -f  ~/Library/HTTPStorages/com.zzacong.AngryKeyboard.binarycookies
+   ```
+
+   Sparkle fetches the update feed through the system URL cache, which leaves
+   these behind even when no update was ever installed.
+
+6. Clear the Input Monitoring permission:
 
    ```
    tccutil reset ListenEvent com.zzacong.AngryKeyboard
@@ -196,8 +213,8 @@ To remove AngryKeyboard completely:
    Security > Input Monitoring; select it and click the minus button to remove
    it.
 
-The app has no helper process, no launch agent, and no updater, so these steps
-remove everything it installs.
+The app has no helper process and no launch agent. Sparkle is the only other
+writer, and these steps remove what it leaves behind.
 
 ## Manual verification
 

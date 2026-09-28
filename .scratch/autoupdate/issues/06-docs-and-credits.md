@@ -4,9 +4,9 @@
 
 **Blocked by:** 03 — App checks for updates when enabled; 04 — Release publishes a signed feed.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Sparkle's license and attribution appear in the credits.
-- [ ] The signing guide documents the update key next to the certificate: where the CI secret lives and how to restore it from backup.
-- [ ] The README's "no updater" claim and its uninstall steps are corrected to match what Sparkle actually leaves behind, verified against a real install.
-- [ ] The README tells users that, after the first manual install, updates arrive in the app.
+- [x] Sparkle's license and attribution appear in the credits.
+- [x] The signing guide documents the update key next to the certificate: where the CI secret lives and how to restore it from backup.
+- [x] The README's "no updater" claim and its uninstall steps are corrected to match what Sparkle actually leaves behind, verified against a real install.
+- [x] The README tells users that, after the first manual install, updates arrive in the app.
