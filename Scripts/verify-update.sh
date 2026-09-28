@@ -200,6 +200,11 @@ cd "$ROOT"
 # so re-runs resume and the working tree stays clean.
 ENV_FILE="$ROOT/build/verify-update.env"
 mkdir -p "$ROOT/build"
+# Resume values captured by an earlier run so the wizard can be re-entered.
+if [[ -f "$ENV_FILE" ]]; then
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+fi
 
 PROD_CERT="AngryKeyboard Production"
 BUNDLE_ID="com.zzacong.AngryKeyboard"
@@ -390,8 +395,8 @@ if [[ -f "$APPCAST" ]]; then
   FEED_VERSION="$(grep -o 'sparkle:version="[0-9][^"]*"' "$APPCAST" | head -n1 | sed -E 's/.*"([^"]*)"/\1/' || true)"
   FEED_SHORT="$(grep -o 'sparkle:shortVersionString="[^"]*"' "$APPCAST" | head -n1 | sed -E 's/.*"([^"]*)"/\1/' || true)"
   say "Feed advertises version $FEED_VERSION (marketing $FEED_SHORT)."
-  if [[ -n "$FEED_VERSION" ]]; then write_env REHEARSAL_VERSION "$FEED_VERSION"; fi
-  if [[ -n "$FEED_SHORT" ]]; then write_env REHEARSAL_MARKETING "$FEED_SHORT"; fi
+  if [[ -n "$FEED_VERSION" ]]; then REHEARSAL_VERSION="$FEED_VERSION"; write_env REHEARSAL_VERSION "$FEED_VERSION"; fi
+  if [[ -n "$FEED_SHORT" ]]; then REHEARSAL_MARKETING="$FEED_SHORT"; write_env REHEARSAL_MARKETING "$FEED_SHORT"; fi
 else
   warn "No appcast.xml; cannot read the feed version."
 fi
@@ -499,7 +504,7 @@ pause "Press Enter once the baseline is set (granted, sound, Launch at Login on)
 # ── Stage 6 ───────────────────────────────────────────────────────────────
 stage "Serve the feed and point the app at it"
 say "Sparkle resolves the feed's relative enclosure against the feed's own URL,"
-say "so the appcast and the DMG must sit under the same HTTP root."
+say "so the feed and the DMG must sit under the same HTTP root."
 say ""
 DEFAULT_PORT="${PORT:-8000}"
 ask PORT "Local port (default $DEFAULT_PORT):"

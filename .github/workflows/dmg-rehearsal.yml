@@ -98,7 +98,7 @@ jobs:
       # ("AngryKeyboard.dmg"). Sparkle resolves a relative enclosure against the
       # feed's own URL, so a tester serves the downloaded artifacts from one
       # directory and points a test build's SUFeedURL at the feed. The DMG and
-      # its checksum are staged into feed/ with the appcast so the uploaded
+      # its checksum are staged into feed/ with appcast.xml so the uploaded
       # artifact is a single flat folder and the enclosure resolves. Deltas are
       # off per ADR 0010.
       - name: Generate and sign the update feed
@@ -167,7 +167,7 @@ jobs:
         with:
           subject-path: dist/AngryKeyboard.dmg
 
-      # feed/ holds the appcast, the DMG, and the checksum as siblings, so the
+      # feed/ holds appcast.xml, the DMG, and the checksum as siblings, so the
       # artifact unpacks to one flat directory the tester can serve directly.
       - uses: actions/upload-artifact@v7
         with:
