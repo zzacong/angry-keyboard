@@ -4,6 +4,9 @@ A macOS menu bar app that plays a sound on every keystroke, system wide.
 
 It has no window and no Dock icon. The app lives in the menu bar as a keyboard icon.
 
+Hear every sound in the browser at
+[angry-keyboard.zzacong.com](https://angry-keyboard.zzacong.com).
+
 ## Requirements
 
 - macOS 14.0 (Sonoma) or later
