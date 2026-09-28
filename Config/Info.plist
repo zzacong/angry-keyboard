@@ -8,8 +8,8 @@
 	<string>$(AK_MENU_BAR_GLYPH)</string>
 	<key>AKMenuBarGlyphMuted</key>
 	<string>$(AK_MENU_BAR_GLYPH_MUTED)</string>
-	<!-- Update gate. Production substitutes YES, dev NO. Read by UpdatePolicy;
-	     the updater is not started yet. -->
+	<!-- Update gate. Production substitutes YES, dev NO. Read by UpdatePolicy,
+	     which starts the updater only when it opts in. -->
 	<key>AKEnableUpdates</key>
 	<string>$(AK_ENABLE_UPDATES)</string>
 	<!-- EdDSA public key Sparkle verifies updates against. The private key is the
