@@ -9,7 +9,8 @@ Each is a stable identity, so macOS keeps the Input Monitoring grant across
 rebuilds. The names live in the gitignored `Config/Debug.local.xcconfig` and
 `Config/Release.local.xcconfig`, so a clone with no certificates still builds
 ad-hoc. `Scripts/setup-signing.sh` creates the certificates and writes those
-files.
+files. `Scripts/setup-sparkle-key.sh` creates the separate EdDSA key Sparkle
+signs updates with.
 
 ## GitHub entries
 
