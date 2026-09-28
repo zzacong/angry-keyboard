@@ -106,6 +106,9 @@ artifacts from a single directory and run the real update flow without publishin
 a release. Because the rehearsal signs with the release key, a normal Release
 build already carries the matching `SUPublicEDKey`.
 
+`Scripts/verify-update.sh` walks the steps below, pausing at each human check,
+and appends the versions tested and the result to ticket 07.
+
 1. Run the rehearsal and note the run id:
 
    ```
