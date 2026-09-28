@@ -204,6 +204,9 @@ mkdir -p "$ROOT/build"
 PROD_CERT="AngryKeyboard Production"
 BUNDLE_ID="com.zzacong.AngryKeyboard"
 REHEARSAL_WORKFLOW="dmg-rehearsal.yml"
+# The ref the rehearsal runs from. GitHub runs the workflow version pushed on
+# this ref, so it must be on origin before dispatch. Defaults to this branch.
+REHEARSAL_REF="${REHEARSAL_REF:-$(git -C "$ROOT" rev-parse --abbrev-ref HEAD)}"
 REHEARSAL_ARTIFACT="AngryKeyboard-dmg-rehearsal"
 REHEARSAL_PAGE="https://github.com/zzacong/angry-keyboard/actions/workflows/$REHEARSAL_WORKFLOW"
 TICKET="$ROOT/.scratch/autoupdate/issues/07-verify-an-update-on-a-real-mac.md"
@@ -220,6 +223,10 @@ LOGIN_ITEM_OK="unknown"
 
 # _gh_ok is true when gh is installed and authenticated.
 _gh_ok() { command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; }
+
+# _ref_pushed is true when REHEARSAL_REF exists on origin. workflow_dispatch runs
+# the workflow version on that ref, so it has to be on GitHub first.
+_ref_pushed() { git -C "$ROOT" ls-remote --exit-code --heads origin "$REHEARSAL_REF" >/dev/null 2>&1; }
 
 # _quit_app stops a running production app so preferences and the feed override
 # can be written without the app overwriting them on its way out.
@@ -251,7 +258,7 @@ warn "It installs an app, may replace one at the path you choose, asks macOS for
 warn "Input Monitoring, and registers a Login Item. Read each stage first."
 say ""
 say "Checking tools..."
-for tool in xcodebuild gh curl python3 ditto defaults security; do
+for tool in xcodebuild gh git curl python3 ditto defaults security; do
   if command -v "$tool" >/dev/null 2>&1; then
     note "found $tool"
   else
@@ -272,6 +279,15 @@ else
   say "Run Scripts/setup-signing.sh first, then re-run this wizard."
   pause "Press Enter once the production identity exists (or Ctrl-C to stop)."
 fi
+
+if _ref_pushed; then
+  note "Rehearsal ref: $REHEARSAL_REF (present on origin)."
+else
+  warn "Rehearsal ref '$REHEARSAL_REF' is not on origin."
+  say "GitHub runs the workflow version pushed on that ref, so push it first:"
+  step "git push -u origin $REHEARSAL_REF"
+  pause "Press Enter once it is pushed (or Ctrl-C to stop)."
+fi
 say ""
 note "Bundle id under test: $BUNDLE_ID (production)."
 note "The installed build must already carry Sparkle: a pre-Sparkle install can"
@@ -286,12 +302,14 @@ say ""
 RUN_ID=""
 if _gh_ok; then
   open_url "$REHEARSAL_PAGE"
-  if confirm "Dispatch $REHEARSAL_WORKFLOW now?"; then
-    if gh workflow run "$REHEARSAL_WORKFLOW"; then
+  if confirm "Dispatch $REHEARSAL_WORKFLOW on $REHEARSAL_REF now?"; then
+    PREV_RUN_ID="$(gh run list --workflow "$REHEARSAL_WORKFLOW" --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)"
+    if gh workflow run "$REHEARSAL_WORKFLOW" --ref "$REHEARSAL_REF"; then
       say "Dispatched. Waiting for the run to register..."
-      for _ in {1..20}; do
+      for _ in {1..30}; do
         RUN_ID="$(gh run list --workflow "$REHEARSAL_WORKFLOW" --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)"
-        if [[ -n "$RUN_ID" ]]; then break; fi
+        if [[ -n "$RUN_ID" && "$RUN_ID" != "$PREV_RUN_ID" ]]; then break; fi
+        RUN_ID=""
         sleep 1
       done
     else
@@ -300,7 +318,7 @@ if _gh_ok; then
   fi
 else
   warn "Dispatch it by hand, then come back:"
-  step "gh workflow run $REHEARSAL_WORKFLOW"
+  step "gh workflow run $REHEARSAL_WORKFLOW --ref $REHEARSAL_REF"
   pause "Press Enter once the run is visible on the Actions page."
 fi
 

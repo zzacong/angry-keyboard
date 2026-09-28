@@ -109,10 +109,12 @@ build already carries the matching `SUPublicEDKey`.
 `Scripts/verify-update.sh` walks the steps below, pausing at each human check,
 and appends the versions tested and the result to ticket 07.
 
-1. Run the rehearsal and note the run id:
+1. Run the rehearsal and note the run id. GitHub runs the version of the
+   workflow pushed on the ref, so pass the branch you are testing (`--ref main`
+   when running from `main`):
 
    ```
-   gh workflow run dmg-rehearsal.yml
+   gh workflow run dmg-rehearsal.yml --ref <branch>
    gh run list --workflow dmg-rehearsal.yml
    ```
 
