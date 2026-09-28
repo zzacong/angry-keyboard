@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.1](https://github.com/zzacong/angry-keyboard/compare/v0.1.0...v0.1.1) (2026-09-28)
+
+
+### Features
+
+* **app:** add in-app updates with Sparkle ([#10](https://github.com/zzacong/angry-keyboard/issues/10)) ([e4fe8ad](https://github.com/zzacong/angry-keyboard/commit/e4fe8adf6901fd186b589ed0ad0c15d7298135b1))
+* **site:** launch the zine homepage for AngryKeyboard ([#4](https://github.com/zzacong/angry-keyboard/issues/4)) ([c220918](https://github.com/zzacong/angry-keyboard/commit/c220918f4cc53b99227808c4efb0bd1d65d85b78))
+
+
+### Bug Fixes
+
+* **build:** order the dev version stamp after Info.plist processing ([#2](https://github.com/zzacong/angry-keyboard/issues/2)) ([9b1a8a3](https://github.com/zzacong/angry-keyboard/commit/9b1a8a3cbdc92d269f4f7f05af6d6b48be8ce3e2))
+
 ## 0.1.0 (2026-09-27)
 
 
