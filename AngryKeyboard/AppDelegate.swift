@@ -30,6 +30,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var permissionTimer: Timer?
     private var packItems: [NSMenuItem] = []
 
+    /// Sparkle's updater, created only when the channel opts in. Nil on dev,
+    /// where no update item appears and nothing checks.
+    private var updater: Updater?
+
     /// The settings that survive a relaunch. The menu writes them; the audio
     /// output and the status icon read them.
     private let settings = Settings()
@@ -71,6 +75,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         applyStoredSettings()
+        // The channel gate is read once. Production opts in, so the updater is
+        // created and checks on a schedule; dev stays quiet and shows no item.
+        if UpdatePolicy.checksForUpdates(in: Bundle.main.infoDictionary ?? [:]) {
+            updater = Updater()
+        }
         installStatusItem()
         presentExplainerIfNeeded()
         refreshPermission()
@@ -91,7 +100,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// Adds the status item to the system menu bar and builds its menu: the
     /// permission state and, while access is missing, a way to open the right
     /// System Settings pane; the pack, volume, and playback controls; launch at
-    /// login; and quit.
+    /// login; the update item on production; and quit.
     private func installStatusItem() {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
@@ -154,6 +163,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         self.launchAtLoginItem = launchAtLoginItem
 
         menu.addItem(.separator())
+
+        // Only production carries the updater, so only production gets the
+        // item. It sits directly above About, where Sparkle's own docs put it.
+        if let updater {
+            menu.addItem(updater.makeMenuItem())
+        }
 
         let aboutItem = NSMenuItem(
             title: "About \(displayName)",

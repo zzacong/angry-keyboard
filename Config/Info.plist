@@ -16,5 +16,19 @@
 	     SPARKLE_PRIVATE_KEY secret, created by Scripts/setup-sparkle-key.sh. -->
 	<key>SUPublicEDKey</key>
 	<string>AAOBc5/b7krj/V7p75BaXhvKa2uKLbptJsVXjoKAMmE=</string>
+	<!-- Update feed, published as a release asset at the repo's stable
+	     releases/latest/download path. -->
+	<key>SUFeedURL</key>
+	<string>https://github.com/zzacong/angry-keyboard/releases/latest/download/appcast.xml</string>
+	<!-- Check on a schedule without asking, but never install silently: Sparkle
+	     may offer the update, only a click installs it. -->
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUAllowsAutomaticUpdates</key>
+	<false/>
 </dict>
 </plist>

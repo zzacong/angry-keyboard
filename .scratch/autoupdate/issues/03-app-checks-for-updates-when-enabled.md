@@ -4,10 +4,10 @@
 
 **Blocked by:** 01 — Channel update gate; 02 — Sparkle signing key and wizard.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The production build embeds Sparkle and carries the feed URL and public key; the dev build neither starts the updater nor shows any update item.
-- [ ] The production status menu shows a check-for-updates item above About; the dev menu is unchanged.
-- [ ] A scheduled check that finds an update annotates that item with the available version; a check that finds nothing stays silent.
-- [ ] Choosing the item opens the standard update flow, and confirming installs and relaunches into the new version.
-- [ ] The app launches and behaves normally when the feed is unreachable; a failed check never blocks or crashes it.
+- [x] The production build embeds Sparkle and carries the feed URL and public key; the dev build neither starts the updater nor shows any update item.
+- [x] The production status menu shows a check-for-updates item above About; the dev menu is unchanged.
+- [x] A scheduled check that finds an update annotates that item with the available version; a check that finds nothing stays silent.
+- [x] Choosing the item opens the standard update flow, and confirming installs and relaunches into the new version.
+- [x] The app launches and behaves normally when the feed is unreachable; a failed check never blocks or crashes it.
