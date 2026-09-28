@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/zzacong/angry-keyboard/compare/v0.1.1...v0.1.2) (2026-09-28)
+
+
+### Features
+
+* **app:** make the default keys mostly shotgun, sometimes a reaction ([#6](https://github.com/zzacong/angry-keyboard/issues/6)) ([cf17b86](https://github.com/zzacong/angry-keyboard/commit/cf17b86d6d7e76bef239bad48393bdc208913c87))
+
 ## [0.1.1](https://github.com/zzacong/angry-keyboard/compare/v0.1.0...v0.1.1) (2026-09-28)
 
 
