@@ -7,11 +7,36 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Paint the whole canvas paper. iOS Safari extends the document under the
+     notch and home indicator (`viewport-fit=cover`), and the rubber-band
+     overscroll reveals the canvas beyond the page. Both would otherwise show
+     the browser's white. */
+  background-color: #ede8dc;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(
+    rgba(27, 23, 18, 0.16) 1px,
+    transparent 1.2px
+  );
+  background-size: 12px 12px;
+  pointer-events: none;
 }
 
 body {
   margin: 0;
   width: 100%;
+  /* The safe-area padding below would push a content-box body past the viewport
+     in landscape, where the side insets are non-zero. */
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 img,
