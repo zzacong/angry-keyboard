@@ -198,7 +198,6 @@ cd "$ROOT"
 SPARKLE_VERSION="${SPARKLE_VERSION:-2.10.0}"
 SPARKLE_ACCOUNT="${SPARKLE_ACCOUNT:-angrykeyboard}"
 SPARKLE_SECRET="SPARKLE_PRIVATE_KEY"
-INFO_PLIST="$ROOT/Config/Info.plist"
 CACHE_DIR="$HOME/Library/Caches/AngryKeyboard/sparkle-$SPARKLE_VERSION"
 
 # _find_sparkle_bin prints a directory holding Sparkle's tools, if one exists.
@@ -228,11 +227,11 @@ banner "AngryKeyboard update signing key"
 stage "Check prerequisites"
 say "This wizard creates the EdDSA keypair Sparkle trusts updates with, stores the"
 say "private key as the $SPARKLE_SECRET CI secret, backs it up beside the"
-say "certificate, and embeds the public key in Config/Info.plist."
-note "The private key never enters the repo. Config/Info.plist is the only tracked file changed."
+say "certificate, and prints the public key the app carries in Config/Info.plist."
+note "The private key never enters the repo, and this wizard edits no tracked file."
 say ""
 say "Checking tools..."
-for tool in curl tar security plutil; do
+for tool in curl tar security; do
   if command -v "$tool" >/dev/null 2>&1; then
     note "found $tool"
   else
@@ -352,20 +351,15 @@ else
 fi
 rm -rf "$EXPORT_DIR"
 note "Record this folder beside the certificate backup in docs/signing.md."
-pause "Press Enter to embed the public key in Info.plist."
+pause "Press Enter to record the public key."
 
 # ── Stage 6 ───────────────────────────────────────────────────────────────
-stage "Embed the public key in Info.plist"
+stage "Record the public key in Info.plist"
 say "The app carries the public key as SUPublicEDKey so it can verify updates."
+note "This wizard leaves Config/Info.plist alone: no standard plist tool keeps its comments."
 say ""
-if plutil -extract SUPublicEDKey raw -o - "$INFO_PLIST" >/dev/null 2>&1; then
-  plutil -replace SUPublicEDKey -string "$PUBLIC_KEY" "$INFO_PLIST"
-else
-  plutil -insert SUPublicEDKey -string "$PUBLIC_KEY" "$INFO_PLIST"
-fi
-note "wrote SUPublicEDKey → $INFO_PLIST"
-say "Public key:"
+step "Set SUPublicEDKey in Config/Info.plist to:"
 note "$PUBLIC_KEY"
-note "Commit the Config/Info.plist change as part of resolving ticket 02."
+note "Ticket 03 owns the rest of the plist contract and wires the app."
 
 finish
