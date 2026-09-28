@@ -21,7 +21,7 @@ export const styles = stylex.create({
     // Matches the `#redface` symbol's viewBox (260x196) so the face fills the
     // box instead of being letterboxed inside it.
     aspectRatio: "260 / 196",
-    height: "44px",
+    height: "24px",
     width: "auto",
   },
 });

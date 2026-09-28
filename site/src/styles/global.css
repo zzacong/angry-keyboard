@@ -5,6 +5,15 @@
    unlayered, so they win over StyleX's layers — that is deliberate for resets
    and for the one or two states that cannot be expressed as a style class. */
 
+/* Every box measures its border and padding inside its declared width, so a
+   `width: 100%` element with padding still fits its parent. This is unlayered,
+   so it also wins over any StyleX `boxSizing` in a layer. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   /* Paint the whole canvas paper. iOS Safari extends the document under the
@@ -30,9 +39,6 @@ body::before {
 body {
   margin: 0;
   width: 100%;
-  /* The safe-area padding below would push a content-box body past the viewport
-     in landscape, where the side insets are non-zero. */
-  box-sizing: border-box;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
