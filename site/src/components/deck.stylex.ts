@@ -2,8 +2,8 @@ import * as stylex from "@stylexjs/stylex";
 import { tokens } from "@/styles/tokens.stylex";
 
 // The live deck: the taped card's board, its status lights and its controls.
-// The script in lib/deck.ts swaps a couple of these classes at runtime for
-// state it cannot express as a static style (armed, hit, muted).
+// The script in lib/deck.ts swaps classes for runtime state, including armed,
+// hit, muted, and tried key groups.
 const flashFade = stylex.keyframes({
   from: { opacity: 0.9 },
   to: { opacity: 0 },
@@ -12,6 +12,39 @@ const flashFade = stylex.keyframes({
 const pop = stylex.keyframes({
   from: { opacity: 0, transform: "translateY(-3px)" },
   to: { opacity: 1, transform: "none" },
+});
+
+const keyHintJump = stylex.keyframes({
+  "0%": {
+    backgroundColor: "transparent",
+    color: tokens.inkSoftest,
+    transform: "translateY(0) scale(1)",
+  },
+  "20%": {
+    backgroundColor: tokens.green,
+    color: tokens.card,
+    transform: "translateY(-0.45em) scale(1.12)",
+  },
+  "43%": {
+    backgroundColor: tokens.green,
+    color: tokens.card,
+    transform: "translateY(0) scale(1)",
+  },
+  "60%": {
+    backgroundColor: "transparent",
+    color: tokens.inkSoftest,
+    transform: "none",
+  },
+  "72%": {
+    backgroundColor: tokens.noteGreen,
+    color: tokens.green,
+    transform: "none",
+  },
+  to: {
+    backgroundColor: tokens.noteGreen,
+    color: tokens.green,
+    transform: "none",
+  },
 });
 
 export const styles = stylex.create({
@@ -101,6 +134,50 @@ export const styles = stylex.create({
     animationDuration: "220ms",
     animationName: flashFade,
     animationTimingFunction: "ease-out",
+  },
+  editor: {
+    position: "relative",
+  },
+  guide: {
+    paddingInline: "1rem",
+    display: "grid",
+    justifyItems: "center",
+    pointerEvents: "none",
+    position: "absolute",
+    zIndex: 3,
+    bottom: "0.65rem",
+    left: 0,
+    right: 0,
+  },
+  guideLine: {
+    marginBlock: 0,
+    color: tokens.inkSoftest,
+    fontFamily: tokens.fontHand,
+    fontSize: "clamp(1.1rem, 2vw, 1.5rem)",
+    lineHeight: 1.2,
+    textAlign: "center",
+  },
+  guidePart: {
+    display: "inline",
+  },
+  guideToken: {
+    borderRadius: "2px",
+    paddingInline: "0.08em",
+    color: tokens.inkSoftest,
+    display: "inline-block",
+    whiteSpace: "nowrap",
+  },
+  guideTokenHit: {
+    animationDuration: {
+      default: "720ms",
+      "@media (prefers-reduced-motion: reduce)": "1ms",
+    },
+    animationName: keyHintJump,
+    animationTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+  },
+  guideTokenTried: {
+    backgroundColor: tokens.noteGreen,
+    color: tokens.green,
   },
   grenade: {
     transform: "rotate(13deg)",
@@ -194,7 +271,6 @@ export const styles = stylex.create({
   },
   surface: {
     borderWidth: 0,
-    paddingBlock: "1.2rem",
     paddingInline: "1.25rem",
     backgroundColor: tokens.card,
     caretColor: tokens.red,
@@ -205,12 +281,25 @@ export const styles = stylex.create({
     lineHeight: 1.75,
     outlineStyle: "none",
     outlineWidth: 0,
+    paddingBlockEnd: {
+      default: "3rem",
+      "@media (max-width: 620px)": "4.25rem",
+    },
+    paddingBlockStart: "1.2rem",
     resize: "none",
-    // Border-box counts the 1.2rem block padding in `min-height`, so this is
-    // the box height: 186px of text plus the padding it always added.
+    // Reserve bottom space for the floating hint, including on narrow screens.
     minHeight: "224px",
     width: "100%",
     "::placeholder": { color: tokens.inkSoftest },
+  },
+  visuallyHidden: {
+    overflow: "hidden",
+    clip: "rect(0, 0, 0, 0)",
+    clipPath: "inset(50%)",
+    position: "absolute",
+    whiteSpace: "nowrap",
+    height: "1px",
+    width: "1px",
   },
   volume: {
     accentColor: tokens.red,

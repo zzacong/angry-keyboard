@@ -17,7 +17,7 @@
     "lint:fix": "oxlint --fix",
     "fmt": "prettier . --write",
     "fmt:check": "prettier . --check",
-    "test": "node --test src/lib/onset.test.ts",
+    "test": "node --test src/lib/*.test.ts",
     "check": "pnpm run typecheck && pnpm run fmt:check && pnpm run lint && pnpm run test",
     "astro": "astro"
   },
