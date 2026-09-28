@@ -68,3 +68,60 @@ as the `.p12` (`Scripts/setup-sparkle-key.sh` writes
 `AngryKeyboard-sparkle-ed25519-private-key.txt` there by default). Losing it
 strands installed apps until users reinstall by hand; restore it by running the
 wizard and importing that backup file.
+
+## Rehearsing an update
+
+The `dmg-rehearsal` workflow builds a DMG, signs a feed for it with the same
+`SPARKLE_PRIVATE_KEY` a release uses, and uploads the DMG, its checksum, and the
+feed as one artifact. The feed's enclosure URL is relative (`AngryKeyboard.dmg`),
+so Sparkle resolves it against the feed's own URL. That lets you serve the
+artifacts from a single directory and run the real update flow without publishing
+a release. Because the rehearsal signs with the release key, a normal Release
+build already carries the matching `SUPublicEDKey`.
+
+1. Run the rehearsal and note the run id:
+
+   ```
+   gh workflow run dmg-rehearsal.yml
+   gh run list --workflow dmg-rehearsal.yml
+   ```
+
+2. Download the artifact into one directory. The feed and the DMG it names land
+   side by side:
+
+   ```
+   gh run download <run-id> -n AngryKeyboard-dmg-rehearsal -D rehearsal
+   ls rehearsal   # appcast.xml  AngryKeyboard.dmg  AngryKeyboard.dmg.sha256
+   ```
+
+3. Serve that directory over HTTP. Sparkle resolves `AngryKeyboard.dmg` against
+   the feed URL, so both files must sit under the same server root:
+
+   ```
+   python3 -m http.server 8000 --directory rehearsal
+   ```
+
+4. Install a Release build whose `CFBundleVersion` is lower than the rehearsal
+   run number, which is the feed's `sparkle:version`. The run number is monotonic
+   from ADR 0008, so an earlier run's build, or a local build with a lower
+   `CURRENT_PROJECT_VERSION`, works.
+
+5. Point the installed build at the local feed. Sparkle reads a `SUFeedURL` value
+   in user defaults in preference to the one in Info.plist, which is how an
+   alternate feed is tested. The ATS warning about a non-HTTPS feed is expected
+   for localhost:
+
+   ```
+   defaults write com.zzacong.AngryKeyboard SUFeedURL http://localhost:8000/appcast.xml
+   ```
+
+6. Launch the app and choose "Check for Updates…" from the status menu. Sparkle
+   fetches `appcast.xml`, downloads `AngryKeyboard.dmg`, verifies its EdDSA
+   signature against `SUPublicEDKey`, installs, and relaunches. Confirm the Input
+   Monitoring grant survived.
+
+7. Clean up the override:
+
+   ```
+   defaults delete com.zzacong.AngryKeyboard SUFeedURL
+   ```

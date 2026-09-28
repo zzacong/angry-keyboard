@@ -1,9 +1,12 @@
 name: dmg-rehearsal
 
 # Rehearses the release DMG build without cutting a tag, so a release can be
-# checked before it happens. It runs the same keychain, build, package, and
-# verify steps as the `build` job in release.yml, attests the DMG, and uploads
-# it as a workflow artifact instead of a release asset.
+# checked before it happens. It runs the same keychain, build, package, verify,
+# and feed steps as the `build` job in release.yml, attests the DMG, and uploads
+# the DMG, its checksum, and the signed feed as workflow artifacts instead of
+# release assets. The feed's enclosure is relative so the artifacts can be served
+# from one directory to run the real update flow; see "Rehearsing an update" in
+# docs/signing.md.
 #
 # Keep the steps here in step with release.yml. Run it from the Actions tab, or:
 # gh workflow run dmg-rehearsal.yml
@@ -89,16 +92,90 @@ jobs:
             | grep -qF "Authority=$SIGNING_IDENTITY"
           hdiutil detach "/Volumes/Angry Keyboard"
 
+      # The feed a test build points at to exercise the real update flow. Unlike
+      # release.yml this feed is not for installed apps: it travels as an
+      # artifact beside the DMG, so its enclosure URL stays relative
+      # ("AngryKeyboard.dmg"). Sparkle resolves a relative enclosure against the
+      # feed's own URL, so a tester serves the downloaded artifacts from one
+      # directory and points a test build's SUFeedURL at the feed. The DMG and
+      # its checksum are staged into feed/ with the appcast so the uploaded
+      # artifact is a single flat folder and the enclosure resolves. Deltas are
+      # off per ADR 0010.
+      - name: Generate and sign the update feed
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SPARKLE_PRIVATE_KEY:-}" ]; then
+            echo "::error::SPARKLE_PRIVATE_KEY is not set; cannot sign the update feed."
+            exit 1
+          fi
+
+          # Prefer the tools Swift Package Manager resolved beside the build,
+          # falling back to the pinned Sparkle release when they are absent.
+          GENERATE_APPCAST="build/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast"
+          if [ ! -x "$GENERATE_APPCAST" ]; then
+            echo "Sparkle's tools are not resolved; downloading Sparkle 2.10.0."
+            curl -fsSL --retry 3 -o sparkle.tar.xz \
+              https://github.com/sparkle-project/Sparkle/releases/download/2.10.0/Sparkle-2.10.0.tar.xz
+            rm -rf sparkle-dist
+            mkdir -p sparkle-dist
+            tar -xf sparkle.tar.xz -C sparkle-dist
+            GENERATE_APPCAST="$(find sparkle-dist -type f -name generate_appcast -print -quit)"
+          fi
+          if [ ! -x "$GENERATE_APPCAST" ]; then
+            echo "::error::generate_appcast was not found."
+            exit 1
+          fi
+
+          # generate_appcast derives the version from the app inside the archive
+          # and writes appcast.xml beside it.
+          rm -rf feed
+          mkdir -p feed
+          cp dist/AngryKeyboard.dmg dist/AngryKeyboard.dmg.sha256 feed/
+
+          # --download-url-prefix ./ overrides the app's own SUFeedURL as the
+          # enclosure base, which would otherwise be the published release, and
+          # keeps the enclosure relative. The private key travels over stdin and
+          # is never written to disk.
+          printf '%s' "$SPARKLE_PRIVATE_KEY" \
+            | "$GENERATE_APPCAST" \
+                --ed-key-file - \
+                --download-url-prefix ./ \
+                --maximum-deltas 0 \
+                feed
+
+          if [ ! -s feed/appcast.xml ]; then
+            echo "::error::generate_appcast produced no feed."
+            exit 1
+          fi
+          if ! grep -qF 'url="AngryKeyboard.dmg"' feed/appcast.xml; then
+            echo "::error::appcast.xml does not name the rehearsal DMG with a relative URL."
+            exit 1
+          fi
+          # generate_appcast skips signing, without failing, when the app's
+          # SUPublicEDKey does not match the key. Require a signed enclosure so
+          # a mismatched secret fails the rehearsal instead of shipping a feed
+          # every installed app would reject.
+          if ! grep -q 'sparkle:edSignature' feed/appcast.xml; then
+            echo "::error::appcast.xml is unsigned; check that SPARKLE_PRIVATE_KEY matches SUPublicEDKey."
+            exit 1
+          fi
+
       - uses: actions/attest-build-provenance@v4
         with:
           subject-path: dist/AngryKeyboard.dmg
 
+      # feed/ holds the appcast, the DMG, and the checksum as siblings, so the
+      # artifact unpacks to one flat directory the tester can serve directly.
       - uses: actions/upload-artifact@v7
         with:
           name: AngryKeyboard-dmg-rehearsal
           path: |
-            dist/AngryKeyboard.dmg
-            dist/AngryKeyboard.dmg.sha256
+            feed/appcast.xml
+            feed/AngryKeyboard.dmg
+            feed/AngryKeyboard.dmg.sha256
 
       - name: Remove the certificate
         if: always()
