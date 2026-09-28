@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] A bundle that turns the update flag on is reported as update-enabled; turning it off, or omitting it, reports disabled.
-- [ ] The decision is read through the same injected-bundle-dictionary seam the channel assets use; no test touches the real bundle or starts Sparkle.
-- [ ] The production channel builds with updates enabled and the dev channel builds with them disabled.
-- [ ] Behavior is otherwise unchanged: nothing starts the updater yet, and the dev build is identical to today.
+- [x] A bundle that turns the update flag on is reported as update-enabled; turning it off, or omitting it, reports disabled.
+- [x] The decision is read through the same injected-bundle-dictionary seam the channel assets use; no test touches the real bundle or starts Sparkle.
+- [x] The production channel builds with updates enabled and the dev channel builds with them disabled.
+- [x] Behavior is otherwise unchanged: nothing starts the updater yet, and the dev build is identical to today.
