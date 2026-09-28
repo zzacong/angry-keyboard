@@ -1,8 +1,11 @@
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/components/deck.stylex";
+import ahhhUrl from "../../../AngryKeyboard/Sounds/ahhh.mp3?url";
 import combatImpactUrl from "../../../AngryKeyboard/Sounds/combat-impact.mp3?url";
 import explodeRockUrl from "../../../AngryKeyboard/Sounds/explode-rock.mp3?url";
 import kungFuYellUrl from "../../../AngryKeyboard/Sounds/kung-fu-yell.mp3?url";
+import ouchUrl from "../../../AngryKeyboard/Sounds/ouch.mp3?url";
+import oughUrl from "../../../AngryKeyboard/Sounds/ough.mp3?url";
 import punchImpactUrl from "../../../AngryKeyboard/Sounds/punch-impact-hit.mp3?url";
 import punchUrl from "../../../AngryKeyboard/Sounds/punch.mp3?url";
 import rocketWhooshUrl from "../../../AngryKeyboard/Sounds/rocket-whoosh.mp3?url";
@@ -12,7 +15,7 @@ import shotgunUrl from "../../../AngryKeyboard/Sounds/shotgun.mp3?url";
 
 // The live demo deck. It mirrors the shipped app: one binding per keystroke,
 // one voice per sound retriggered on repeat, three voices on arrow impacts, and
-// a small random pitch and gain on every hit. The nine MP3s are imported from
+// a small random pitch and gain on every hit. The twelve MP3s are imported from
 // the app's own Sounds directory, so the site can never drift from the app.
 
 const IMPACTS = [
@@ -24,27 +27,46 @@ const IMPACTS = [
 
 export type ImpactSound = (typeof IMPACTS)[number];
 
+// The catch-all pool, mirroring the app's SoundPool: the shotgun is four times
+// as likely as each reaction. The catch-all covers every key without its own
+// sound.
+const CATCH_ALL_POOL = [
+  ["shotgun", 4],
+  ["ahhh", 1],
+  ["ouch", 1],
+  ["ough", 1],
+] as const satisfies readonly (readonly [SoundName, number])[];
+
+type CatchAllSound = (typeof CATCH_ALL_POOL)[number][0];
+
 export type SoundName =
+  | "ahhh"
   | "explode-rock"
+  | "ouch"
+  | "ough"
   | "rocket-whoosh"
   | "shotgun"
   | "shotgun-blast"
   | "shotgun-cocking"
   | ImpactSound;
 
-// Voices are counted per pool, so the four impacts share one cap of three.
+// Voices are counted per pool, so the four impacts share one cap of three and
+// the four catch-all sounds share one cap of one.
 type Pool =
+  | "catch-all"
   | "explode-rock"
   | "impact"
   | "rocket-whoosh"
-  | "shotgun"
   | "shotgun-blast"
   | "shotgun-cocking";
 
 const SOURCES = {
+  ahhh: ahhhUrl,
   "combat-impact": combatImpactUrl,
   "explode-rock": explodeRockUrl,
   "kung-fu-yell": kungFuYellUrl,
+  ouch: ouchUrl,
+  ough: oughUrl,
   punch: punchUrl,
   "punch-impact-hit": punchImpactUrl,
   "rocket-whoosh": rocketWhooshUrl,
@@ -54,18 +76,21 @@ const SOURCES = {
 } satisfies Record<SoundName, string>;
 
 const VOICES: Record<Pool, number> = {
+  "catch-all": 1,
   "explode-rock": 1,
   impact: 3,
   "rocket-whoosh": 1,
-  shotgun: 1,
   "shotgun-blast": 1,
   "shotgun-cocking": 1,
 };
 
 const LABELS: Record<SoundName, string> = {
+  ahhh: "ahhh",
   "combat-impact": "impact",
   "explode-rock": "explosion",
   "kung-fu-yell": "impact",
+  ouch: "ouch",
+  ough: "ough",
   punch: "impact",
   "punch-impact-hit": "impact",
   "rocket-whoosh": "rocket whoosh",
@@ -87,7 +112,27 @@ function isImpact(name: SoundName): name is ImpactSound {
   return (IMPACTS as readonly string[]).includes(name);
 }
 
-const poolOf = (name: SoundName): Pool => (isImpact(name) ? "impact" : name);
+function isCatchAll(name: SoundName): name is CatchAllSound {
+  return CATCH_ALL_POOL.some(([sound]) => sound === name);
+}
+
+const poolOf = (name: SoundName): Pool => {
+  if (isImpact(name)) return "impact";
+  if (isCatchAll(name)) return "catch-all";
+  return name;
+};
+
+/** One sound from `pool`, drawn in proportion to its weight. */
+function pickWeighted(
+  pool: readonly (readonly [SoundName, number])[],
+): SoundName {
+  let pick = Math.random() * pool.reduce((sum, [, weight]) => sum + weight, 0);
+  for (const [sound, weight] of pool) {
+    if (pick < weight) return sound;
+    pick -= weight;
+  }
+  return pool[0]![0];
+}
 
 /** The app's resolver, as a plain function over a key name. */
 export function resolveSound(key: string): SoundName | null {
@@ -108,7 +153,7 @@ export function resolveSound(key: string): SoundName | null {
     const pick = IMPACTS[Math.floor(Math.random() * IMPACTS.length)];
     return pick ?? "combat-impact";
   }
-  return "shotgun";
+  return pickWeighted(CATCH_ALL_POOL);
 }
 
 type Board = {
