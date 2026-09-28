@@ -81,6 +81,11 @@ A clone with no certificates still builds both channels. The committed
 `#include?`s its local file, so nothing in the repository depends on a
 particular keychain.
 
+A Git worktree is a fresh checkout, so those local files are absent and the
+build falls back to ad-hoc, losing the Input Monitoring grant on every rebuild.
+The root `.worktreeinclude` names `Config/*.local.xcconfig` so a newly created
+worktree receives them.
+
 A free Apple ID works too, with no certificate to manage: add it under Xcode >
 Settings > Accounts, set the target's Team to the Personal Team, and Xcode signs
 with an Apple Development certificate it renews each year. It needs an Apple ID
