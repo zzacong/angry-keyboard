@@ -106,3 +106,6 @@ dist/
 # Python bytecode from the icon generators under .scratch/branding/source.
 __pycache__/
 
+# Scratch worktrees for parallel ticket work.
+.worktrees/
+
