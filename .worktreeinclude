@@ -1,0 +1,7 @@
+# Git-ignored files copied into every new worktree. Git-ignore syntax.
+#
+# The local signing configs carry the stable `AngryKeyboard Dev` and
+# `AngryKeyboard Production` identities. Without them a worktree falls
+# back to the ad-hoc default, whose signature changes on every build, so
+# macOS drops the Input Monitoring grant. See README "Local signing".
+Config/*.local.xcconfig
