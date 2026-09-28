@@ -4,13 +4,13 @@
 
 **Blocked by:** 03 — App checks for updates when enabled; 05 — Rehearsal produces a testable feed.
 
-**Status:** ready-for-human
+**Status:** resolved
 
-- [ ] A wizard guides installing an older build, pointing it at the rehearsal feed, and triggering the update.
-- [ ] The update installs and the app relaunches into the new version.
-- [ ] The Input Monitoring grant survives: sound keeps working after the relaunch with no re-approval.
-- [ ] Gatekeeper does not re-prompt on the updated launch; if it does, the behavior is recorded and ADR 0010 is updated.
-- [ ] Preferences, sound pack, volume, and the Login Item survive.
+- [x] A wizard guides installing an older build, pointing it at the rehearsal feed, and triggering the update.
+- [x] The update installs and the app relaunches into the new version.
+- [x] The Input Monitoring grant survives: sound keeps working after the relaunch with no re-approval.
+- [x] Gatekeeper does not re-prompt on the updated launch; if it does, the behavior is recorded and ADR 0010 is updated.
+- [x] Preferences, sound pack, volume, and the Login Item survive.
 
 ## Comments
 
@@ -19,3 +19,11 @@
   remains human: the wizard pauses at each check, appends its result here, and
   leaves `Status` at `ready-for-human` until a person runs it and commits the
   record.
+
+- 2026-09-28 — human run of `Scripts/verify-update.sh` on macOS 26.7 (arm64).
+  An older Release build 0.0.1 (0) updated to the rehearsal build 0.1.0 (2)
+  from rehearsal run 36389253646 (https://github.com/zzacong/angry-keyboard/actions/runs/36389253646), relaunched, and reported:
+  - Input Monitoring and sound: yes
+  - Preferences: volume=0.42, playbackMode=overlap, muted=0
+  - Login Item: yes
+  - Gatekeeper: no re-prompt on the updated launch.
