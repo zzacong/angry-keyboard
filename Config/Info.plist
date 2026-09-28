@@ -12,5 +12,9 @@
 	     the updater is not started yet. -->
 	<key>AKEnableUpdates</key>
 	<string>$(AK_ENABLE_UPDATES)</string>
+	<!-- EdDSA public key Sparkle verifies updates against. The private key is the
+	     SPARKLE_PRIVATE_KEY secret, created by Scripts/setup-sparkle-key.sh. -->
+	<key>SUPublicEDKey</key>
+	<string>AAOBc5/b7krj/V7p75BaXhvKa2uKLbptJsVXjoKAMmE=</string>
 </dict>
 </plist>
