@@ -32,6 +32,12 @@ export const styles = stylex.create({
     fontFamily: tokens.fontMono,
     fontSize: "12px",
   },
+  metaLink: {
+    color: { default: tokens.ink, ":hover": tokens.red },
+    textDecorationColor: "rgba(27, 23, 18, 0.4)",
+    textDecorationLine: "underline",
+    textUnderlineOffset: "3px",
+  },
   missile: {
     transform: "rotate(-13deg)",
     bottom: "-6px",

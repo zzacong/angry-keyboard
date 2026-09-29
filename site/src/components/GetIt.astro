@@ -2,7 +2,7 @@
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/components/getIt.stylex";
 import InstallNote from "@/components/InstallNote.astro";
-import { downloadUrl } from "@/lib/download";
+import { downloadUrl, repoUrl } from "@/lib/links";
 import { styles as shared } from "@/styles/shared.stylex";
 ---
 
@@ -45,7 +45,16 @@ import { styles as shared } from "@/styles/shared.stylex";
       Download for macOS
     </a>
     <span {...stylex.attrs(styles.meta)}>
-      macOS 14 or later. Free and open source under MIT.
+      macOS 14 or later. Free and{" "}
+      <a
+        href={repoUrl}
+        target="_blank"
+        rel="noopener"
+        {...stylex.attrs(styles.metaLink)}
+      >
+        open source
+      </a>{" "}
+      under MIT.
     </span>
   </div>
 </section>

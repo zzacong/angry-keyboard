@@ -3,8 +3,16 @@ import { tokens } from "@/styles/tokens.stylex";
 
 export const styles = stylex.create({
   link: {
+    gap: "0.4em",
+    alignItems: "center",
     color: { default: "inherit", ":hover": tokens.red },
+    display: "inline-flex",
     textDecorationLine: "none",
+  },
+  mark: {
+    display: "block",
+    height: "14px",
+    width: "14px",
   },
   name: {
     fontFamily: tokens.fontHead,
@@ -16,8 +24,11 @@ export const styles = stylex.create({
     gap: "1.2rem",
     color: tokens.inkSoft,
     display: "flex",
+    flexWrap: "wrap",
     fontFamily: tokens.fontMono,
     fontSize: "12px",
+    justifyContent: "flex-end",
+    rowGap: "0.5rem",
   },
   top: {
     gap: "1rem",
