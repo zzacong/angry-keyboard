@@ -17,6 +17,18 @@ export const styles = stylex.create({
     marginTop: "3.4rem",
     paddingTop: "1.4rem",
   },
+  link: {
+    gap: "0.4em",
+    alignItems: "center",
+    color: { default: "inherit", ":hover": tokens.red },
+    display: "inline-flex",
+    textDecorationLine: "none",
+  },
+  mark: {
+    display: "block",
+    height: "14px",
+    width: "14px",
+  },
   mascot: {
     // Matches the `#redface` symbol's viewBox (260x196) so the face fills the
     // box instead of being letterboxed inside it.

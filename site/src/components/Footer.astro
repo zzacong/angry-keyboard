@@ -1,6 +1,7 @@
 ---
 import * as stylex from "@stylexjs/stylex";
 import { styles } from "@/components/footer.stylex";
+import { repoUrl } from "@/lib/links";
 ---
 
 <div {...stylex.attrs(styles.foot)}>
@@ -10,4 +11,15 @@ import { styles } from "@/components/footer.stylex";
   <span>A hobby project about noise.</span>
   <span>Every keystroke fires a shot.</span>
   <span>Made for macOS.</span>
+  <a
+    href={repoUrl}
+    target="_blank"
+    rel="noopener"
+    {...stylex.attrs(styles.link)}
+  >
+    <svg aria-hidden="true" {...stylex.attrs(styles.mark)}>
+      <use href="#gh-mark" />
+    </svg>
+    GitHub
+  </a>
 </div>
