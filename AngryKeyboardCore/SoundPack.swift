@@ -115,12 +115,12 @@ nonisolated extension SoundPack {
     static let arrowImpacts = SoundPool([.combatImpact, .kungFuYell, .punchImpactHit, .punch])
 
     /// The pool the catch-all draws from: mostly the shotgun, with a reaction
-    /// sound now and then. A weight of four against one each makes the shotgun
-    /// about 57% of hits. Every default key shares this pool, so their voices
-    /// count together.
+    /// sound now and then. A weight of nine against two for ouch and ough makes
+    /// the shotgun about 64% of hits, and ahhh the rarest reaction at about 7%.
+    /// Every default key shares this pool, so their voices count together.
     static let catchAllPool = SoundPool(
         [.shotgun, .ahhh, .ouch, .ough],
-        weights: [4, 1, 1, 1]
+        weights: [9, 1, 2, 2]
     )
 
     /// Every pack the app can offer. v1 ships one; the menu hides the picker
