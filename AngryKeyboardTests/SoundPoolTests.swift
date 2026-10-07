@@ -72,9 +72,9 @@ final class SoundPoolTests: XCTestCase {
             counts[catchAll.draw(using: &generator), default: 0] += 1
         }
 
-        // The shotgun carries four of the seven total weight, so it should land
-        // near 4/7 of hits, clearly ahead of each weight-one reaction. The band
-        // is wide enough for the seeded sequence's natural wobble.
+        // The shotgun carries nine of the fourteen total weight, so it should
+        // land near 9/14 of hits, clearly ahead of each reaction. The band is
+        // wide enough for the seeded sequence's natural wobble.
         let shotgun = counts[.shotgun] ?? 0
         XCTAssertGreaterThan(shotgun, draws / 2)
         XCTAssertLessThan(shotgun, draws * 2 / 3)
