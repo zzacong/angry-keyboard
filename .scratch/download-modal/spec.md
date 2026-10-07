@@ -37,7 +37,7 @@ restates the two hurdles between the download and a working app.
 ## Why it does not earn an ADR
 
 Reversible, unsurprising, and not a close call between genuine alternatives. The
-zine direction it inherits is already recorded in `docs/adr/0010-zine-homepage.md`.
+zine direction it inherits is already settled in the site work.
 
 ## Notes
 

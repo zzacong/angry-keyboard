@@ -24,7 +24,7 @@ Added `InputMonitoring`, `KeystrokeEventTap`, `AudioOutput`, and `Sound`, and re
 
 Permission is read live and polled every two seconds until the tap is actually enabled, not merely until the system reports access. A grant that fails to install a tap is retried, and a tap macOS disables is re-enabled, so the menu cannot read "Granted" over a dead tap. The explainer needs no stored flag: it appears whenever the app launches without access, and stops once access is granted.
 
-The five MP3s now live in `AngryKeyboard/Sounds/` and land in `Contents/Resources`. `ENABLE_APP_SANDBOX` is `NO` on Debug and Release, as ADR 0002 requires and ticket 01 flagged; removing the inert `ENABLE_USER_SELECTED_FILES` setting drops a sandbox-only entitlement that does nothing outside the sandbox. That ticket also carried the real entry-point bug, a default `main()` that never instantiated the delegate; ticket 02 replaces it.
+The five MP3s now live in `AngryKeyboard/Sounds/` and land in `Contents/Resources`. `ENABLE_APP_SANDBOX` is `NO` on Debug and Release, as ADR 0001 requires and ticket 01 flagged; removing the inert `ENABLE_USER_SELECTED_FILES` setting drops a sandbox-only entitlement that does nothing outside the sandbox. That ticket also carried the real entry-point bug, a default `main()` that never instantiated the delegate; ticket 02 replaces it.
 
 Verified by building and launching:
 

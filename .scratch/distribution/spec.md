@@ -22,7 +22,7 @@ The first release is `v0.1.0`.
 - No Apple Developer Program membership, so no Developer ID and no notarization.
 - There are two channels, mapped to the two build configurations: Debug is dev, Release is production. See ADR 0009.
 - The channels differ in bundle id, display name, product name, certificate, and app icon. See the Channels section.
-- Release builds are signed with a self-signed certificate named `AngryKeyboard Production`, which is imported into CI and into Zac's login keychain. Dev builds are signed with `AngryKeyboard Dev`. See ADR 0007.
+- Release builds are signed with a self-signed certificate named `AngryKeyboard Production`, which is imported into CI and into Zac's login keychain. Dev builds are signed with `AngryKeyboard Dev`. See ADR 0007 and ADR 0009.
 - The committed project signs ad-hoc so a stranger can build it. The certificate names live in gitignored per-configuration files. CI passes the production identity on the `xcodebuild` command line.
 - The git tag is the only release version source. CI injects `MARKETING_VERSION` from the tag and `CURRENT_PROJECT_VERSION` from the Actions run number. See ADR 0008.
 - Dev builds derive their version from `git describe` at build time, so the dev app's About panel shows the exact commit. See the Version section.

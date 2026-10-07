@@ -60,7 +60,7 @@ The key mapping the app ships with:
 
 ## Implementation Decisions
 
-**App shape.** The app is a menu bar agent. It has no window and no Dock icon. It owns its status item through an `AppDelegate` rather than `MenuBarExtra`, so the process survives the macOS 26 "Allow in Menu Bar" toggle being switched off. See ADR 0001 through 0003.
+**App shape.** The app is a menu bar agent. It has no window and no Dock icon. It owns its status item through an `AppDelegate` rather than `MenuBarExtra`, so the process survives the macOS 26 "Allow in Menu Bar" toggle being switched off. See ADR 0003.
 
 **Capture.** A listen-only `CGEventTap` inserted at the head of the session tap, running on a dedicated thread, not the main thread. It requires Input Monitoring. The app requests access with `CGRequestListenEventAccess` and checks it with `CGPreflightListenEventAccess`, because the request call only prompts once. The callback re-enables the tap on `tapDisabledByTimeout` and `tapDisabledByUserInput`. Secure Input silences the tap while a password field is focused, which is expected behavior.
 
@@ -72,7 +72,7 @@ The key mapping the app ships with:
 
 **Settings.** Volume and mute persist across launches. Volume defaults to 60%. Launch at login uses `SMAppService.mainApp`, and its state is read live from the system rather than stored a second time. Permission state is read live and rechecked on launch and on focus.
 
-**Distribution.** v1 is not sandboxed and does not ship through the Mac App Store. It voluntarily stays within the sandbox-compatible subset, meaning listen-only capture, Input Monitoring, and no synthetic event posting, so a later Developer ID or App Store release does not need a rewrite. See ADR 0002.
+**Distribution.** v1 is not sandboxed and does not ship through the Mac App Store. It voluntarily stays within the sandbox-compatible subset, meaning listen-only capture, Input Monitoring, and no synthetic event posting, so a later Developer ID or App Store release does not need a rewrite. See ADR 0001.
 
 **Assets.** The five supplied MP3 files, sourced from `~/Desktop/assets`, are bundled inside the app. The app must not read them from the Desktop at runtime.
 

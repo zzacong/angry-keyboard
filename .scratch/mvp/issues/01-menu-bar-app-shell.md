@@ -20,7 +20,7 @@
 
 Verified by building and launching: the process runs as a `UIElement`, `CGWindowList` reports no normal-level windows, the `keyboard` symbol resolves to a real image, and quitting terminates the process. Visual confirmation of the menu bar icon is still a manual check, since screen recording is unavailable to the tooling.
 
-Follow-up: the target keeps `ENABLE_APP_SANDBOX = YES`, which contradicts ADR 0002. Out of scope here; should be flipped in ticket 02 or 06.
+Follow-up: the target keeps `ENABLE_APP_SANDBOX = YES`, which contradicts ADR 0001. Out of scope here; should be flipped in ticket 02 or 06.
 
 **2026-09-25 — correction found while building ticket 02.**
 
