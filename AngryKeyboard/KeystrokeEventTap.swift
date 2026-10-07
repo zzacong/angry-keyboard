@@ -7,7 +7,7 @@ import Foundation
 /// so audio work cannot stall the UI. It observes key-down events only, so mouse
 /// clicks, scrolls, and modifier-only presses never reach it. It is listen-only
 /// and never posts events, which keeps the app inside the sandbox-compatible
-/// subset (see ADR 0002). Secure Input silences the tap while a password field
+/// subset (see ADR 0001). Secure Input silences the tap while a password field
 /// is focused, so those keystrokes never reach it either.
 ///
 /// Start the tap only after Input Monitoring is granted. A denied permission
