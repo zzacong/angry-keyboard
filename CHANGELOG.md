@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/zzacong/angry-keyboard/compare/v0.1.2...v0.1.3) (2026-10-07)
+
+
+### Features
+
+* **app:** make the ahhh reaction the rarest default-key sound ([#17](https://github.com/zzacong/angry-keyboard/issues/17)) ([0f6a4ee](https://github.com/zzacong/angry-keyboard/commit/0f6a4eee4261cdee445ae86b680966d269073b97))
+
 ## [0.1.2](https://github.com/zzacong/angry-keyboard/compare/v0.1.1...v0.1.2) (2026-09-28)
 
 
