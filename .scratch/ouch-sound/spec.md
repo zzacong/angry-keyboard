@@ -12,7 +12,7 @@ A sound pool gains a weight per sound and draws in proportion to it; equal weigh
 
 ## Decisions
 
-- A pool draws in proportion to per-sound weights; equal weights are the uniform case. See ADR 0010.
+- A pool draws in proportion to per-sound weights; equal weights are the uniform case. See ADR 0006.
 - Weights live on the pool, not the binding, so bindings that share a pool share its draw and its voice count.
 - A non-positive weight is a programmer error, like an empty pool.
 - `SoundPack` takes its catch-all as a `SoundPool`, not a bare `Sound`.

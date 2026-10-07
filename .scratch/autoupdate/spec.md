@@ -179,9 +179,10 @@ channel never checks, and nothing installs without the user clicking.
 - `docs/adr/0010-in-app-updates-with-sparkle.md` records the decision and its
   rejected alternatives.
 - The EdDSA private key and the signing certificate are the two release secrets
-  whose loss is felt by every existing install. Losing the key alone still leaves
-  the certificate identity as the fallback that lets clients update; losing both
-  strands installs until users reinstall by hand.
+  whose loss is felt by every existing install. Losing the EdDSA key strands
+  installs, because Sparkle's fallback expects a Developer ID signature this
+  self-signed app does not have; losing the certificate resets every recipient's
+  Input Monitoring grant.
 - macOS 14.4's Gatekeeper pre-warm on a non-notarized app is undocumented, so the
   manual test in the Testing Decisions is the proof, not an assumption.
 - Two of the steps only a human can do — generating the key and storing the
