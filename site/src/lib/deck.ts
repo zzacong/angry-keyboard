@@ -30,14 +30,13 @@ const IMPACTS = [
 
 export type ImpactSound = (typeof IMPACTS)[number];
 
-// The catch-all pool, mirroring the app's SoundPool: the shotgun is four times
-// as likely as each reaction. The catch-all covers every key without its own
-// sound.
+// The catch-all pool, mirroring the app's SoundPool weights: shotgun 9, ouch
+// and ough 2 each, ahhh 1. The catch-all covers every key without its own sound.
 const CATCH_ALL_POOL = [
-  ["shotgun", 4],
+  ["shotgun", 9],
   ["ahhh", 1],
-  ["ouch", 1],
-  ["ough", 1],
+  ["ouch", 2],
+  ["ough", 2],
 ] as const satisfies readonly (readonly [SoundName, number])[];
 
 type CatchAllSound = (typeof CATCH_ALL_POOL)[number][0];
