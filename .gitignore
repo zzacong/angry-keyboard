@@ -103,7 +103,7 @@ dist/
 
 # Branding scripts
 #
-# Python bytecode from the icon generators under .scratch/branding/source.
+# Python bytecode from local scripts.
 __pycache__/
 
 # Scratch worktrees for parallel ticket work.

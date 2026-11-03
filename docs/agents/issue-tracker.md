@@ -2,7 +2,7 @@
 
 Issues and specs for this repo live as GitHub issues in `zzacong/angry-keyboard`. Use the `gh` CLI for all operations.
 
-Issues used to live as markdown files under `.scratch/`. That tree is read-only history now: all new issues and specs go to GitHub. See **Migration** below.
+Issues used to live as markdown files under `.scratch/`. That tree was migrated into this repo's issues and then removed; see **History** below. All new issues and specs go to GitHub.
 
 ## Conventions
 
@@ -30,17 +30,24 @@ When set to `yes`, PRs run through the same labels and states as issues, using t
 - **List external PRs for triage**: `gh api --paginate 'repos/{owner}/{repo}/pulls?state=open' --jq '.[] | select(.author_association | IN("OWNER","MEMBER","COLLABORATOR") | not) | {number, title, author: .user.login, author_association, labels: [.labels[].name]}'`.
 - **Comment / label / close**: `gh pr comment`, `gh pr edit --add-label`/`--remove-label`, `gh pr close`.
 
-## Migration from `.scratch/`
+## History
 
-The local markdown tree is being migrated into GitHub issues so past specs, tickets, and decisions stay searchable alongside new work. Until that migration runs, `.scratch/` remains the historical source and nothing new is created there.
+The `.scratch/` tree was migrated into issues #20-#49 on 2026-11-03 and deleted from the repo. Every migrated issue is closed, labelled `resolved`, carries a `<!-- scratch:<path> -->` marker for searching, and links back to its source file through a permalink pinned at `622b5ee`.
 
-Mapping the migration must preserve:
+| Feature | Spec issue | Tickets |
+| --- | --- | --- |
+| mvp | #20 | #21-#26 |
+| distribution | #27 | #28-#36 |
+| branding | #37 | none |
+| marketing-site | #38 | none |
+| autoupdate | #39 | #40-#46 |
+| ouch-sound | #47 | none |
+| deck-key-guide | #48 | none |
+| download-modal | #49 | none |
 
-- One parent issue per `.scratch/<feature>/` directory, carrying `spec.md` as its body.
-- One sub-issue per `.scratch/<feature>/issues/NN-<slug>.md`, with the original `NN` order kept in the body.
-- The `Status:` line on each file translated to the matching triage label from `triage-labels.md`, then the issue closed when the status says resolved.
-- A back-link to each original file path in the issue body, so history stays traceable in both directions.
-- `spec.md` files with no `issues/` directory (for example `ouch-sound`, `deck-key-guide`) become a single issue.
+Titles had their `NN: ` prefix stripped. Bodies drop the `Status:` line, because the closed state and the `resolved` label carry it. `Blocked by: 01, 03` became `Blocked by: #<n>, #<n>` plus native dependencies.
+
+If a migrated issue needs reopening, reopen it and move it to the right triage label. The original files are only in git history now, reachable through the permalinks.
 
 ## When a skill says "publish to the issue tracker"
 
