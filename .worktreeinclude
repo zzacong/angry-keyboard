@@ -5,3 +5,7 @@
 # back to the ad-hoc default, whose signature changes on every build, so
 # macOS drops the Input Monitoring grant. See README "Local signing".
 Config/*.local.xcconfig
+
+# Local issue and spec drafts, so a worktree can read the scratch notes a
+# ticket was written from. Tracked work lives on GitHub issues.
+.scratch/
