@@ -66,7 +66,7 @@ The key mapping the app ships with:
 
 **Audio.** A single `AVAudioEngine` starts at launch and stays running. The five MP3 files decode once at load into PCM buffers held in memory. Playback uses a pool of player nodes that stay in a playing state, with buffers scheduled into them, rather than calling play per keystroke. Each binding has a voice count. A voice count of one behaves as retrigger by stealing and restarting the single voice. A higher count allows overlap up to that count. A peak limiter sits on the mix, and each hit gets a small random pitch and gain change.
 
-**Model.** A sound pack is a named list of bindings plus the sounds they point at. One binding is the catch-all, and it is the last rule. Vocabulary comes from `CONTEXT.md` (keystroke, sound pack, binding, catch-all). v1 ships one pack, expressed as typed Swift rather than parsed from a file, because one static pack does not need a parser and a misspelled key name becomes a compile error.
+**Model.** A sound pack is a named list of bindings plus the sounds they point at. One binding is the catch-all, and it is the last rule. Vocabulary comes from `GLOSSARY.md` (keystroke, sound pack, binding, catch-all). v1 ships one pack, expressed as typed Swift rather than parsed from a file, because one static pack does not need a parser and a misspelled key name becomes a compile error.
 
 **Resolver.** The decision of which sound a keystroke plays is a pure function from a keystroke (key code plus modifier flags) to an optional binding. This is the single test seam for the feature.
 

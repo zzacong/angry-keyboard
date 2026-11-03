@@ -312,7 +312,7 @@ builtin and the bare command fails. Stop the stream with Ctrl-C.
 
 ## Learn more
 
-- `CONTEXT.md` defines the vocabulary: keystroke, sound pack, binding, sound
+- `GLOSSARY.md` defines the vocabulary: keystroke, sound pack, binding, sound
   pool, catch-all, and playback mode.
 - `docs/adr/` records the notable decisions.
 
