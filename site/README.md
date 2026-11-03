@@ -1,7 +1,8 @@
 # AngryKeyboard marketing site
 
 The AngryKeyboard public homepage: one Astro page, styled with StyleX, ported
-from the zine prototype in `.scratch/marketing-site/`. It tells the story, runs
+from the zine prototype recorded in
+[#38](https://github.com/zzacong/angry-keyboard/issues/38). It tells the story, runs
 a live deck on the app's own sounds, lists the key bindings, and hands over the
 download.
 
