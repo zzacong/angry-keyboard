@@ -1,9 +1,8 @@
 # AngryKeyboard marketing site
 
-The AngryKeyboard public homepage: one Astro page, styled with StyleX, ported
-from the zine prototype in `.scratch/marketing-site/`. It tells the story, runs
-a live deck on the app's own sounds, lists the key bindings, and hands over the
-download.
+The AngryKeyboard public homepage: one Astro page, styled with StyleX. It tells
+the story, runs a live deck on the app's own sounds, lists the key bindings, and
+hands over the download.
 
 Hosted on Vercel with the project's Root Directory set to `site`.
 

@@ -2,7 +2,7 @@
 
 ### Issue tracker
 
-Issues and specs live as markdown files under `.scratch/<feature>/` in this repo. See `docs/agents/issue-tracker.md`.
+Issues and specs live as GitHub issues in `zzacong/angry-keyboard`. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
@@ -10,7 +10,7 @@ Five canonical triage roles plus a resolved state, the label string equal to the
 
 ### Domain docs
 
-Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
 
 ## Commits
 
